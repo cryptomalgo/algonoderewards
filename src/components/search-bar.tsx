@@ -11,7 +11,7 @@ export default function SearchBar() {
     if (address.trim()) {
       navigate({
         to: "/$address",
-        params: { address: address.trim().toLowerCase() },
+        params: { address: address.trim().toUpperCase() },
       });
     }
   };

@@ -15,7 +15,9 @@ export const useTransactions = (address: string | null) => {
     const loadData = async () => {
       try {
         setLoading(true);
-        const result = await fetchTransactionsWithRewards(address);
+        const result = await fetchTransactionsWithRewards(
+          address.toUpperCase(),
+        );
         setData(result);
       } catch (err) {
         console.error(err);

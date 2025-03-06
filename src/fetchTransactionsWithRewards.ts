@@ -12,7 +12,9 @@ const indexerClient = new algosdk.Indexer(
 
 export async function resolveNFD(nfd: string): Promise<string> {
   try {
-    const response = await fetch(`https://api.nf.domains/nfd/${nfd}`);
+    const response = await fetch(
+      `https://api.nf.domains/nfd/${nfd.toLowerCase()}`,
+    );
     const data = await response.json();
     return data.owner;
   } catch (error) {
