@@ -10,6 +10,17 @@ const indexerClient = new algosdk.Indexer(
   443,
 );
 
+export async function resolveNFD(nfd: string): Promise<string> {
+  try {
+    const response = await fetch(`https://api.nf.domains/nfd/${nfd}`);
+    const data = await response.json();
+    return data.owner;
+  } catch (error) {
+    console.error("Error resolving NFD:", error);
+    return "";
+  }
+}
+
 export async function fetchTransactionsWithRewards(
   address: string,
 ): Promise<Transaction[]> {

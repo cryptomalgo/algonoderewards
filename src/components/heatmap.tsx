@@ -153,8 +153,7 @@ const DayView: React.FC<{
   });
 
   return (
-    <button
-      type="button"
+    <span
       style={{ backgroundColor, color: textColor }}
       className={cn(
         dayIdx === 0 && "rounded-tl-lg",
@@ -194,7 +193,7 @@ const DayView: React.FC<{
           )}
         </Tooltip>
       </TooltipProvider>
-    </button>
+    </span>
   );
 };
 

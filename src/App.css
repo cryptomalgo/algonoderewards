@@ -97,3 +97,25 @@
     @apply bg-background text-foreground;
   }
 }
+
+@theme {
+  --font-sans: InterVariable, sans-serif;
+}
+
+@theme {
+  --animate-coin-spread: coin-spread 1.5s ease-out forwards;
+
+  @keyframes coin-spread {
+    0% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(0);
+    }
+    50% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, calc(-50% - 100px)) scale(1);
+    }
+  }
+}

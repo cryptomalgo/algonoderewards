@@ -1,17 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useTransactions } from "@/hooks/useRewardTransactions.ts";
-import Spinner from "@/components/Spinner.tsx";
+import Spinner from "@/components/spinner.tsx";
 import { Transaction } from "algosdk/client/indexer";
-import * as React from "react";
 import Heatmap from "@/components/heatmap.tsx";
-import { BellIcon, GlassesIcon } from "lucide-react";
 import AlgoAmountDisplay from "@/components/algo-amount-display.tsx";
-import { displayAlgoAddress } from "@/lib/utils.ts";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip.tsx";
+import { useAlgorandAddress } from "@/hooks/useAlgorandAddress.ts";
+import { ChevronRightIcon, HomeIcon } from "lucide-react";
+import { displayAlgoAddress } from "@/lib/utils.ts";
+import CopyButton from "@/components/copy-to-clipboard.tsx";
 
 export const Route = createFileRoute("/$address")({
   component: Address,
@@ -20,10 +21,30 @@ export const Route = createFileRoute("/$address")({
 function Address() {
   const { address } = Route.useParams();
 
-  const { data: transactions, loading, error } = useTransactions(address);
+  const { resolvedAddress } = useAlgorandAddress(address);
+  const {
+    data: transactions,
+    loading,
+    hasError,
+  } = useTransactions(resolvedAddress);
 
-  if (error) {
-    return <div className="p-4 text-red-500">Error loading transactions.</div>;
+  if (hasError) {
+    return (
+      <main className="mx-auto flex w-full max-w-7xl flex-auto flex-col justify-center px-6 py-24 sm:py-64 lg:px-8">
+        <h1 className="mt-4 text-5xl font-semibold tracking-tight text-pretty text-red-900 sm:text-6xl">
+          Cannot load transactions
+        </h1>
+        <p className="mt-6 text-lg font-medium text-pretty text-gray-500 sm:text-xl/8">
+          Sorry, we couldn’t get your transactions. Please verify your address
+          and try again later.
+        </p>
+        <div className="mt-10">
+          <a href="/" className="text-sm/7 font-semibold text-indigo-600">
+            <span aria-hidden="true">&larr;</span> Back to home
+          </a>
+        </div>
+      </main>
+    );
   }
 
   const totalRewards = transactions.reduce(
@@ -34,102 +55,96 @@ function Address() {
   );
 
   const totalNbOfBlocksWithRewards = transactions.length;
+  const maxRewardTransaction: { amount: bigint; date: number } =
+    transactions.reduce(
+      (acc, transaction) => {
+        const amount = transaction?.paymentTransaction?.amount ?? 0n;
+        const date = transaction.roundTime ?? 0;
 
-  const maxRewardTransaction = transactions.reduce(
-    (acc, transaction) => {
-      const amount = transaction?.paymentTransaction?.amount ?? 0n;
-      return acc.amount > amount
-        ? acc
-        : { amount, date: transaction.roundTime };
-    },
-    { amount: 0n, date: 0 },
-  );
+        return acc.amount > amount ? acc : { amount, date };
+      },
+      { amount: 0n, date: 0 },
+    );
 
-  const minRewardTransaction = transactions.reduce(
-    (acc, transaction) => {
-      const amount = transaction?.paymentTransaction?.amount ?? 0n;
-      return acc.amount < amount
-        ? acc
-        : { amount, date: transaction.roundTime };
-    },
-    {
-      amount: transactions[0]?.paymentTransaction?.amount ?? 999999999n,
-      date: transactions[0]?.roundTime ?? 0,
-    },
-  );
+  const minRewardTransaction: { amount: bigint; date: number } =
+    transactions.reduce(
+      (acc, transaction) => {
+        const amount = transaction?.paymentTransaction?.amount ?? 0n;
+        // Provide a default value of 0 if roundTime is undefined
+        const date = transaction.roundTime ?? 0;
+
+        return acc.amount < amount ? acc : { amount, date };
+      },
+      // Use a safer initial value that doesn't depend on transactions[0] existing
+      {
+        amount:
+          transactions.length > 0
+            ? (transactions[0]?.paymentTransaction?.amount ?? 0n)
+            : 0n,
+        date: transactions.length > 0 ? (transactions[0]?.roundTime ?? 0) : 0,
+      },
+    );
 
   const maxReward = maxRewardTransaction.amount;
   const maxRewardDate = new Date(
     maxRewardTransaction.date * 1000,
   ).toLocaleString();
 
-  const minReward = minRewardTransaction.amount;
+  const minReward =
+    transactions.length === 0 ? 0n : minRewardTransaction.amount;
   const minRewardDate = new Date(
     minRewardTransaction.date * 1000,
   ).toLocaleString();
 
   return (
     <div className="min-h-full">
-      <div className="bg-indigo-600 pb-32">
-        <nav className="border-b border-indigo-300/25 bg-indigo-600 lg:border-none">
-          <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-8">
-            <div className="relative flex h-16 items-center justify-between lg:border-b lg:border-indigo-400/25">
-              <div className="flex items-center px-2 lg:px-0">
-                <div className="shrink-0">
-                  <img
-                    alt="Your Company"
-                    src="https://tailwindui.com/plus-assets/img/logos/mark.svg?color=indigo&shade=300"
-                    className="block size-8"
-                  />
-                </div>
-                <div className="hidden lg:ml-10 lg:block">
-                  <div className="flex space-x-4"></div>
-                </div>
-              </div>
-              <div className="flex flex-1 justify-center px-2 lg:ml-6 lg:justify-end">
-                <div className="grid w-full max-w-lg grid-cols-1 lg:max-w-xs">
-                  <input
-                    name="search"
-                    type="search"
-                    placeholder="Search"
-                    aria-label="Search"
-                    className="col-start-1 row-start-1 block w-full rounded-md bg-white py-1.5 pr-3 pl-10 text-base text-gray-900 outline-none placeholder:text-gray-400 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-white/40 sm:text-sm/6"
-                  />
-                  <GlassesIcon
-                    aria-hidden="true"
-                    className="pointer-events-none col-start-1 row-start-1 ml-3 size-5 self-center text-gray-400"
-                  />
-                </div>
-              </div>
-              <div className="hidden lg:ml-4 lg:block">
-                <div className="flex items-center">
-                  <button
-                    type="button"
-                    className="relative shrink-0 rounded-full bg-indigo-600 p-1 text-indigo-200 hover:text-white focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-600 focus:outline-none"
-                  >
-                    <span className="absolute -inset-1.5" />
-                    <span className="sr-only">View notifications</span>
-                    <BellIcon aria-hidden="true" className="size-6" />
-                  </button>
-                </div>
-              </div>
+      <main className="mt-4">
+        <div className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+          <div className="flex flex-col gap-2 border-b border-gray-200 pb-5">
+            <nav aria-label="Breadcrumb" className="flex">
+              <ol role="list" className="flex items-center space-x-4">
+                <li>
+                  <div>
+                    <a href="/" className="text-gray-400 hover:text-gray-500">
+                      <HomeIcon
+                        aria-hidden="true"
+                        className="size-5 shrink-0"
+                      />
+                      <span className="sr-only">Home</span>
+                    </a>
+                  </div>
+                </li>
+                <li>
+                  <div className="flex items-center">
+                    <ChevronRightIcon
+                      aria-hidden="true"
+                      className="size-5 shrink-0 text-gray-400"
+                    />
+                    <a
+                      href={""}
+                      aria-current={"page"}
+                      className="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
+                    >
+                      {address}
+                    </a>
+                  </div>
+                </li>
+              </ol>
+            </nav>
+            <div className={"flex flex-wrap items-center gap-2"}>
+              <h2 className="text-xl/7 font-bold text-gray-900 sm:truncate sm:text-2xl sm:tracking-tight">
+                {resolvedAddress ? (
+                  <a href={`https://allo.info/account/${resolvedAddress}`}>
+                    {displayAlgoAddress(resolvedAddress)}
+                  </a>
+                ) : (
+                  <Spinner />
+                )}
+              </h2>
+              <CopyButton address={resolvedAddress ?? ""}></CopyButton>
             </div>
           </div>
-
-          <header className="py-10">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <h1 className="text-xl font-bold tracking-tight text-white">
-                Stats for{" "}
-                <span title={address}>{displayAlgoAddress(address)}</span>
-              </h1>
-            </div>
-          </header>
-        </nav>
-      </div>
-
-      <main className="-mt-32">
-        <div className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
-          <div className="rounded-lg bg-white px-5 py-6 shadow sm:px-6">
+          <div className="rounded-lg px-5 py-6 sm:px-6">
             <div className="rounded-lg bg-indigo-500">
               <div className="mx-auto max-w-7xl rounded-lg">
                 <div className="grid grid-cols-1 gap-px rounded-lg sm:grid-cols-2 lg:grid-cols-4">
@@ -137,7 +152,7 @@ function Address() {
                     <p className="text-sm/6 font-medium text-slate-200">
                       Total reward
                     </p>
-                    <p className="mt-2 flex items-baseline gap-x-2">
+                    <div className="mt-2 flex items-baseline gap-x-2">
                       <span className="text-center text-4xl font-semibold tracking-tight text-white">
                         {loading ? (
                           <Spinner />
@@ -148,13 +163,13 @@ function Address() {
                           />
                         )}
                       </span>
-                    </p>
+                    </div>
                   </div>
                   <div className="px-4 py-6 sm:px-6 lg:px-8">
                     <p className="text-sm/6 font-medium text-slate-200">
                       Max reward
                     </p>
-                    <p className="mt-2 flex items-baseline gap-x-2">
+                    <div className="mt-2 flex items-baseline gap-x-2">
                       <span className="text-4xl font-semibold tracking-tight text-white">
                         {loading ? (
                           <Spinner />
@@ -170,13 +185,13 @@ function Address() {
                           </Tooltip>
                         )}
                       </span>
-                    </p>
+                    </div>
                   </div>
                   <div className="px-4 py-6 sm:px-6 lg:px-8">
                     <p className="text-sm/6 font-medium text-slate-200">
                       Min reward
                     </p>
-                    <p className="mt-2 flex items-baseline gap-x-2">
+                    <div className="mt-2 flex items-baseline gap-x-2">
                       <span className="text-4xl font-semibold tracking-tight text-white">
                         {loading ? (
                           <Spinner />
@@ -192,31 +207,21 @@ function Address() {
                           </Tooltip>
                         )}
                       </span>
-                    </p>
+                    </div>
                   </div>
                   <div className="px-4 py-6 sm:px-6 lg:px-8">
                     <p className="text-sm/6 font-medium text-slate-200">
                       Total blocks with rewards
                     </p>
-                    <p className="mt-2 flex items-baseline gap-x-2">
+                    <div className="mt-2 flex items-baseline gap-x-2">
                       <span className="text-4xl font-semibold tracking-tight text-white">
                         {loading ? <Spinner /> : totalNbOfBlocksWithRewards}
                       </span>
-                    </p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            {/*<ul className="list-disc">*/}
-            {/*  <li>*/}
-            {/*    Total Rewards Amount: {totalRewardAmount.algos}*/}
-            {/*    {algoPrice*/}
-            {/*      ? ` ($${(algoPrice * totalRewardAmount.algos).toFixed(2)})`*/}
-            {/*      : ""}*/}
-            {/*  </li>*/}
-            {/*  <li>Total Rewards: {transactions.length}</li>*/}
-            {/*  <li>Max reward amount {maxRewardAmount.algos}</li>*/}
-            {/*</ul>*/}
             <Heatmap transactions={transactions} />
           </div>
         </div>
