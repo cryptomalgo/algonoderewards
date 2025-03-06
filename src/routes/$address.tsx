@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useTransactions } from "@/hooks/useRewardTransactions.ts";
 import Spinner from "@/components/spinner.tsx";
 import { Transaction } from "algosdk/client/indexer";
-import Heatmap from "@/components/heatmap.tsx";
+import Heatmap from "@/components/heatmap/heatmap.tsx";
 import AlgoAmountDisplay from "@/components/algo-amount-display.tsx";
 import {
   Tooltip,
