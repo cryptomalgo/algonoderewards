@@ -7,6 +7,7 @@ import AlgoAmountDisplay from "@/components/algo-amount-display.tsx";
 import {
   Tooltip,
   TooltipContent,
+  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/mobile-tooltip.tsx";
 import { useAlgorandAddress } from "@/hooks/useAlgorandAddress.ts";
@@ -167,15 +168,17 @@ function Address() {
                         {loading ? (
                           <Spinner />
                         ) : (
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <AlgoAmountDisplay
-                                microAlgoAmount={maxReward}
-                                iconSize={18}
-                              />
-                            </TooltipTrigger>
-                            <TooltipContent>{maxRewardDate}</TooltipContent>
-                          </Tooltip>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <AlgoAmountDisplay
+                                  microAlgoAmount={maxReward}
+                                  iconSize={18}
+                                />
+                              </TooltipTrigger>
+                              <TooltipContent>{maxRewardDate}</TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         )}
                       </span>
                     </div>
@@ -189,15 +192,17 @@ function Address() {
                         {loading ? (
                           <Spinner />
                         ) : (
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <AlgoAmountDisplay
-                                microAlgoAmount={minReward}
-                                iconSize={18}
-                              />
-                            </TooltipTrigger>
-                            <TooltipContent>{minRewardDate}</TooltipContent>
-                          </Tooltip>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <AlgoAmountDisplay
+                                  microAlgoAmount={minReward}
+                                  iconSize={18}
+                                />
+                              </TooltipTrigger>
+                              <TooltipContent>{minRewardDate}</TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         )}
                       </span>
                     </div>

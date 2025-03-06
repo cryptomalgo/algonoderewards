@@ -50,7 +50,7 @@ export const TooltipTrigger = (
   props: TooltipTriggerProps & PopoverTriggerProps,
 ) => {
   const isTouch = useTouch();
-
+  console.log({ isTouch });
   return isTouch ? (
     <PopoverTrigger {...props} />
   ) : (
