@@ -43,7 +43,7 @@ const CoinsSpread = () => {
             duration: getRandomDelayAndDuration(),
             scale: { type: "tween", visualDuration: 0.4, bounce: 0.5 },
           }}
-          src={"/algorand-coin.png"}
+          src={"/algorand-coin.webp"}
           className={cn("rounded-full, inline-block size-10", getRandomSize())}
         />
       </div>
@@ -63,7 +63,7 @@ const CoinsSpread = () => {
             duration: getRandomDelayAndDuration(),
             scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
           }}
-          src={"/algorand-coin.png"}
+          src={"/algorand-coin.webp"}
           className={cn("inline-block size-10 rounded-full", getRandomSize())}
         />
       </div>
@@ -83,7 +83,7 @@ const CoinsSpread = () => {
             duration: getRandomDelayAndDuration(),
             scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
           }}
-          src={"/algorand-coin.png"}
+          src={"/algorand-coin.webp"}
           className={cn("inline-block size-10 rounded-full", getRandomSize())}
         />
       </div>
@@ -103,7 +103,7 @@ const CoinsSpread = () => {
             duration: getRandomDelayAndDuration(),
             scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
           }}
-          src={"/algorand-coin.png"}
+          src={"/algorand-coin.webp"}
           className={cn("inline-block size-10 rounded-full", getRandomSize())}
         />
       </div>
@@ -123,7 +123,7 @@ const CoinsSpread = () => {
             duration: getRandomDelayAndDuration(),
             scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
           }}
-          src={"/algorand-coin.png"}
+          src={"/algorand-coin.webp"}
           className={cn("inline-block size-10 rounded-full", getRandomSize())}
         />
       </div>
@@ -143,7 +143,7 @@ const CoinsSpread = () => {
             duration: getRandomDelayAndDuration(),
             scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
           }}
-          src={"/algorand-coin.png"}
+          src={"/algorand-coin.webp"}
           className={cn("inline-block size-10 rounded-full", getRandomSize())}
         />
       </div>
