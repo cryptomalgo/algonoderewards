@@ -16,7 +16,7 @@ export async function resolveNFD(nfd: string): Promise<string> {
       `https://api.nf.domains/nfd/${nfd.toLowerCase()}`,
     );
     const data = await response.json();
-    return data.owner;
+    return data.depositAccount;
   } catch (error) {
     console.error("Error resolving NFD:", error);
     return "";
