@@ -22,8 +22,8 @@ export const Route = createFileRoute("/$address")({
 
 function Address() {
   const { address } = Route.useParams();
-
   const { resolvedAddress } = useAlgorandAddress(address);
+
   const {
     data: transactions,
     loading,
