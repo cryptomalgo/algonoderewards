@@ -51,10 +51,8 @@ function Index() {
               }}
               className="mt-8 text-lg font-medium text-pretty text-gray-500 sm:text-xl/8"
             >
-              Track your Algorand staking rewards with ease!
-              <br /> Get detailed insights into your total, minimum, and maximum
-              earnings, plus a visual calendar heatmap to spot trends at a
-              glance
+              Get your total node rewards and identify peak performance periods
+              with our detailed rewards heatmap
             </motion.p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <SearchBar />
