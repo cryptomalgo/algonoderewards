@@ -2,11 +2,12 @@ import React from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { cn } from "@/lib/utils.ts";
 import {
+  TooltipProvider,
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip.tsx";
+} from "@/components/ui/mobile-tooltip";
+
 import { Transaction } from "algosdk/client/indexer";
 import AlgoAmountDisplay from "@/components/algo-amount-display.tsx";
 

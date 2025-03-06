@@ -8,7 +8,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip.tsx";
+} from "@/components/ui/mobile-tooltip.tsx";
 import { useAlgorandAddress } from "@/hooks/useAlgorandAddress.ts";
 import { ChevronRightIcon, HomeIcon } from "lucide-react";
 import { displayAlgoAddress } from "@/lib/utils.ts";
@@ -109,9 +109,16 @@ function Address() {
                     <a
                       href={""}
                       aria-current={"page"}
-                      className="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
+                      className="ml-4 hidden text-sm font-medium text-gray-500 hover:text-gray-700 md:block"
                     >
                       {address}
+                    </a>{" "}
+                    <a
+                      href={""}
+                      aria-current={"page"}
+                      className="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700 md:hidden"
+                    >
+                      {displayAlgoAddress(address)}
                     </a>
                   </div>
                 </li>
