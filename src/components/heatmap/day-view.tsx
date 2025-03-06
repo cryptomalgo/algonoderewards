@@ -63,20 +63,21 @@ const DayView: React.FC<{
   });
 
   return (
-    <span
-      style={{ backgroundColor, color: textColor }}
-      className={cn(
-        dayIdx === 0 && "rounded-tl-lg",
-        dayIdx === 6 && "rounded-tr-lg",
-        dayIdx === dayIdx - 7 && "rounded-bl-lg",
-        dayIdx === dayIdx - 1 && "rounded-br-lg",
-        "relative py-1.5 hover:bg-gray-100 focus:z-10",
-        !isCurrentMonth && "bg-gray-50 text-gray-400",
-      )}
-    >
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild={true}>
+          <span
+            style={{ backgroundColor, color: textColor }}
+            className={cn(
+              dayIdx === 0 && "rounded-tl-lg",
+              dayIdx === 6 && "rounded-tr-lg",
+              dayIdx === dayIdx - 7 && "rounded-bl-lg",
+              dayIdx === dayIdx - 1 && "rounded-br-lg",
+              "relative py-1.5 hover:bg-gray-100 focus:z-10",
+              !isCurrentMonth && "bg-gray-50 text-gray-400",
+              "data-[state=open]:ring-2 data-[state=open]:ring-gray-500",
+            )}
+          >
             <time
               dateTime={day.date}
               className={cn(
@@ -86,24 +87,24 @@ const DayView: React.FC<{
             >
               {day.date.split("-").pop()?.replace(/^0/, "")}
             </time>
-          </TooltipTrigger>
-          {isCurrentMonth && (
-            <TooltipContent className="flex flex-col gap-1 p-2">
-              <p className="text-sm font-semibold">{formattedDate}</p>
-              <div className={"flex flex-col gap-1"}>
-                <span className="font-medium">
-                  {day.count} {day.count > 1 ? "blocks" : "block"}
-                </span>
-                <AlgoAmountDisplay
-                  microAlgoAmount={day.totalAmount}
-                  iconSize={10}
-                />
-              </div>
-            </TooltipContent>
-          )}
-        </Tooltip>
-      </TooltipProvider>
-    </span>
+          </span>
+        </TooltipTrigger>
+        {isCurrentMonth && (
+          <TooltipContent className="flex flex-col gap-1 p-2">
+            <p className="text-sm font-semibold">{formattedDate}</p>
+            <div className={"flex flex-col gap-1"}>
+              <span className="font-medium">
+                {day.count} {day.count > 1 ? "blocks" : "block"}
+              </span>
+              <AlgoAmountDisplay
+                microAlgoAmount={day.totalAmount}
+                iconSize={10}
+              />
+            </div>
+          </TooltipContent>
+        )}
+      </Tooltip>
+    </TooltipProvider>
   );
 };
 
