@@ -32,6 +32,8 @@ export default function SearchBar() {
               id="query"
               name="query"
               type="text"
+              autoCorrect="off"
+              spellCheck={false}
               placeholder="noderewards.algo"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
