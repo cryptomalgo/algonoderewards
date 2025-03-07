@@ -50,6 +50,7 @@ const DayView: React.FC<{
   maxRewardCount: number;
 }> = ({ day, dayIdx, maxRewardCount, month }) => {
   const dayDate = new Date(day.date);
+
   const isCurrentMonth = dayDate.getMonth() === month;
   const { textColor, backgroundColor } = isCurrentMonth
     ? getDayColorShade(day.count, maxRewardCount)
@@ -85,7 +86,9 @@ const DayView: React.FC<{
                 "mx-auto flex size-7 items-center justify-center rounded-full",
               )}
             >
-              {day.date.split("-").pop()?.replace(/^0/, "")}
+              {dayDate.toLocaleDateString("en-US", {
+                day: "2-digit",
+              })}
             </time>
           </span>
         </TooltipTrigger>

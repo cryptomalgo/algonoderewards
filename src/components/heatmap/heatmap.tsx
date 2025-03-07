@@ -83,7 +83,6 @@ const Heatmap: React.FC<{ transactions: Transaction[] }> = ({
     });
     return Math.max(...Array.from(countMap.values()), 1);
   };
-
   const getDaysWithRewards = (
     month: number,
     year: number,
@@ -91,10 +90,10 @@ const Heatmap: React.FC<{ transactions: Transaction[] }> = ({
     const days = generateDays(month, year, true);
 
     return days.map((day) => {
-      const dateStr = day.toISOString().split("T")[0];
+      const dateStr = day.toLocaleDateString("en-US");
       const dayTransactions = transactions.filter(
         (tx) =>
-          new Date((tx.roundTime ?? 0) * 1000).toISOString().split("T")[0] ===
+          new Date((tx.roundTime ?? 0) * 1000).toLocaleDateString("en-US") ===
           dateStr,
       );
 
