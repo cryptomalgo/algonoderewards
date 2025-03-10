@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useCallback, useState, useRef } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { Transaction } from "algosdk/client/indexer";
 import MonthView from "@/components/heatmap/month-view.tsx";
@@ -12,13 +12,11 @@ function generateDays(
   const firstDayOfMonth = new Date(Date.UTC(year, month, 1));
   const lastDayOfMonth = new Date(Date.UTC(year, month + 1, 0));
 
-  // Get the first day to display (Monday or Sunday of the week containing the 1st of the month)
   const start = new Date(firstDayOfMonth);
   while (start.getUTCDay() !== (startOnMonday ? 1 : 0)) {
     start.setUTCDate(start.getUTCDate() - 1);
   }
 
-  // Get the last day to display (Sunday or Saturday of the week containing the last day of the month)
   const end = new Date(lastDayOfMonth);
   while (end.getUTCDay() !== (startOnMonday ? 0 : 6)) {
     end.setUTCDate(end.getUTCDate() + 1);
@@ -38,23 +36,74 @@ function generateDays(
 const Heatmap: React.FC<{ transactions: Transaction[] }> = ({
   transactions,
 }) => {
-  const [displayMonths, setDisplayMonths] = React.useState<DisplayMonth[]>(
-    () => {
-      const now = new Date();
-      const currentMonth = now.getMonth();
-      const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
-      const twoMonthsAgo =
-        currentMonth <= 1 ? 11 + (currentMonth - 1) : currentMonth - 2;
-      const currentYear = now.getFullYear();
-      const previousYear = currentMonth === 0 ? currentYear - 1 : currentYear;
-      const twoYearsAgo = currentMonth <= 1 ? currentYear - 1 : currentYear;
+  const [displayMonths, setDisplayMonths] = useState<DisplayMonth[]>(() => {
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+    const twoMonthsAgo =
+      currentMonth <= 1 ? 11 + (currentMonth - 1) : currentMonth - 2;
+    const currentYear = now.getFullYear();
+    const previousYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+    const twoYearsAgo = currentMonth <= 1 ? currentYear - 1 : currentYear;
 
-      return [
-        { month: twoMonthsAgo, year: twoYearsAgo },
-        { month: previousMonth, year: previousYear },
-        { month: currentMonth, year: currentYear },
-      ];
+    return [
+      { month: twoMonthsAgo, year: twoYearsAgo },
+      { month: previousMonth, year: previousYear },
+      { month: currentMonth, year: currentYear },
+    ];
+  });
+
+  // Process transactions once into a date-based lookup map
+  const { transactionsByDate, maxCount } = useMemo(() => {
+    const dateMap = new Map<string, { count: number; totalAmount: bigint }>();
+    let maxCount = 0;
+
+    transactions.forEach((tx) => {
+      if (!tx.roundTime) return;
+
+      const date = new Date(tx.roundTime * 1000);
+      const dateStr = date.toLocaleDateString("en-US");
+
+      const existing = dateMap.get(dateStr) || { count: 0, totalAmount: 0n };
+      existing.count += 1;
+      existing.totalAmount += tx.paymentTransaction?.amount ?? 0n;
+
+      dateMap.set(dateStr, existing);
+
+      if (existing.count > maxCount) maxCount = existing.count;
+    });
+
+    return { transactionsByDate: dateMap, maxCount: Math.max(maxCount, 1) };
+  }, [transactions]);
+
+  // Cache generated days to avoid redundant calculations
+  const daysCache = useRef(new Map<string, Date[]>());
+
+  const getDaysWithRewards = useCallback(
+    (month: number, year: number): DayWithRewards[] => {
+      const cacheKey = `${month}-${year}`;
+      let days = daysCache.current.get(cacheKey);
+
+      if (!days) {
+        days = generateDays(month, year, true);
+        daysCache.current.set(cacheKey, days);
+      }
+
+      return days.map((day) => {
+        const dateStr = day.toLocaleDateString("en-US");
+        const dayData = transactionsByDate.get(dateStr) || {
+          count: 0,
+          totalAmount: 0n,
+        };
+
+        return {
+          date: dateStr,
+          count: dayData.count,
+          totalAmount: dayData.totalAmount,
+        };
+      });
     },
+    [transactionsByDate],
   );
 
   const handlePreviousMonth = () => {
@@ -72,43 +121,6 @@ const Heatmap: React.FC<{ transactions: Transaction[] }> = ({
       return [prev[1], prev[2], { month: newMonth, year: newYear }];
     });
   };
-
-  const getMaxRewardCount = (): number => {
-    const countMap = new Map<string, number>();
-    transactions.forEach((tx) => {
-      const dateStr = new Date((tx.roundTime ?? 0) * 1000)
-        .toISOString()
-        .split("T")[0];
-      countMap.set(dateStr, (countMap.get(dateStr) ?? 0) + 1);
-    });
-    return Math.max(...Array.from(countMap.values()), 1);
-  };
-  const getDaysWithRewards = (
-    month: number,
-    year: number,
-  ): DayWithRewards[] => {
-    const days = generateDays(month, year, true);
-
-    return days.map((day) => {
-      const dateStr = day.toLocaleDateString("en-US");
-      const dayTransactions = transactions.filter(
-        (tx) =>
-          new Date((tx.roundTime ?? 0) * 1000).toLocaleDateString("en-US") ===
-          dateStr,
-      );
-
-      return {
-        date: dateStr,
-        count: dayTransactions.length,
-        totalAmount: dayTransactions.reduce(
-          (sum, tx) => sum + (tx.paymentTransaction?.amount ?? 0n),
-          0n,
-        ),
-      };
-    });
-  };
-
-  const maxRewardCount = getMaxRewardCount();
 
   return (
     <div className={"my-4"}>
@@ -129,13 +141,13 @@ const Heatmap: React.FC<{ transactions: Transaction[] }> = ({
           <span className="sr-only">Next month</span>
           <ChevronRightIcon className="size-5" aria-hidden="true" />
         </button>
-        {displayMonths.map((month, monthIdx) => (
+        {displayMonths.map((month) => (
           <MonthView
-            key={monthIdx}
+            key={`${month.month}-${month.year}`}
             month={month.month}
             year={month.year}
             daysWithRewards={getDaysWithRewards(month.month, month.year)}
-            maxRewardCount={maxRewardCount}
+            maxRewardCount={maxCount}
           />
         ))}
       </div>
@@ -143,4 +155,4 @@ const Heatmap: React.FC<{ transactions: Transaction[] }> = ({
   );
 };
 
-export default Heatmap;
+export default React.memo(Heatmap);
