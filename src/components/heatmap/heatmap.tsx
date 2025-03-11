@@ -3,23 +3,24 @@ import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { Block } from "algosdk/client/indexer";
 import MonthView from "@/components/heatmap/month-view.tsx";
 import { DayWithRewards, DisplayMonth } from "@/components/heatmap/types.ts";
-
 function generateDays(
   month: number,
   year: number,
   startOnMonday: boolean = true,
 ): Date[] {
-  const firstDayOfMonth = new Date(Date.UTC(year, month, 1));
-  const lastDayOfMonth = new Date(Date.UTC(year, month + 1, 0));
+  // Create dates without time components to avoid timezone issues
+  const firstDayOfMonth = new Date(year, month, 1);
+  const lastDayOfMonth = new Date(year, month + 1, 0);
 
   const start = new Date(firstDayOfMonth);
-  while (start.getUTCDay() !== (startOnMonday ? 1 : 0)) {
-    start.setUTCDate(start.getUTCDate() - 1);
+  // Use getDay instead of getUTCDay
+  while (start.getDay() !== (startOnMonday ? 1 : 0)) {
+    start.setDate(start.getDate() - 1);
   }
 
   const end = new Date(lastDayOfMonth);
-  while (end.getUTCDay() !== (startOnMonday ? 0 : 6)) {
-    end.setUTCDate(end.getUTCDate() + 1);
+  while (end.getDay() !== (startOnMonday ? 0 : 6)) {
+    end.setDate(end.getDate() + 1);
   }
 
   const days: Date[] = [];
@@ -27,7 +28,7 @@ function generateDays(
 
   while (current <= end) {
     days.push(new Date(current));
-    current.setUTCDate(current.getUTCDate() + 1);
+    current.setDate(current.getDate() + 1);
   }
 
   return days;
