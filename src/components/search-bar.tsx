@@ -35,12 +35,15 @@ export default function SearchBar() {
 
     // Only navigate if we have addresses
     if (finalAddresses.length > 0) {
+      const uniqueAddresses = [
+        ...new Set(
+          finalAddresses.map((address: string) => address.trim().toUpperCase()),
+        ),
+      ];
       navigate({
         to: "/$addresses",
         params: {
-          addresses: finalAddresses
-            .map((address: string) => address.trim().toUpperCase())
-            .join(","),
+          addresses: uniqueAddresses.join(","),
         },
       });
     }
