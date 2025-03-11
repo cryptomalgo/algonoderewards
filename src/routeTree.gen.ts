@@ -11,14 +11,14 @@
 // Import Routes
 
 import { Route as rootRoute } from "./routes/__root";
-import { Route as AddressImport } from "./routes/$address";
+import { Route as AddressesImport } from "./routes/$addresses";
 import { Route as IndexImport } from "./routes/index";
 
 // Create/Update Routes
 
-const AddressRoute = AddressImport.update({
-  id: "/$address",
-  path: "/$address",
+const AddressesRoute = AddressesImport.update({
+  id: "/$addresses",
+  path: "/$addresses",
   getParentRoute: () => rootRoute,
 } as any);
 
@@ -39,11 +39,11 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof IndexImport;
       parentRoute: typeof rootRoute;
     };
-    "/$address": {
-      id: "/$address";
-      path: "/$address";
-      fullPath: "/$address";
-      preLoaderRoute: typeof AddressImport;
+    "/$addresses": {
+      id: "/$addresses";
+      path: "/$addresses";
+      fullPath: "/$addresses";
+      preLoaderRoute: typeof AddressesImport;
       parentRoute: typeof rootRoute;
     };
   }
@@ -53,37 +53,37 @@ declare module "@tanstack/react-router" {
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
-  "/$address": typeof AddressRoute;
+  "/$addresses": typeof AddressesRoute;
 }
 
 export interface FileRoutesByTo {
   "/": typeof IndexRoute;
-  "/$address": typeof AddressRoute;
+  "/$addresses": typeof AddressesRoute;
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute;
   "/": typeof IndexRoute;
-  "/$address": typeof AddressRoute;
+  "/$addresses": typeof AddressesRoute;
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "/" | "/$address";
+  fullPaths: "/" | "/$addresses";
   fileRoutesByTo: FileRoutesByTo;
-  to: "/" | "/$address";
-  id: "__root__" | "/" | "/$address";
+  to: "/" | "/$addresses";
+  id: "__root__" | "/" | "/$addresses";
   fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
-  AddressRoute: typeof AddressRoute;
+  AddressesRoute: typeof AddressesRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AddressRoute: AddressRoute,
+  AddressesRoute: AddressesRoute,
 };
 
 export const routeTree = rootRoute
@@ -97,14 +97,14 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/$address"
+        "/$addresses"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/$address": {
-      "filePath": "$address.tsx"
+    "/$addresses": {
+      "filePath": "$addresses.tsx"
     }
   }
 }

@@ -11,9 +11,9 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
-  // server: {
-  //   allowedHosts: true,
-  // },
+  server: {
+    allowedHosts: true,
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

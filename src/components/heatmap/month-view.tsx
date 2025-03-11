@@ -2,6 +2,7 @@ import React from "react";
 import AlgoAmountDisplay from "@/components/algo-amount-display.tsx";
 import DayView from "./day-view";
 import { DayWithRewards } from "./types";
+import NumberDisplay from "@/components/number-display.tsx";
 
 const MonthView: React.FC<{
   month: number;
@@ -26,13 +27,15 @@ const MonthView: React.FC<{
     const isCurrentYear = dayDate.getFullYear() === year;
 
     return isCurrentMonth && isCurrentYear ? sum + day.totalAmount : sum;
-  }, 0n);
+  }, 0);
 
   return (
     <section className="mx-auto min-w-xs text-center">
       <h2 className="text-sm font-semibold text-gray-900">{monthName}</h2>
       <div className="flex flex-col items-center text-xs text-gray-500">
-        <span>{totalRewards} blocks</span>
+        <span>
+          <NumberDisplay value={totalRewards} /> blocks
+        </span>
         <AlgoAmountDisplay microAlgoAmount={totalAmount} iconSize={10} />
       </div>
       <div className="mt-6 grid grid-cols-7 text-xs/6 text-gray-500">

@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback, useState, useRef } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import { Transaction } from "algosdk/client/indexer";
+import { Block } from "algosdk/client/indexer";
 import MonthView from "@/components/heatmap/month-view.tsx";
 import { DayWithRewards, DisplayMonth } from "@/components/heatmap/types.ts";
 
@@ -33,9 +33,7 @@ function generateDays(
   return days;
 }
 
-const Heatmap: React.FC<{ transactions: Transaction[] }> = ({
-  transactions,
-}) => {
+const Heatmap: React.FC<{ blocks: Block[] }> = ({ blocks }) => {
   const [displayMonths, setDisplayMonths] = useState<DisplayMonth[]>(() => {
     const now = new Date();
     const currentMonth = now.getMonth();
@@ -55,18 +53,18 @@ const Heatmap: React.FC<{ transactions: Transaction[] }> = ({
 
   // Process transactions once into a date-based lookup map
   const { transactionsByDate, maxCount } = useMemo(() => {
-    const dateMap = new Map<string, { count: number; totalAmount: bigint }>();
+    const dateMap = new Map<string, { count: number; totalAmount: number }>();
     let maxCount = 0;
 
-    transactions.forEach((tx) => {
-      if (!tx.roundTime) return;
+    blocks.forEach((block) => {
+      if (!block.timestamp) return;
 
-      const date = new Date(tx.roundTime * 1000);
+      const date = new Date(block.timestamp * 1000);
       const dateStr = date.toLocaleDateString("en-US");
 
-      const existing = dateMap.get(dateStr) || { count: 0, totalAmount: 0n };
+      const existing = dateMap.get(dateStr) || { count: 0, totalAmount: 0 };
       existing.count += 1;
-      existing.totalAmount += tx.paymentTransaction?.amount ?? 0n;
+      existing.totalAmount += block?.proposerPayout ?? 0;
 
       dateMap.set(dateStr, existing);
 
@@ -74,7 +72,7 @@ const Heatmap: React.FC<{ transactions: Transaction[] }> = ({
     });
 
     return { transactionsByDate: dateMap, maxCount: Math.max(maxCount, 1) };
-  }, [transactions]);
+  }, [blocks]);
 
   // Cache generated days to avoid redundant calculations
   const daysCache = useRef(new Map<string, Date[]>());
@@ -93,7 +91,7 @@ const Heatmap: React.FC<{ transactions: Transaction[] }> = ({
         const dateStr = day.toLocaleDateString("en-US");
         const dayData = transactionsByDate.get(dateStr) || {
           count: 0,
-          totalAmount: 0n,
+          totalAmount: 0,
         };
 
         return {

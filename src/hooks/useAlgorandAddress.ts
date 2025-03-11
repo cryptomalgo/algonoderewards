@@ -1,21 +1,28 @@
 import { resolveNFD } from "@/fetchTransactionsWithRewards.ts";
 import * as React from "react";
+import { ResolvedAddress } from "@/components/heatmap/types.ts";
 
-export const useAlgorandAddress = (address: string) => {
-  const [resolvedAddress, setResolvedAddress] = React.useState<string | null>(
-    null,
-  );
+export const useAlgorandAddresses = (addresses: string[]) => {
+  const [resolvedAddresses, setResolvedAddresses] = React.useState<
+    ResolvedAddress[]
+  >([]);
   const [loading, setLoading] = React.useState(true);
   const [hasError, setError] = React.useState(false);
 
   React.useEffect(() => {
     const resolveAddress = async () => {
       try {
-        if (address.toLowerCase().endsWith(".algo")) {
-          setResolvedAddress(await resolveNFD(address));
-          return;
-        }
-        setResolvedAddress(address);
+        // Use Promise.all to wait for all the async operations to complete
+        const resolved = await Promise.all(
+          addresses.map(async (address) => {
+            if (address.toLowerCase().endsWith(".algo")) {
+              return { address: await resolveNFD(address), nfd: address };
+            }
+            return { address, nfd: null };
+          }),
+        );
+
+        setResolvedAddresses(resolved);
       } catch (err) {
         console.error(err);
         setError(true);
@@ -23,9 +30,8 @@ export const useAlgorandAddress = (address: string) => {
         setLoading(false);
       }
     };
-
     resolveAddress();
-  }, [address]);
+  }, [addresses]);
 
-  return { resolvedAddress, loading, hasError };
+  return { resolvedAddresses, loading, hasError };
 };
