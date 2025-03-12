@@ -54,7 +54,8 @@ const DayView: React.FC<{
   month: number;
   dayIdx: number;
   maxRewardCount: number;
-}> = ({ day, dayIdx, maxRewardCount, month }) => {
+  totalDays: number;
+}> = ({ day, dayIdx, maxRewardCount, month, totalDays }) => {
   const dayDate = new Date(day.date);
   const isCurrentMonth = dayDate.getMonth() === month;
 
@@ -113,6 +114,11 @@ const DayView: React.FC<{
     day: "numeric",
   });
 
+  const daysPerWeek = 7;
+  const lastRowStartIdx = totalDays - daysPerWeek;
+  const isLastRowStart = dayIdx === lastRowStartIdx;
+  const isLastRowEnd = dayIdx === totalDays - 1;
+
   return (
     <TooltipProvider>
       <Tooltip>
@@ -134,8 +140,8 @@ const DayView: React.FC<{
             className={cn(
               dayIdx === 0 && "rounded-tl-lg",
               dayIdx === 6 && "rounded-tr-lg",
-              dayIdx === dayIdx - 7 && "rounded-bl-lg",
-              dayIdx === dayIdx - 1 && "rounded-br-lg",
+              isLastRowStart && "rounded-bl-lg",
+              isLastRowEnd && "rounded-br-lg",
               "relative py-1.5 hover:bg-gray-100 focus:z-10",
               !isCurrentMonth && "text-gray-400",
               "data-[state=open]:ring-2 data-[state=open]:ring-gray-500",

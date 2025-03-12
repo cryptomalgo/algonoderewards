@@ -55,6 +55,7 @@ const MonthView: React.FC<{
             key={day.date}
             day={day}
             maxRewardCount={maxRewardCount}
+            totalDays={daysWithRewards.length}
           />
         ))}
       </div>
