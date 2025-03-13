@@ -25,7 +25,7 @@ export async function resolveNFD(nfd: string): Promise<string> {
 export async function fetchTransactionsWithRewards(
   addresses: ResolvedAddress[],
 ): Promise<Block[]> {
-  return executePaginatedRequest(
+  const blocks = await executePaginatedRequest(
     (response: BlockHeadersResponse) => {
       return response.blocks;
     },
@@ -40,5 +40,8 @@ export async function fetchTransactionsWithRewards(
       }
       return s;
     },
+  );
+  return blocks.filter(
+    (block) => block.proposerPayout && block.proposerPayout > 0,
   );
 }
