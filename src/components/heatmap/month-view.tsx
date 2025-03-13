@@ -31,14 +31,16 @@ const MonthView: React.FC<{
 
   return (
     <section className="mx-auto min-w-xs text-center">
-      <h2 className="text-sm font-semibold text-gray-900">{monthName}</h2>
-      <div className="flex flex-col items-center text-xs text-gray-500">
+      <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+        {monthName}
+      </h2>
+      <div className="flex flex-col items-center text-xs text-gray-500 dark:text-gray-400">
         <span>
           <NumberDisplay value={totalRewards} /> blocks
         </span>
         <AlgoAmountDisplay microAlgoAmount={totalAmount} iconSize={10} />
       </div>
-      <div className="mt-6 grid grid-cols-7 text-xs/6 text-gray-500">
+      <div className="mt-6 grid grid-cols-7 text-xs/6 text-gray-500 dark:text-gray-400">
         <div>M</div>
         <div>T</div>
         <div>W</div>
@@ -47,7 +49,7 @@ const MonthView: React.FC<{
         <div>S</div>
         <div>S</div>
       </div>
-      <div className="isolate mt-2 grid grid-cols-7 gap-px rounded-lg bg-gray-200 text-sm shadow ring-1 ring-gray-200">
+      <div className="isolate mt-2 grid grid-cols-7 gap-px rounded-lg bg-gray-200 text-sm shadow ring-1 ring-gray-200 dark:bg-gray-700 dark:ring-gray-700">
         {daysWithRewards.map((day, dayIdx) => (
           <DayView
             dayIdx={dayIdx}

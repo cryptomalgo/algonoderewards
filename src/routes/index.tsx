@@ -37,7 +37,7 @@ function Index() {
                 duration: 0.4,
                 scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
               }}
-              className="text-5xl font-semibold tracking-tight text-balance text-gray-900 sm:text-7xl"
+              className="text-5xl font-semibold tracking-tight text-balance text-gray-900 sm:text-7xl dark:text-white"
             >
               Cool stats for your Algorand staking rewards
             </motion.h1>
@@ -49,7 +49,7 @@ function Index() {
                 delay: 0.2,
                 scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
               }}
-              className="mt-8 text-lg font-medium text-pretty text-gray-500 sm:text-xl/8"
+              className="mt-8 text-lg font-medium text-pretty text-gray-500 sm:text-xl/8 dark:text-gray-300"
             >
               Get your total node rewards and identify peak performance periods
               with our detailed rewards heatmap

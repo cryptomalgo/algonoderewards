@@ -19,6 +19,7 @@ import {
   PopoverProps,
   PopoverTriggerProps,
 } from "@radix-ui/react-popover";
+import { cn } from "@/lib/utils";
 
 const TouchContext = createContext<boolean | undefined>(undefined);
 const useTouch = () => useContext(TouchContext);
@@ -63,7 +64,13 @@ export const TooltipContent = (
   const isTouch = useTouch();
 
   return isTouch ? (
-    <PopoverContent {...props} />
+    <PopoverContent
+      {...props}
+      className={cn(
+        props.className,
+        "bg-tooltip text-tooltip-foreground w-auto",
+      )}
+    />
   ) : (
     <OriginalTooltipContent {...props} />
   );

@@ -1,6 +1,6 @@
 const StakingCta = () => {
   return (
-    <div className="bg-white">
+    <div className="bg-background">
       <div className="mx-auto max-w-7xl py-24 sm:px-6 sm:py-32 lg:px-8">
         <div className="relative isolate overflow-hidden bg-blue-800 px-6 py-24 text-center shadow-2xl sm:rounded-3xl sm:px-16">
           <h2 className="text-4xl font-semibold tracking-tight text-balance text-white sm:text-5xl">

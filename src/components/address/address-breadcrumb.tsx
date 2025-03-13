@@ -13,6 +13,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip.tsx";
+import Settings from "./settings.tsx";
+import { useTheme } from "@/components/theme-provider";
 
 export default function AddressBreadcrumb({
   resolvedAddresses,
@@ -27,12 +29,16 @@ export default function AddressBreadcrumb({
   showAddAddress: boolean;
   setShowAddAddress: (show: boolean) => void;
 }) {
+  const { theme } = useTheme();
   return (
-    <nav aria-label="Breadcrumb" className="flex">
+    <nav aria-label="Breadcrumb" className="flex justify-between">
       <ol role="list" className="flex items-center space-x-4">
         <li>
           <div>
-            <a href="/" className="text-gray-400 hover:text-gray-500">
+            <a
+              href={theme ? `/?theme=${theme}` : "/"}
+              className="text-gray-400 hover:text-gray-300 dark:text-gray-500 dark:hover:text-gray-400"
+            >
               <HomeIcon aria-hidden="true" className="size-5 shrink-0" />
               <span className="sr-only">Home</span>
             </a>
@@ -42,27 +48,28 @@ export default function AddressBreadcrumb({
           <div className="flex items-center">
             <ChevronRightIcon
               aria-hidden="true"
-              className="size-5 shrink-0 text-gray-400"
+              className="size-5 shrink-0 text-gray-400 dark:text-gray-500"
             />
             <a
               href={""}
               aria-current={"page"}
-              className="ml-4 hidden text-sm font-medium text-gray-500 hover:text-gray-700 md:block"
+              className="ml-4 hidden text-sm font-medium text-gray-500 hover:text-gray-700 md:block dark:text-gray-400 dark:hover:text-gray-300"
             >
               {resolvedAddresses.length === 0 && <Spinner />}
-              {(resolvedAddresses.length === 1 && resolvedAddresses[0].nfd) ??
-                resolvedAddresses[0].address}
+              {resolvedAddresses.length === 1 &&
+                (resolvedAddresses[0].nfd ?? resolvedAddresses[0].address)}
               {resolvedAddresses.length > 1 &&
                 `Multiple addresses (${resolvedAddresses.length})`}
             </a>
             <a
               href={""}
               aria-current={"page"}
-              className="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700 md:hidden"
+              className="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700 md:hidden dark:text-gray-400 dark:hover:text-gray-300"
             >
               {resolvedAddresses.length === 0 && <Spinner />}
               {resolvedAddresses.length === 1 &&
-                displayAlgoAddress(resolvedAddresses[0].address)}
+                (resolvedAddresses[0].nfd ??
+                  displayAlgoAddress(resolvedAddresses[0].address))}
               {resolvedAddresses.length > 1 && "Multiple addresses"}
             </a>
 
@@ -80,13 +87,16 @@ export default function AddressBreadcrumb({
                         }}
                         className={cn(
                           "flex cursor-pointer gap-2 rounded-md bg-white px-2 py-2 text-sm font-semibold text-nowrap text-gray-900 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50",
-                          showFilters && "bg-gray-100",
+                          "dark:bg-gray-800 dark:text-gray-100 dark:ring-gray-700 dark:hover:bg-gray-700",
+                          showFilters && "bg-gray-100 dark:bg-gray-700",
                         )}
                       >
                         <FilterIcon className={"size-3"} />
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent>Select address to display</TooltipContent>
+                    <TooltipContent className="dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100">
+                      Select address to display
+                    </TooltipContent>
                   </TooltipProvider>
                 </Tooltip>
               )}
@@ -103,13 +113,16 @@ export default function AddressBreadcrumb({
                         }}
                         className={cn(
                           "flex cursor-pointer gap-2 rounded-md bg-white px-2 py-2 text-sm font-semibold text-nowrap text-gray-900 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50",
-                          showAddAddress && "bg-gray-100",
+                          "dark:bg-gray-800 dark:text-gray-100 dark:ring-gray-700 dark:hover:bg-gray-700",
+                          showAddAddress && "bg-gray-100 dark:bg-gray-700",
                         )}
                       >
                         <SlidersHorizontalIcon className={"size-3"} />
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent>Add or remove addresses</TooltipContent>
+                    <TooltipContent className="dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100">
+                      Add or remove addresses
+                    </TooltipContent>
                   </TooltipProvider>
                 </Tooltip>
               )}
@@ -117,6 +130,7 @@ export default function AddressBreadcrumb({
           </div>
         </li>
       </ol>
+      <Settings />
     </nav>
   );
 }

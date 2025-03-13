@@ -6,6 +6,7 @@ import "./App.css";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
+import { ThemeProvider } from "@/components/theme-provider.tsx";
 
 scan({
   enabled: false,
@@ -23,6 +24,8 @@ declare module "@tanstack/react-router" {
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <ThemeProvider>
+      <RouterProvider router={router} />
+    </ThemeProvider>
   </StrictMode>,
 );

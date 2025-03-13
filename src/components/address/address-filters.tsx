@@ -58,19 +58,21 @@ export default function AddressFilters({
                       selectedAddresses.length === resolvedAddresses.length
                     }
                     onChange={selectAllAddresses}
-                    className="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto"
+                    className="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:checked:border-indigo-500 dark:checked:bg-indigo-600 dark:indeterminate:border-indigo-500 dark:indeterminate:bg-indigo-600 dark:focus-visible:outline-indigo-500 dark:disabled:border-gray-700 dark:disabled:bg-gray-800 forced-colors:appearance-auto"
                   />
                   <CheckIcon
-                    className={
-                      "pointer-events-none col-start-1 row-start-1 size-2.5 self-center justify-self-center stroke-white stroke-3 group-has-disabled:stroke-gray-950/25"
-                    }
+                    className={`pointer-events-none col-start-1 row-start-1 size-2.5 self-center justify-self-center stroke-white stroke-3 group-has-disabled:stroke-gray-950/25 dark:stroke-white dark:group-has-disabled:stroke-gray-400/25 ${
+                      selectedAddresses.length !== resolvedAddresses.length
+                        ? "hidden"
+                        : ""
+                    }`}
                   />
                 </div>
               </div>
               <div className="text-sm/6">
                 <label
                   htmlFor={`address-all`}
-                  className="flex items-center gap-2 font-medium text-nowrap text-gray-900"
+                  className="flex items-center gap-2 font-medium text-nowrap text-gray-900 dark:text-gray-100"
                 >
                   {selectedAddresses.length === resolvedAddresses.length
                     ? "Deselect all"
@@ -113,19 +115,19 @@ function AddressCheckbox({
             type="checkbox"
             checked={checked}
             onChange={(e) => onChange(e.target.checked)}
-            className="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto"
+            className="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:checked:border-indigo-500 dark:checked:bg-indigo-600 dark:indeterminate:border-indigo-500 dark:indeterminate:bg-indigo-600 dark:focus-visible:outline-indigo-500 dark:disabled:border-gray-700 dark:disabled:bg-gray-800 forced-colors:appearance-auto"
           />
           <CheckIcon
-            className={
-              "pointer-events-none col-start-1 row-start-1 size-2.5 self-center justify-self-center stroke-white stroke-3 group-has-disabled:stroke-gray-950/25"
-            }
+            className={`pointer-events-none col-start-1 row-start-1 size-2.5 self-center justify-self-center stroke-white stroke-3 group-has-disabled:stroke-gray-950/25 dark:stroke-white dark:group-has-disabled:stroke-gray-400/25 ${
+              !checked ? "hidden" : ""
+            }`}
           />
         </div>
       </div>
       <div className="text-sm/6">
         <label
           htmlFor={`address-${address.address}`}
-          className="flex items-center gap-2 font-medium text-nowrap text-gray-900"
+          className="flex items-center gap-2 font-medium text-nowrap text-gray-900 dark:text-gray-100"
         >
           {address.nfd ? address.nfd : displayAlgoAddress(address.address)}
           <CopyButton
@@ -133,7 +135,7 @@ function AddressCheckbox({
             small
           />
         </label>
-        <p className="hidden items-center gap-2 text-gray-500 sm:flex">
+        <p className="hidden items-center gap-2 text-gray-500 sm:flex dark:text-gray-400">
           {address.address} <CopyButton address={address.address} small />
         </p>
       </div>

@@ -65,7 +65,8 @@ export default function StatsPanel({
   }, [filteredBlocks]);
 
   return (
-    <div className="rounded-lg bg-indigo-500">
+    <div className="rounded-lg bg-indigo-500 shadow-lg dark:bg-white/6">
+      {/*<div className="rounded-lg bg-indigo-500 shadow-lg dark:bg-indigo-900">*/}
       <div className="mx-auto max-w-7xl rounded-lg">
         <div className="grid grid-cols-1 gap-px rounded-lg sm:grid-cols-2 lg:grid-cols-4">
           <StatBox
@@ -133,10 +134,12 @@ function StatBox({
   loading: boolean;
 }) {
   return (
-    <div className="px-4 py-6 sm:px-6 lg:px-8">
-      <p className="text-sm/6 font-medium text-slate-200">{title}</p>
+    <div className="px-4 py-6 sm:px-6 lg:px-8 dark:bg-black/10">
+      <p className="text-sm/6 font-medium text-slate-200 dark:text-slate-300">
+        {title}
+      </p>
       <div className="mt-2 flex items-baseline gap-x-2">
-        <span className="text-4xl font-semibold tracking-tight text-white">
+        <span className="text-4xl font-semibold tracking-tight text-white dark:text-white/95">
           {loading ? <Spinner /> : content}
         </span>
       </div>

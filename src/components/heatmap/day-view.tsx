@@ -9,10 +9,11 @@ import {
 import AlgoAmountDisplay from "@/components/algo-amount-display.tsx";
 import { DayWithRewards } from "@/components/heatmap/types.ts";
 import { motion, useMotionValue, useTransform } from "motion/react";
-
+import { useTheme } from "@/components/theme-provider.tsx";
 function getDayColorShade(
   value: number,
   max: number,
+  isDarkMode: boolean,
 ): {
   textColor: string;
   backgroundColor: string;
@@ -21,15 +22,24 @@ function getDayColorShade(
   const clamped = Math.min(Math.max(value, 0), max);
   const ratio = clamped / max;
 
-  const white = { r: 255, g: 255, b: 255 };
-  const darkGreen = { r: 45, g: 45, b: 241 };
+  // Light mode colors
+  const lightModeStart = { r: 255, g: 255, b: 255 };
+  const lightModeEnd = { r: 45, g: 45, b: 241 };
 
-  const r = Math.round(white.r + (darkGreen.r - white.r) * ratio);
-  const g = Math.round(white.g + (darkGreen.g - white.g) * ratio);
-  const b = Math.round(white.b + (darkGreen.b - white.b) * ratio);
+  // Dark mode colors - deeper blue that looks good in dark mode
+  //oklch(0.21 0.034 264.665)
+  const darkModeStart = { r: 16, g: 24, b: 40 };
+  const darkModeEnd = { r: 97, g: 95, b: 255 };
+
+  const start = isDarkMode ? darkModeStart : lightModeStart;
+  const end = isDarkMode ? darkModeEnd : lightModeEnd;
+
+  const r = Math.round(start.r + (end.r - start.r) * ratio);
+  const g = Math.round(start.g + (end.g - start.g) * ratio);
+  const b = Math.round(start.b + (end.b - start.b) * ratio);
 
   const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-  const textColor = brightness > 186 ? "black" : "white";
+  const textColor = brightness > 140 ? "black" : "white"; // Adjusted threshold for dark mode
 
   return {
     textColor: textColor,
@@ -56,18 +66,24 @@ const DayView: React.FC<{
   maxRewardCount: number;
   totalDays: number;
 }> = ({ day, dayIdx, maxRewardCount, month, totalDays }) => {
+  // Get dark mode status from theme context
+  const { theme } = useTheme();
+  const isDarkMode = theme === "dark";
+
   const dayDate = new Date(day.date);
   const isCurrentMonth = dayDate.getMonth() === month;
 
   const colorData = isCurrentMonth
-    ? getDayColorShade(day.count, maxRewardCount)
+    ? getDayColorShade(day.count, maxRewardCount, isDarkMode)
     : {
-        textColor: "#99a1af",
-        backgroundColor: "#fbf9fa",
-        colorRGB: { r: 251, g: 249, b: 250 },
+        textColor: isDarkMode ? "#6b7280" : "#99a1af",
+        backgroundColor: isDarkMode ? "#030712" : "#fbf9fa",
+        colorRGB: isDarkMode
+          ? { r: 3, g: 7, b: 18 }
+          : { r: 251, g: 249, b: 250 },
       };
 
-  // Motion values for animating the RGB components and text color
+  // Motion values for animating
   const rValue = useMotionValue(colorData.colorRGB.r);
   const gValue = useMotionValue(colorData.colorRGB.g);
   const bValue = useMotionValue(colorData.colorRGB.b);
@@ -79,23 +95,30 @@ const DayView: React.FC<{
     ([r, g, b]) =>
       `rgb(${Math.round(Number(r))}, ${Math.round(Number(g))}, ${Math.round(Number(b))})`,
   );
-
-  // Update motion values when count changes
   useEffect(() => {
     if (isCurrentMonth) {
       const { colorRGB, textColor } = getDayColorShade(
         day.count,
         maxRewardCount,
+        isDarkMode,
       );
       rValue.set(colorRGB.r);
       gValue.set(colorRGB.g);
       bValue.set(colorRGB.b);
       textColorValue.set(textColor);
     } else {
-      rValue.set(251);
-      gValue.set(249);
-      bValue.set(250);
-      textColorValue.set("#99a1af");
+      // Empty day color for current theme
+      if (isDarkMode) {
+        rValue.set(3);
+        gValue.set(7);
+        bValue.set(18);
+        textColorValue.set("#6b7280");
+      } else {
+        rValue.set(251);
+        gValue.set(249);
+        bValue.set(250);
+        textColorValue.set("#99a1af");
+      }
     }
   }, [
     day.count,
@@ -105,6 +128,7 @@ const DayView: React.FC<{
     gValue,
     bValue,
     textColorValue,
+    isDarkMode,
   ]);
 
   const formattedDate = dayDate.toLocaleDateString("en-US", {
@@ -142,15 +166,21 @@ const DayView: React.FC<{
               dayIdx === 6 && "rounded-tr-lg",
               isLastRowStart && "rounded-bl-lg",
               isLastRowEnd && "rounded-br-lg",
-              "relative py-1.5 hover:bg-gray-100 focus:z-10",
+              "relative py-1.5 hover:bg-gray-100 focus:z-10 dark:hover:bg-gray-700",
               !isCurrentMonth && "text-gray-400",
-              "data-[state=open]:ring-2 data-[state=open]:ring-gray-500",
+              "data-[state=open]:ring-2 data-[state=open]:ring-gray-500 dark:data-[state=open]:ring-gray-400",
+              dayIdx === dayIdx - 7 && "rounded-bl-lg",
+              dayIdx === dayIdx - 1 && "rounded-br-lg",
+              "relative py-1.5 hover:bg-gray-100 focus:z-10 dark:hover:bg-gray-700",
+              !isCurrentMonth && "text-gray-400 dark:text-gray-500",
+              "data-[state=open]:ring-2 data-[state=open]:ring-gray-500 dark:data-[state=open]:ring-gray-400",
             )}
           >
             <time
               dateTime={day.date}
               className={cn(
-                isCurrentDate(day.date) && "bg-indigo-900 text-white",
+                isCurrentDate(day.date) &&
+                  "bg-indigo-900 text-white dark:bg-indigo-700 dark:text-white",
                 "mx-auto flex size-7 items-center justify-center rounded-full",
               )}
             >
