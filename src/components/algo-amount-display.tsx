@@ -46,7 +46,7 @@ export default function AlgoAmountDisplay({
   }, [algoAmount.algos, showAnimation, value]);
 
   return (
-    <span className={`flex items-center ${className}`}>
+    <span className={`items-center ${className} inline-flex`}>
       <motion.span
         key={String(microAlgoAmount)} // Force re-render when value changes
         initial={{ opacity: 0.6, scale: 0.8 }}

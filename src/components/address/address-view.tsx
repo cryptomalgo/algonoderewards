@@ -10,6 +10,9 @@ import AddAddress from "./add-address";
 import { useNavigate } from "@tanstack/react-router";
 import CopyButton from "@/components/copy-to-clipboard.tsx";
 import { displayAlgoAddress } from "@/lib/utils.ts";
+import CumulativeRewardsChart from "@/components/address/charts/cumulative-rewards-chart";
+import CumulativeBlocksChart from "@/components/address/charts/cumulative-blocks-chart";
+import RewardByDayHourChart from "@/components/address/charts/reward-by-day-hour-chart.tsx";
 
 export default function AddressView({ addresses }: { addresses: string }) {
   const navigate = useNavigate();
@@ -101,6 +104,9 @@ export default function AddressView({ addresses }: { addresses: string }) {
           <div className="rounded-lg px-5 py-6 sm:px-6">
             <StatsPanel filteredBlocks={filteredBlocks} loading={loading} />
             <Heatmap blocks={filteredBlocks} />
+            <CumulativeRewardsChart blocks={filteredBlocks} />
+            <CumulativeBlocksChart blocks={filteredBlocks} />
+            <RewardByDayHourChart blocks={filteredBlocks} />
           </div>
         </div>
       </main>
