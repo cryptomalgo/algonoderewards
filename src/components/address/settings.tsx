@@ -9,8 +9,13 @@ import {
 import { useTheme } from "@/components/theme-provider";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { motion } from "framer-motion";
+import { exportBlocksToCsv } from "@/lib/csv-export";
+import { Block } from "algosdk/client/indexer";
+import CsvExportDialog from "@/components/address/csv-export-dialog.tsx";
+import { DownloadIcon } from "lucide-react";
+import { toast } from "sonner";
 
-export default function Settings() {
+export default function Settings({ blocks }: { blocks: Block[] }) {
   const { themeSetting, setThemeSetting } = useTheme();
 
   return (
@@ -22,10 +27,44 @@ export default function Settings() {
         align="end"
         className="dark:border-gray-700 dark:bg-gray-800"
       >
+        <div className="px-2 py-1.5">
+          <CsvExportDialog
+            blocks={blocks}
+            onExport={(columns, includeHeader, fromDate, toDate) => {
+              // Filter blocks based on provided date range
+              const filteredBlocks = blocks.filter((block) => {
+                const blockDate = new Date(block.timestamp * 1000);
+
+                // Set time boundaries for full day comparison
+                const startDate = new Date(fromDate);
+                startDate.setHours(0, 0, 0, 0);
+
+                const endDate = new Date(toDate);
+                endDate.setHours(23, 59, 59, 999);
+
+                return blockDate >= startDate && blockDate <= endDate;
+              });
+
+              // Show warning if no blocks found
+              if (filteredBlocks.length === 0) {
+                toast.error("No blocks found in the selected date range");
+                return Promise.reject("No blocks in date range");
+              }
+
+              return exportBlocksToCsv(filteredBlocks, columns, includeHeader);
+            }}
+          >
+            <div className="flex w-full cursor-pointer items-center rounded-md px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">
+              <DownloadIcon className="mr-2 h-4 w-4" />
+              CSV Download
+            </div>
+          </CsvExportDialog>
+        </div>
+        <DropdownMenuSeparator className="dark:bg-gray-700" />
+
         <DropdownMenuLabel className="dark:text-gray-100">
           Appearance
         </DropdownMenuLabel>
-        <DropdownMenuSeparator className="dark:bg-gray-700" />
         <div className="px-2 py-1.5">
           <ToggleGroup
             type="single"

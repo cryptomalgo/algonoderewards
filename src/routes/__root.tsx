@@ -1,6 +1,7 @@
 import { createRootRoute, Outlet } from "@tanstack/react-router";
 import React, { Suspense } from "react";
 import Footer from "@/components/footer.tsx";
+import { Toaster } from "@/components/ui/sonner";
 
 const TanStackRouterDevtools =
   process.env.NODE_ENV === "production"
@@ -36,6 +37,7 @@ export const Route = createRootRoute({
       <main className={"flex-grow"}>
         <Outlet />
       </main>
+      <Toaster />
 
       <Footer />
       <Suspense>

@@ -76,6 +76,7 @@ export default function AddressView({ addresses }: { addresses: string }) {
               resolvedAddresses={resolvedAddresses}
               showFilters={showFilters}
               setShowFilters={setShowFilters}
+              blocks={filteredBlocks}
             />
             <AddAddress
               showAddAddress={showAddAddress}
