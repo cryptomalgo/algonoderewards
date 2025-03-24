@@ -25,8 +25,9 @@ export interface BlockStats {
   minReward: number;
   minRewardDate: string;
   maxBlocksInDay: number;
-  maxBlocksDay: string;
-  maxBlocksRewards: number;
+  maxBlocksInDayDateString: string;
+  maxRewardsInDay: number;
+  maxRewardsInDayDateString: string;
 
   allTimeAvgRewardsPerDay: number;
   allTimeAvgBlocksPerDay: number;
@@ -75,25 +76,37 @@ export function useBlocksStats(filteredBlocks: BlockData[]): BlockStats {
       {},
     );
 
-    // Find the day with the most blocks
+    // Find the day with the most blocks and the day with most rewards
     let maxBlocksInDay = 0;
     let maxBlocksDay = "";
-    let maxBlocksRewards = 0;
+    let maxRewardsInDay = 0;
+    let maxRewardsDay = "";
 
     Object.entries(blocksByDay).forEach(([day, blocks]) => {
+      // Calculate total rewards for this day
+      const dayRewards = blocks.reduce(
+        (sum: number, block: BlockData) => sum + (block?.proposerPayout ?? 0),
+        0,
+      );
+
+      // Check for max blocks
       if (blocks.length > maxBlocksInDay) {
         maxBlocksInDay = blocks.length;
         maxBlocksDay = day;
-        // Calculate total rewards for this day
-        maxBlocksRewards = blocks.reduce(
-          (sum: number, block: BlockData) => sum + (block?.proposerPayout ?? 0),
-          0,
-        );
+      }
+
+      // Check for max rewards separately
+      if (dayRewards > maxRewardsInDay) {
+        maxRewardsInDay = dayRewards;
+        maxRewardsDay = day;
       }
     });
 
+    console.log({ maxBlocksInDay, maxBlocksDay });
+
     // Format the max blocks day for display
     const formattedMaxBlocksDate = maxBlocksDay ? maxBlocksDay : "N/A";
+    const formattedMaxRewardsDate = maxRewardsDay ? maxRewardsDay : "N/A";
 
     // Calculate min and max rewards
     const maxRewardTransaction = filteredBlocks.reduce(
@@ -355,9 +368,10 @@ export function useBlocksStats(filteredBlocks: BlockData[]): BlockStats {
 
       // Max blocks in day stat
       maxBlocksInDay,
-      maxBlocksDay: formattedMaxBlocksDate,
-      maxBlocksRewards: Math.round(maxBlocksRewards),
+      maxBlocksInDayDateString: formattedMaxBlocksDate,
 
+      maxRewardsInDay: Math.round(maxRewardsInDay),
+      maxRewardsInDayDateString: formattedMaxRewardsDate,
       // Average rewards stats
       allTimeAvgRewardsPerDay: Math.round(allTimeStats.avgRewardsPerDay),
       allTimeAvgBlocksPerDay: allTimeStats.avgBlocksPerDay,

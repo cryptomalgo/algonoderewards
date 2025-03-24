@@ -69,8 +69,8 @@ describe("useBlocksStats", () => {
       expect(result.current.totalRewards).toBe(0);
       expect(result.current.totalNbOfBlocksWithRewards).toBe(0);
       expect(result.current.maxBlocksInDay).toBe(0);
-      expect(result.current.maxBlocksDay).toBe("N/A");
-      expect(result.current.maxBlocksRewards).toBe(0);
+      expect(result.current.maxBlocksInDayDateString).toBe("N/A");
+      expect(result.current.maxRewardsInDay).toBe(0);
       expect(result.current.allTimeAvgRewardsPerDay).toBe(0);
       expect(result.current.allTimeAvgBlocksPerDay).toBe(0);
     });
@@ -121,6 +121,51 @@ describe("useBlocksStats", () => {
       const { result: result3 } = renderHook(() => useBlocksStats(mockBlocks));
       expect(result3.current.minReward).toBe(1000);
       expect(result3.current.minRewardDate).toBe("2/1/2025, 5:00:00 AM");
+    });
+
+    test("should find maximum reward and blocks per day", () => {
+      const mockBlocks = [
+        createMockBlock(new Date("2025-02-01T00:00:00").getTime() / 1000, 1000),
+        createMockBlock(new Date("2025-02-02T00:00:00").getTime() / 1000, 1000),
+
+        createMockBlock(new Date("2025-02-03T23:00:00").getTime() / 1000, 502),
+
+        createMockBlock(new Date("2025-02-04T06:00:00").getTime() / 1000, 2000),
+        createMockBlock(new Date("2025-02-04T12:00:00").getTime() / 1000, 2000),
+
+        createMockBlock(new Date("2025-02-05T01:00:00").getTime() / 1000, 501), //Here in GMT-5
+
+        createMockBlock(new Date("2025-02-05T22:00:00").getTime() / 1000, 1),
+
+        createMockBlock(new Date("2025-02-06T06:00:00").getTime() / 1000, 500),
+        createMockBlock(new Date("2025-02-06T07:00:00").getTime() / 1000, 500),
+        createMockBlock(new Date("2025-02-06T08:00:00").getTime() / 1000, 500),
+        createMockBlock(new Date("2025-02-06T09:00:00").getTime() / 1000, 500),
+        createMockBlock(new Date("2025-02-06T10:00:00").getTime() / 1000, 500),
+
+        createMockBlock(new Date("2025-02-07T04:00:00").getTime() / 1000, 1),
+      ];
+
+      setGMTTimezone("GMT-0");
+      const { result } = renderHook(() => useBlocksStats(mockBlocks));
+      expect(result.current.maxBlocksInDay).toBe(5);
+      expect(result.current.maxBlocksInDayDateString).toBe("2025-02-06");
+      expect(result.current.maxRewardsInDay).toBe(4000);
+      expect(result.current.maxRewardsInDayDateString).toBe("2025-02-04");
+
+      setGMTTimezone("GMT-5");
+      const { result: result2 } = renderHook(() => useBlocksStats(mockBlocks));
+      expect(result2.current.maxBlocksInDay).toBe(6);
+      expect(result2.current.maxBlocksInDayDateString).toBe("2025-02-06");
+      expect(result2.current.maxRewardsInDayDateString).toBe("2025-02-04");
+      expect(result2.current.maxRewardsInDay).toBe(4501);
+
+      setGMTTimezone("GMT+5");
+      const { result: result3 } = renderHook(() => useBlocksStats(mockBlocks));
+      expect(result3.current.maxRewardsInDay).toBe(4502);
+      expect(result3.current.maxRewardsInDayDateString).toBe("2025-02-04");
+      expect(result3.current.maxBlocksInDay).toBe(6);
+      expect(result3.current.maxBlocksInDayDateString).toBe("2025-02-06");
     });
   });
 
@@ -176,8 +221,8 @@ describe("useBlocksStats", () => {
 
       // In UTC: 2 on Jan 10, 3 on Jan 11, 2 on Jan 12 (2-3-2)
       expect(resultGMT.current.maxBlocksInDay).toBe(3);
-      expect(resultGMT.current.maxBlocksDay).toMatch(/2025-01-11/);
-      expect(resultGMT.current.maxBlocksRewards).toBe(3000); // 1000 * 3
+      expect(resultGMT.current.maxBlocksInDayDateString).toMatch(/2025-01-11/);
+      expect(resultGMT.current.maxRewardsInDay).toBe(3000); // 1000 * 3
 
       // Test GMT-6 (US Central)
       // In GMT-6, blocks shift earlier:
@@ -195,8 +240,10 @@ describe("useBlocksStats", () => {
 
       // In GMT-6: 3 on Jan 10, 2 on Jan 11, 2 on Jan 12 (3-2-2)
       expect(resultGMTMinus6.current.maxBlocksInDay).toBe(3);
-      expect(resultGMTMinus6.current.maxBlocksDay).toMatch(/2025-01-10/);
-      expect(resultGMTMinus6.current.maxBlocksRewards).toBe(3000); // 1000 * 3
+      expect(resultGMTMinus6.current.maxBlocksInDayDateString).toMatch(
+        /2025-01-10/,
+      );
+      expect(resultGMTMinus6.current.maxRewardsInDay).toBe(3000); // 1000 * 3
 
       // Test GMT+6 (e.g., Bangladesh)
       // In GMT+6, blocks shift later:
@@ -215,8 +262,10 @@ describe("useBlocksStats", () => {
       // In GMT+6: 0 on Jan 10, 2 on Jan 11, 2 on Jan 12, 3 on Jan 13 (0-2-2-3)
       // But considering only our 3-day window: 2 on Jan 11, 2 on Jan 12, 3 on Jan 13 (2-2-3)
       expect(resultGMTPlus6.current.maxBlocksInDay).toBe(3);
-      expect(resultGMTPlus6.current.maxBlocksDay).toMatch(/2025-01-12/);
-      expect(resultGMTPlus6.current.maxBlocksRewards).toBe(3000); // 1000 * 3
+      expect(resultGMTPlus6.current.maxBlocksInDayDateString).toMatch(
+        /2025-01-12/,
+      );
+      expect(resultGMTPlus6.current.maxRewardsInDay).toBe(3000); // 1000 * 3
     });
   });
 

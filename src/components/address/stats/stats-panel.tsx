@@ -82,7 +82,9 @@ function TotalsPanel({
                   <TooltipTrigger>
                     <NumberDisplay value={stats.maxBlocksInDay} />
                   </TooltipTrigger>
-                  <TooltipContent>{stats.maxBlocksDay}</TooltipContent>
+                  <TooltipContent>
+                    {stats.maxBlocksInDayDateString}
+                  </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             }
@@ -95,10 +97,12 @@ function TotalsPanel({
                 <Tooltip>
                   <TooltipTrigger>
                     <AlgoAmountDisplay
-                      microAlgoAmount={stats.maxBlocksRewards}
+                      microAlgoAmount={stats.maxRewardsInDay}
                     />
                   </TooltipTrigger>
-                  <TooltipContent>{stats.maxBlocksDay}</TooltipContent>
+                  <TooltipContent>
+                    {stats.maxRewardsInDayDateString}
+                  </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             }
