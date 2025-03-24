@@ -1,15 +1,9 @@
-export default function AlgorandLogo({
-  size,
-  className,
-}: {
-  size: number;
-  className?: string;
-}) {
+export default function AlgorandLogo({ className }: { className?: string }) {
   return (
     <svg
-      width={size}
+      width="0.75em"
+      height="0.75em"
       className={className}
-      height={size}
       viewBox={`0 0 240 240`}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

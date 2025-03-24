@@ -114,10 +114,7 @@ export default function SearchBar({
             )}
           />
 
-          <AlgorandLogo
-            size={12}
-            className="pointer-events-none col-start-1 row-start-1 ml-3 size-5 self-center text-gray-400 sm:size-4 dark:text-gray-500"
-          />
+          <AlgorandLogo className="pointer-events-none col-start-1 row-start-1 ml-3 size-5 self-center text-gray-400 sm:size-4 dark:text-gray-500" />
         </div>
 
         <button

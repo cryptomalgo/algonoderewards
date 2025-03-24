@@ -68,7 +68,7 @@ export const TooltipContent = (
       {...props}
       className={cn(
         props.className,
-        "bg-tooltip text-tooltip-foreground w-auto",
+        "bg-tooltip text-tooltip-foreground border-border w-auto max-w-[200px] rounded-md border p-4 shadow-md",
       )}
     />
   ) : (

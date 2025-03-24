@@ -200,7 +200,6 @@ const DayView: React.FC<{
               <AlgoAmountDisplay
                 showAnimation={false}
                 microAlgoAmount={day.totalAmount}
-                iconSize={10}
               />
             </div>
           </TooltipContent>

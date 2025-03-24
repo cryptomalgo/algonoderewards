@@ -136,10 +136,7 @@ export default function SearchBar() {
               } placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:pl-9 sm:text-lg/6 dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500`}
             />
 
-            <AlgorandLogo
-              size={12}
-              className="pointer-events-none col-start-1 row-start-1 ml-3 size-5 self-center text-gray-400 sm:size-4 dark:text-gray-500"
-            />
+            <AlgorandLogo className="pointer-events-none col-start-1 row-start-1 ml-3 size-5 self-center text-gray-400 sm:size-4 dark:text-gray-500" />
           </div>
 
           <button

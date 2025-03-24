@@ -29,7 +29,7 @@ export default function NumberDisplay({
       duration,
       ease: "easeOut",
       onUpdate: (latest) => {
-        setDisplayValue(Math.round(latest));
+        setDisplayValue(Math.round(latest * 1000) / 1000);
       },
     });
 

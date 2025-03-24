@@ -6,19 +6,17 @@ import { useEffect, useState } from "react";
 export default function AlgoAmountDisplay({
   microAlgoAmount,
   className,
-  iconSize = 12,
   showAnimation = true,
 }: {
   microAlgoAmount: bigint | number;
   className?: string;
-  iconSize?: number;
   showAnimation?: boolean;
 }) {
   // Ensure microAlgoAmount is a BigInt
   const algoAmount = new AlgoAmount({
     microAlgos:
       typeof microAlgoAmount === "number"
-        ? BigInt(microAlgoAmount)
+        ? BigInt(Math.round(microAlgoAmount))
         : microAlgoAmount,
   });
 
@@ -30,7 +28,7 @@ export default function AlgoAmountDisplay({
 
     if (!showAnimation) {
       // Skip animation if showAnimation is false
-      setDisplayValue(algoValue.toFixed(3));
+      setDisplayValue(formatNumber(algoValue));
       return;
     }
 
@@ -38,12 +36,20 @@ export default function AlgoAmountDisplay({
       duration: 0.5,
       ease: "easeOut",
       onUpdate: (latest) => {
-        setDisplayValue(latest.toFixed(3));
+        setDisplayValue(formatNumber(latest));
       },
     });
 
     return controls.stop;
   }, [algoAmount.algos, showAnimation, value]);
+
+  // Format number with commas for thousands and fixed 3 decimal places
+  function formatNumber(num: number): string {
+    return new Intl.NumberFormat("en-US", {
+      minimumFractionDigits: 3,
+      maximumFractionDigits: 3,
+    }).format(num);
+  }
 
   return (
     <span className={`items-center ${className} inline-flex`}>
@@ -55,7 +61,7 @@ export default function AlgoAmountDisplay({
       >
         {displayValue}
       </motion.span>
-      <AlgorandLogo className="ml-0.5" size={iconSize} />
+      <AlgorandLogo className="ml-0.5" />
     </span>
   );
 }

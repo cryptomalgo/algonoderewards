@@ -38,7 +38,7 @@ const MonthView: React.FC<{
         <span>
           <NumberDisplay value={totalRewards} /> blocks
         </span>
-        <AlgoAmountDisplay microAlgoAmount={totalAmount} iconSize={10} />
+        <AlgoAmountDisplay microAlgoAmount={totalAmount} />
       </div>
       <div className="mt-6 grid grid-cols-7 text-xs/6 text-gray-500 dark:text-gray-400">
         <div>M</div>

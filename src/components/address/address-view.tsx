@@ -5,7 +5,7 @@ import { Error } from "@/components/error";
 import Heatmap from "@/components/heatmap/heatmap";
 import AddressBreadcrumb from "./address-breadcrumb";
 import AddressFilters from "./address-filters";
-import StatsPanel from "./stats-panel";
+import StatsPanel from "./stats/stats-panel";
 import AddAddress from "./add-address";
 import { useNavigate } from "@tanstack/react-router";
 import CopyButton from "@/components/copy-to-clipboard.tsx";
@@ -102,7 +102,7 @@ export default function AddressView({ addresses }: { addresses: string }) {
             )}
           </div>
 
-          <div className="rounded-lg px-5 py-6 sm:px-6">
+          <div className="rounded-lg px-2 py-6 sm:px-3 md:px-4 lg:px-5">
             <StatsPanel filteredBlocks={filteredBlocks} loading={loading} />
             <Heatmap blocks={filteredBlocks} />
             <CumulativeRewardsChart blocks={filteredBlocks} />
