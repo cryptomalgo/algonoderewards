@@ -9,7 +9,7 @@ import { routeTree } from "./routeTree.gen";
 import { ThemeProvider } from "@/components/theme-provider.tsx";
 
 scan({
-  enabled: false,
+  enabled: true,
 });
 
 // Create a new router instance

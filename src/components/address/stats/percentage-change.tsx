@@ -11,10 +11,12 @@ export default function PercentageChange({
   percentage,
   direction,
   previousValueDisplay,
+  className,
 }: {
   percentage: number;
   direction: "up" | "down" | "none";
   previousValueDisplay: React.ReactNode;
+  className?: string;
 }) {
   if (direction === "none") return null;
 
@@ -22,7 +24,7 @@ export default function PercentageChange({
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger className={"ml-1 flex items-center"}>
+        <TooltipTrigger className={cn("ml-1 flex", className)}>
           <span
             className={cn(
               "inline-flex items-center text-sm font-semibold",

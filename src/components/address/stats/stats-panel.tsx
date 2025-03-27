@@ -11,6 +11,7 @@ import { BlockStats, useBlocksStats } from "@/hooks/useBlocksStats";
 import StatBox from "./stat-box";
 import PercentageChange from "./percentage-change";
 
+const AVERAGE_DAY_IN_MONTH = Number((365 / 12).toFixed(2)); // 30.42
 function PreviousRewardTooltip({
   total,
   average,
@@ -150,10 +151,10 @@ function RewardsPerDayPanel({
 }) {
   return (
     <div className="mb-1 w-full rounded-lg bg-indigo-500 shadow-lg dark:bg-white/6">
-      <div className="mx-auto max-w-7xl rounded-lg">
-        <div className="grid grid-cols-1 gap-px rounded-lg bg-white/5 md:grid-cols-3">
+      <div className="mx-auto h-full max-w-7xl rounded-lg">
+        <div className="grid h-full grid-cols-1 gap-px rounded-lg bg-white/5 md:grid-cols-4">
           <StatBox
-            title="Average rewards per day (all time)"
+            title="Average rewards per day"
             loading={loading}
             content={
               <TooltipProvider>
@@ -169,9 +170,40 @@ function RewardsPerDayPanel({
                         <>
                           <AlgoAmountDisplay
                             showAnimation={false}
+                            showUsdValue={false}
                             microAlgoAmount={stats.allTime.totalRewards}
-                          />{" "}
-                          {`rewarded in ${stats.allTime.totalDays} days (from ${stats.allTime.startDate.toLocaleDateString()} to ${stats.allTime.endDate.toLocaleDateString()})`}
+                          />
+                          {` rewarded in ${stats.allTime.totalDays} days (from ${stats.allTime.startDate.toLocaleDateString()} to ${stats.allTime.endDate.toLocaleDateString()})`}
+                        </>
+                      )}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            }
+          />{" "}
+          <StatBox
+            title="Average rewards per month"
+            loading={loading}
+            content={
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <AlgoAmountDisplay
+                      microAlgoAmount={
+                        stats.allTime.avgRewardsPerDay * AVERAGE_DAY_IN_MONTH
+                      }
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {stats.allTime.startDate !== null &&
+                      stats.allTime.endDate && (
+                        <>
+                          <AlgoAmountDisplay
+                            showAnimation={false}
+                            showUsdValue={false}
+                            microAlgoAmount={stats.allTime.avgRewardsPerDay}
+                          />
+                          {` by day x ${AVERAGE_DAY_IN_MONTH} days in a month (365/12)`}
                         </>
                       )}
                   </TooltipContent>
@@ -179,7 +211,6 @@ function RewardsPerDayPanel({
               </TooltipProvider>
             }
           />
-
           <StatBox
             title="Average rewards per day (last 30D)"
             loading={loading}
@@ -189,13 +220,13 @@ function RewardsPerDayPanel({
                   <Tooltip>
                     <TooltipTrigger>
                       <AlgoAmountDisplay
-                        showAnimation={false}
                         microAlgoAmount={stats.last30Days.avgRewardsPerDay}
                       />
                     </TooltipTrigger>
                     <TooltipContent>
                       <AlgoAmountDisplay
                         showAnimation={false}
+                        showUsdValue={false}
                         microAlgoAmount={stats.last30Days.totalRewards}
                       />{" "}
                       {`rewarded from ${stats.last30Days.startDate.toLocaleDateString()} to ${stats.last30Days.endDate.toLocaleDateString()}`}
@@ -203,6 +234,7 @@ function RewardsPerDayPanel({
                   </Tooltip>
                 </TooltipProvider>
                 <PercentageChange
+                  className={"mt-1 self-start"}
                   percentage={stats.last30Days.change.rewards.percentage}
                   direction={stats.last30Days.change.rewards.direction}
                   previousValueDisplay={
@@ -231,6 +263,7 @@ function RewardsPerDayPanel({
                     </TooltipTrigger>
                     <TooltipContent>
                       <AlgoAmountDisplay
+                        showUsdValue={false}
                         showAnimation={false}
                         microAlgoAmount={stats.last7Days.totalRewards}
                       />{" "}
@@ -240,6 +273,7 @@ function RewardsPerDayPanel({
                 </TooltipProvider>
 
                 <PercentageChange
+                  className={"mt-1 self-start"}
                   percentage={stats.last7Days.change.rewards.percentage}
                   direction={stats.last7Days.change.rewards.direction}
                   previousValueDisplay={
@@ -269,10 +303,10 @@ function BlocksPerDayPanel({
 }) {
   return (
     <div className="mb-1 w-full rounded-lg bg-indigo-500 shadow-lg dark:bg-white/6">
-      <div className="mx-auto max-w-7xl rounded-lg">
-        <div className="grid grid-cols-1 gap-px rounded-lg bg-white/5 md:grid-cols-3">
+      <div className="mx-auto h-full max-w-7xl rounded-lg">
+        <div className="grid h-full grid-cols-1 gap-px rounded-lg bg-white/5 md:grid-cols-4">
           <StatBox
-            title="Average blocks per day (all time)"
+            title="Average blocks per day"
             loading={loading}
             content={
               <TooltipProvider>
@@ -284,6 +318,31 @@ function BlocksPerDayPanel({
                     {stats.allTime.startDate !== null &&
                       stats.allTime.endDate &&
                       `${stats.allTime.totalBlocks} blocks rewarded in ${stats.allTime.totalDays} days (from ${stats.allTime.startDate.toLocaleDateString()} to ${stats.allTime.endDate.toLocaleDateString()})`}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            }
+          />
+          <StatBox
+            title="Average blocks per month"
+            loading={loading}
+            content={
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <NumberDisplay
+                      value={
+                        stats.allTime.avgBlocksPerDay * AVERAGE_DAY_IN_MONTH
+                      }
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {stats.allTime.startDate !== null &&
+                      stats.allTime.endDate && (
+                        <>
+                          {`${stats.allTime.avgBlocksPerDay.toFixed(3)} blocks per day x ${AVERAGE_DAY_IN_MONTH} days in a month (365/12)`}
+                        </>
+                      )}
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>

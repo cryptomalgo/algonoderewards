@@ -2,15 +2,18 @@ import { AlgoAmount } from "@algorandfoundation/algokit-utils/types/amount";
 import AlgorandLogo from "@/components/algorand-logo.tsx";
 import { animate, motion, useMotionValue } from "motion/react";
 import { useEffect, useState } from "react";
+import { useAlgoPrice } from "@/hooks/useAlgoPrice";
 
 export default function AlgoAmountDisplay({
   microAlgoAmount,
   className,
   showAnimation = true,
+  showUsdValue = true,
 }: {
   microAlgoAmount: bigint | number;
   className?: string;
   showAnimation?: boolean;
+  showUsdValue?: boolean;
 }) {
   // Ensure microAlgoAmount is a BigInt
   const algoAmount = new AlgoAmount({
@@ -22,6 +25,8 @@ export default function AlgoAmountDisplay({
 
   const value = useMotionValue(0);
   const [displayValue, setDisplayValue] = useState("0.000");
+
+  const { price: algoPrice } = useAlgoPrice();
 
   useEffect(() => {
     const algoValue = Number(algoAmount.algos);
@@ -51,17 +56,44 @@ export default function AlgoAmountDisplay({
     }).format(num);
   }
 
+  // Format USD value
+  function formatUsdValue(algoValue: number, price: number): string {
+    const usdValue = algoValue * price;
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(usdValue);
+  }
+
+  const algoValue = Number(algoAmount.algos);
+  const usdValue =
+    algoPrice && showUsdValue ? formatUsdValue(algoValue, algoPrice) : null;
+
   return (
-    <span className={`items-center ${className} inline-flex`}>
-      <motion.span
-        key={String(microAlgoAmount)} // Force re-render when value changes
-        initial={{ opacity: 0.6, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.3 }}
-      >
-        {displayValue}
-      </motion.span>
-      <AlgorandLogo className="ml-0.5" />
+    <span className={`inline-flex flex-col ${className}`}>
+      <span className="inline-flex items-center">
+        <motion.span
+          key={String(microAlgoAmount)}
+          initial={{ opacity: 0.6, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          {displayValue}
+        </motion.span>
+        <AlgorandLogo className="ml-0.5" />
+      </span>
+      {showUsdValue && usdValue && (
+        <motion.span
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.6 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="w-fit text-xs"
+        >
+          {usdValue}
+        </motion.span>
+      )}
     </span>
   );
 }

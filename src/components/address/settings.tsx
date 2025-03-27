@@ -14,9 +14,12 @@ import { Block } from "algosdk/client/indexer";
 import CsvExportDialog from "@/components/address/csv-export-dialog.tsx";
 import { DownloadIcon } from "lucide-react";
 import { toast } from "sonner";
+import { useAlgoPrice } from "@/hooks/useAlgoPrice";
+import AlgorandLogo from "@/components/algorand-logo.tsx";
 
 export default function Settings({ blocks }: { blocks: Block[] }) {
   const { themeSetting, setThemeSetting } = useTheme();
+  const { price: algoPrice, loading: priceLoading } = useAlgoPrice();
 
   return (
     <DropdownMenu>
@@ -143,6 +146,22 @@ export default function Settings({ blocks }: { blocks: Block[] }) {
             </ToggleGroupItem>
           </ToggleGroup>
         </div>
+
+        {!priceLoading && algoPrice && (
+          <>
+            <DropdownMenuSeparator className="dark:bg-gray-700" />
+            <div className="flex items-center gap-1 px-4 py-2 text-sm text-gray-600 dark:text-gray-300">
+              <div className="flex items-center">
+                <span className="mr-1">1</span>
+                <AlgorandLogo className="h-3.5 w-3.5" />
+                <span className="ml-1">=</span>
+              </div>
+              <span className="font-medium">
+                ${algoPrice ? algoPrice.toFixed(4) : "---"}
+              </span>
+            </div>
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );
