@@ -71,8 +71,8 @@ describe("useBlocksStats", () => {
       expect(result.current.maxBlocksInDay).toBe(0);
       expect(result.current.maxBlocksInDayDateString).toBe("N/A");
       expect(result.current.maxRewardsInDay).toBe(0);
-      expect(result.current.allTimeAvgRewardsPerDay).toBe(0);
-      expect(result.current.allTimeAvgBlocksPerDay).toBe(0);
+      expect(result.current.allTime.avgRewardsPerDay).toBe(0);
+      expect(result.current.allTime.avgBlocksPerDay).toBe(0);
     });
   });
 
@@ -306,16 +306,16 @@ describe("useBlocksStats", () => {
       setUTCTimezone();
       const { result } = renderHook(() => useBlocksStats(mockBlocks));
       expect(result.current.totalRewards).toBe(6000);
-      expect(result.current.allTimeAvgRewardsPerDay).toBe(1667); //5000/3
-      expect(result.current.allTimeAvgBlocksPerDay).toBe(5 / 3);
+      expect(result.current.allTime.avgRewardsPerDay).toBe(1667); //5000/3
+      expect(result.current.allTime.avgBlocksPerDay).toBe(5 / 3);
 
       MockDate.set("2025-07-14T12:00:00Z");
       setUTCTimezone();
       const { result: result2 } = renderHook(() => useBlocksStats(mockBlocks));
 
       expect(result2.current.totalRewards).toBe(6000);
-      expect(result2.current.allTimeAvgRewardsPerDay).toBe(6000 / 4);
-      expect(result2.current.allTimeAvgBlocksPerDay).toBe(6 / 4);
+      expect(result2.current.allTime.avgRewardsPerDay).toBe(6000 / 4);
+      expect(result2.current.allTime.avgBlocksPerDay).toBe(6 / 4);
     });
   });
 

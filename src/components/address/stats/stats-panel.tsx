@@ -156,9 +156,27 @@ function RewardsPerDayPanel({
             title="Average rewards per day (all time)"
             loading={loading}
             content={
-              <AlgoAmountDisplay
-                microAlgoAmount={stats.allTimeAvgRewardsPerDay}
-              />
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <AlgoAmountDisplay
+                      microAlgoAmount={stats.allTime.avgRewardsPerDay}
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {stats.allTime.startDate !== null &&
+                      stats.allTime.endDate && (
+                        <>
+                          <AlgoAmountDisplay
+                            showAnimation={false}
+                            microAlgoAmount={stats.allTime.totalRewards}
+                          />{" "}
+                          {`rewarded in ${stats.allTime.totalDays} days (from ${stats.allTime.startDate.toLocaleDateString()} to ${stats.allTime.endDate.toLocaleDateString()})`}
+                        </>
+                      )}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             }
           />
 
@@ -256,7 +274,20 @@ function BlocksPerDayPanel({
           <StatBox
             title="Average blocks per day (all time)"
             loading={loading}
-            content={<NumberDisplay value={stats.allTimeAvgBlocksPerDay} />}
+            content={
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <NumberDisplay value={stats.allTime.avgBlocksPerDay} />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {stats.allTime.startDate !== null &&
+                      stats.allTime.endDate &&
+                      `${stats.allTime.totalBlocks} blocks rewarded in ${stats.allTime.totalDays} days (from ${stats.allTime.startDate.toLocaleDateString()} to ${stats.allTime.endDate.toLocaleDateString()})`}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            }
           />
 
           <StatBox

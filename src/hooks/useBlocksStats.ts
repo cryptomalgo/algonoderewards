@@ -29,11 +29,18 @@ export interface BlockStats {
   maxRewardsInDay: number;
   maxRewardsInDayDateString: string;
 
-  allTimeAvgRewardsPerDay: number;
-  allTimeAvgBlocksPerDay: number;
-
   last7DaysAvgRewardsPerDay: number;
   last30DaysAvgRewardsPerDay: number;
+
+  allTime: {
+    totalDays: number;
+    totalBlocks: number;
+    totalRewards: number;
+    startDate: Date | null;
+    endDate: Date | null;
+    avgRewardsPerDay: number;
+    avgBlocksPerDay: number;
+  };
 
   previous7Days: PeriodStats;
   last7Days: PeriodStats & {
@@ -188,6 +195,10 @@ export function useBlocksStats(filteredBlocks: BlockData[]): BlockStats {
       // If no blocks, return zeros
       if (filteredBlocks.length === 0) {
         return {
+          startDate: null,
+          endDate: null,
+          totalRewards: 0,
+          totalBlocks: 0,
           avgRewardsPerDay: 0,
           avgBlocksPerDay: 0,
           totalDays: 0,
@@ -235,6 +246,10 @@ export function useBlocksStats(filteredBlocks: BlockData[]): BlockStats {
       );
 
       return {
+        totalRewards: periodRewards,
+        totalBlocks: blocksInPeriod.length,
+        startDate,
+        endDate,
         avgRewardsPerDay: Math.round(periodRewards / totalDays),
         avgBlocksPerDay: blocksInPeriod.length / totalDays,
         totalDays,
@@ -372,9 +387,17 @@ export function useBlocksStats(filteredBlocks: BlockData[]): BlockStats {
 
       maxRewardsInDay: Math.round(maxRewardsInDay),
       maxRewardsInDayDateString: formattedMaxRewardsDate,
-      // Average rewards stats
-      allTimeAvgRewardsPerDay: Math.round(allTimeStats.avgRewardsPerDay),
-      allTimeAvgBlocksPerDay: allTimeStats.avgBlocksPerDay,
+
+      allTime: {
+        avgRewardsPerDay: Math.round(allTimeStats.avgRewardsPerDay),
+        avgBlocksPerDay: allTimeStats.avgBlocksPerDay,
+        totalDays: allTimeStats.totalDays,
+        totalBlocks: allTimeStats.totalBlocks,
+        totalRewards: allTimeStats.totalRewards,
+        startDate: allTimeStats.startDate,
+        endDate: allTimeStats.endDate,
+      },
+
       last7DaysAvgRewardsPerDay: Math.round(last7DaysStats.avgRewardsPerDay),
       last30DaysAvgRewardsPerDay: Math.round(last30DaysStats.avgRewardsPerDay),
 
