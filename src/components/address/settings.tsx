@@ -156,9 +156,7 @@ export default function Settings({ blocks }: { blocks: Block[] }) {
                 <AlgorandLogo className="h-3.5 w-3.5" />
                 <span className="ml-1">=</span>
               </div>
-              <span className="font-medium">
-                ${algoPrice ? algoPrice.toFixed(4) : "---"}
-              </span>
+              <span className="font-medium">{algoPrice}</span>
             </div>
           </>
         )}
