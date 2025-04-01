@@ -28,7 +28,7 @@ export const Route = createRootRoute({
                   src="/logo.png"
                   className="h-8 w-auto"
                 />
-                <h1 className={"text-lg"}>Solana Node Rewards</h1>
+                <h1 className={"text-lg"}>Algo Node Rewards</h1>
               </a>
             </div>
           </div>

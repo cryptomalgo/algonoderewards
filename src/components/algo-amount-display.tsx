@@ -1,5 +1,5 @@
 import { AlgoAmount } from "@algorandfoundation/algokit-utils/types/amount";
-import SolanaLogo from "@/components/solana-logo";
+import AlgorandLogo from "@/components/algorand-logo.tsx";
 import { animate, motion, useMotionValue } from "motion/react";
 import { useEffect, useState } from "react";
 import { useAlgoPrice } from "@/hooks/useAlgoPrice";
@@ -82,7 +82,7 @@ export default function AlgoAmountDisplay({
         >
           {displayValue}
         </motion.span>
-        <SolanaLogo className="ml-0.5" />
+        <AlgorandLogo className="ml-0.5" />
       </span>
       {showUsdValue && usdValue && (
         <motion.span
