@@ -1,50 +1,63 @@
-# React + TypeScript + Vite
+# AlgoNodeRewards
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[![CI](https://github.com/cryptomalgo/algonoderewards/actions/workflows/ci.yml/badge.svg)](https://github.com/cryptomalgo/algonoderewards/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-Currently, two official plugins are available:
+[![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+[![Follow on X](https://img.shields.io/badge/Follow%20@cryptomalgo-000000?style=flat&logo=x&logoColor=white)](https://x.com/cryptomalgo)
 
-## Expanding the ESLint configuration
+A React application to track and visualize the rewards from running an Algorand node, using [Nodely](https://nodely.io/) API.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Website
 
-- Configure the top-level `parserOptions` property like this:
+You can access the website at [algonoderewards.com](algonoderewards.com)
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
+![app screenshot](screenshot.png)
+
+## Features
+
+- Rewards statistics
+  Total rewards
+
+  - Total blocks
+  - Max blocks/rewards in a day
+  - Min/max reward
+  - Average rewards per day/month total/last 30D/last 7D
+  - Average blocks per day/month total/last 30D/last 7D
+  - Monthly heatmap statistics
+  - Rewards History chart
+  - Blocks History chart
+  - Block Distribution chart by Day and Hour
+
+- Responsive design for both desktop and mobile
+- Dark/light/system theme modes
+- Real-time exchange rate in USD (from Binance)
+- CSV export
+
+## Development Setup
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Lint & test
+npm run ci
+
+# Build for production
+npm run build
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Deploy
 
-```js
-// eslint.config.js
-import react from "eslint-plugin-react";
+The project is automatically deployed to [![Deployed on Cloudflare Pages](https://img.shields.io/badge/Cloudflare%20Pages-F38020?style=flat&logo=cloudflare&logoColor=white)](https://pages.cloudflare.com/)
+on each push to the main branch. The production website is available at [algonoderewards.com](https://algonoderewards.com).
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: "18.3" } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs["jsx-runtime"].rules,
-  },
-});
-```
+## License
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)

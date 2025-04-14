@@ -109,8 +109,6 @@ export function useBlocksStats(filteredBlocks: BlockData[]): BlockStats {
       }
     });
 
-    console.log({ maxBlocksInDay, maxBlocksDay });
-
     // Format the max blocks day for display
     const formattedMaxBlocksDate = maxBlocksDay ? maxBlocksDay : "N/A";
     const formattedMaxRewardsDate = maxRewardsDay ? maxRewardsDay : "N/A";

@@ -1,8 +1,25 @@
 {
-  "name": "algorand-rewards-stats",
+  "name": "algonoderewards",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "license": "MIT",
+  "author": {
+    "name": "Cryptomalgo",
+    "url": "https://github.com/cryptomalgo",
+    "social": {
+      "github": "https://github.com/cryptomalgo",
+      "x": "https://x.com/cryptomalgo"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cryptomalgo/algonoderewards"
+  },
+  "homepage": "https://algonoderewards.com",
+  "bugs": {
+    "url": "https://github.com/cryptomalgo/algonoderewards/issues"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -76,5 +93,16 @@
     "typescript-eslint": "^8.28.0",
     "vite": "^6.2.3",
     "vitest": "^3.0.9"
-  }
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=10.0.0"
+  },
+  "keywords": [
+    "algorand",
+    "algorand node monitoring",
+    "algorand node rewards",
+    "algorand node dashboard",
+    "blockchain"
+  ]
 }
