@@ -72,6 +72,7 @@ const DayView: React.FC<{
 
   const dayDate = new Date(day.date);
   const isCurrentMonth = dayDate.getMonth() === month;
+  const isInTheFuture = dayDate > new Date();
 
   const colorData = isCurrentMonth
     ? getDayColorShade(day.count, maxRewardCount, isDarkMode)
@@ -190,7 +191,7 @@ const DayView: React.FC<{
             </time>
           </motion.span>
         </TooltipTrigger>
-        {isCurrentMonth && (
+        {isCurrentMonth && !isInTheFuture && (
           <TooltipContent className="flex flex-col gap-1 p-2">
             <p className="text-sm font-semibold">{formattedDate}</p>
             <div className={"flex flex-col gap-1"}>
