@@ -5,7 +5,6 @@ import { useQueries, useQuery } from "@tanstack/react-query";
 const getAccount = (address: string) => {
   return indexerClient
     .lookupAccountByID(address)
-    .includeAll()
     .do()
     .then((res) => res.account);
 };
