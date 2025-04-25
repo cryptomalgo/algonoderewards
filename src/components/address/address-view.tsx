@@ -13,6 +13,7 @@ import { displayAlgoAddress } from "@/lib/utils.ts";
 import CumulativeRewardsChart from "@/components/address/charts/cumulative-rewards-chart";
 import CumulativeBlocksChart from "@/components/address/charts/cumulative-blocks-chart";
 import RewardByDayHourChart from "@/components/address/charts/reward-by-day-hour-chart.tsx";
+import AccountStatus from "./status";
 
 export default function AddressView({ addresses }: { addresses: string }) {
   const navigate = useNavigate();
@@ -90,20 +91,27 @@ export default function AddressView({ addresses }: { addresses: string }) {
               setSelectedAddresses={setSelectedAddresses}
             />
             {resolvedAddresses.length === 1 && !showAddAddress && (
-              <div className={"flex flex-wrap items-center gap-2"}>
-                <h2 className="block text-xl/7 text-gray-700 sm:hidden sm:truncate sm:text-lg sm:tracking-tight">
-                  {displayAlgoAddress(resolvedAddresses[0].address)}
-                </h2>
-                <h2 className="hidden text-xl/7 text-gray-700 sm:block sm:truncate sm:text-lg sm:tracking-tight">
-                  {resolvedAddresses[0].address}
-                </h2>
-                <CopyButton address={resolvedAddresses[0].address} />
+              <div>
+                <div className={"flex flex-wrap items-center gap-2"}>
+                  <h2 className="block text-xl/7 text-gray-700 sm:hidden sm:truncate sm:text-lg sm:tracking-tight">
+                    {displayAlgoAddress(resolvedAddresses[0].address)}
+                  </h2>
+                  <h2 className="hidden text-xl/7 text-gray-700 sm:block sm:truncate sm:text-lg sm:tracking-tight">
+                    {resolvedAddresses[0].address}
+                  </h2>
+                  <CopyButton address={resolvedAddresses[0].address} />
+                </div>
+                <AccountStatus address={resolvedAddresses[0]} />
               </div>
             )}
           </div>
 
           <div className="rounded-lg px-2 py-6 sm:px-3 md:px-4 lg:px-5">
-            <StatsPanel filteredBlocks={filteredBlocks} loading={loading} />
+            <StatsPanel
+              resolvedAddresses={resolvedAddresses}
+              filteredBlocks={filteredBlocks}
+              loading={loading}
+            />
             <Heatmap blocks={filteredBlocks} />
             <CumulativeRewardsChart blocks={filteredBlocks} />
             <CumulativeBlocksChart blocks={filteredBlocks} />

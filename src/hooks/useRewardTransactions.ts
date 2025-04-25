@@ -1,4 +1,4 @@
-import { fetchTransactionsWithRewards } from "@/fetchTransactionsWithRewards.ts";
+import { getAccountsBlockHeaders } from "@/queries/getAccountsBlockHeaders";
 import * as React from "react";
 import { Block } from "algosdk/client/indexer";
 import { ResolvedAddress } from "@/components/heatmap/types.ts";
@@ -16,7 +16,7 @@ export const useBlocks = (addresses: ResolvedAddress[]) => {
     const loadData = async () => {
       try {
         setLoading(true);
-        const result = await fetchTransactionsWithRewards(addresses);
+        const result = await getAccountsBlockHeaders(addresses);
         setData(result);
       } catch (err) {
         console.error(err);

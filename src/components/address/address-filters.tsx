@@ -3,6 +3,8 @@ import { CheckIcon } from "lucide-react";
 import { displayAlgoAddress } from "@/lib/utils";
 import CopyButton from "@/components/copy-to-clipboard";
 import { ResolvedAddress } from "@/components/heatmap/types";
+import { useAccount } from "@/hooks/useAccounts";
+import AccountStatus from "./status";
 
 export default function AddressFilters({
   showFilters,
@@ -106,6 +108,8 @@ function AddressCheckbox({
   checked: boolean;
   onChange: (checked: boolean) => void;
 }) {
+  const { data: account } = useAccount(address);
+
   return (
     <div className="flex gap-2">
       <div className="flex h-6 shrink-0 items-center">
@@ -138,6 +142,7 @@ function AddressCheckbox({
         <p className="hidden items-center gap-2 text-gray-500 sm:flex dark:text-gray-400">
           {address.address} <CopyButton address={address.address} small />
         </p>
+        {account && <AccountStatus address={address} />}
       </div>
     </div>
   );

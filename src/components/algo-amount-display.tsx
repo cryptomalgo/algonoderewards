@@ -9,11 +9,13 @@ export default function AlgoAmountDisplay({
   className,
   showAnimation = true,
   showUsdValue = true,
+  hidden = false,
 }: {
   microAlgoAmount: bigint | number;
   className?: string;
   showAnimation?: boolean;
   showUsdValue?: boolean;
+  hidden?: boolean;
 }) {
   // Ensure microAlgoAmount is a BigInt
   const algoAmount = new AlgoAmount({
@@ -80,7 +82,7 @@ export default function AlgoAmountDisplay({
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3 }}
         >
-          {displayValue}
+          {hidden ? "*****" : displayValue}
         </motion.span>
         <AlgorandLogo className="ml-0.5" />
       </span>
@@ -91,7 +93,7 @@ export default function AlgoAmountDisplay({
           transition={{ duration: 0.5, delay: 0.2 }}
           className="w-fit text-xs"
         >
-          {usdValue}
+          {hidden ? "*****" : usdValue}
         </motion.span>
       )}
     </span>

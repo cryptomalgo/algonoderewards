@@ -19,9 +19,11 @@ You can access the website at [algonoderewards.com](algonoderewards.com)
 
 ## Features
 
+- Node status
 - Rewards statistics
-  Total rewards
 
+  - Estimated APY (Annual Percentage Yield)
+  - Total rewards
   - Total blocks
   - Max blocks/rewards in a day
   - Min/max reward
