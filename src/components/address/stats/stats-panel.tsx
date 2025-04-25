@@ -10,6 +10,9 @@ import {
 import { BlockStats, useBlocksStats } from "@/hooks/useBlocksStats";
 import StatBox from "./stat-box";
 import PercentageChange from "./percentage-change";
+import { ResolvedAddress } from "@/components/heatmap/types";
+import { useAccounts } from "@/hooks/useAccounts";
+import { calculateAPYAndProjection } from "@/lib/utils";
 
 const AVERAGE_DAY_IN_MONTH = Number((365 / 12).toFixed(2)); // 30.42
 function PreviousRewardTooltip({
@@ -50,6 +53,122 @@ function PreviousBlocksTooltip({
       {total} blocks proposed from {startDate.toLocaleDateString()} to{" "}
       {endDate.toLocaleDateString()}, so {average} per day in average
     </span>
+  );
+}
+
+function ApyDisplay({
+  totalRewardsOverPeriod,
+  amountStacked,
+  nbDays,
+}: {
+  totalRewardsOverPeriod: number;
+  amountStacked: number;
+  nbDays: number;
+}) {
+  const apy = calculateAPYAndProjection(
+    totalRewardsOverPeriod,
+    amountStacked,
+    nbDays,
+  );
+
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div className="flex flex-col">
+            <span className="flex gap-1">
+              <NumberDisplay animate value={apy.apy} />%
+            </span>
+            <AlgoAmountDisplay
+              className="text-sm"
+              showAnimation
+              microAlgoAmount={apy.projectedTotal}
+            />
+          </div>
+        </TooltipTrigger>
+        <TooltipContent>
+          <AlgoAmountDisplay
+            showAnimation={false}
+            showUsdValue={false}
+            microAlgoAmount={totalRewardsOverPeriod}
+          />
+          {` rewarded over ${nbDays} days with `}
+          <AlgoAmountDisplay
+            showAnimation={false}
+            showUsdValue={false}
+            microAlgoAmount={amountStacked}
+          />{" "}
+          stacked. <br />
+          APY is calculated as:{" "}
+          <span className={"dark:bg-accent bg-gray-700"}>
+            (rewards / algoStaked) * (365 / nbDays) * 100)
+          </span>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}
+
+function ApyPanel({
+  stats,
+  loading,
+  resolvedAddresses,
+}: {
+  stats: BlockStats;
+  loading: boolean;
+  resolvedAddresses: ResolvedAddress[];
+}) {
+  const { data, pending } = useAccounts(resolvedAddresses);
+
+  let totalAmount = 0n;
+  if (!pending && data && data.length > 0) {
+    for (const account of data) {
+      if (account && account.amount) {
+        totalAmount += BigInt(account.amount);
+      }
+    }
+  }
+
+  return (
+    <div className="mb-4 rounded-lg bg-indigo-500 shadow-lg dark:bg-white/6">
+      <div className="mx-auto max-w-7xl rounded-lg">
+        <div className="grid grid-cols-1 gap-px rounded-lg bg-white/5 sm:grid-cols-3">
+          <StatBox
+            title="Estimated APY"
+            loading={loading || pending}
+            content={
+              <ApyDisplay
+                totalRewardsOverPeriod={stats.allTime.totalRewards}
+                amountStacked={totalAmount ? Number(totalAmount) : 0}
+                nbDays={stats.allTime.totalDays}
+              />
+            }
+          />
+          <StatBox
+            title="Estimated APY (with last 30D perfs)"
+            loading={loading || pending}
+            content={
+              <ApyDisplay
+                totalRewardsOverPeriod={stats.last30Days.totalRewards}
+                amountStacked={totalAmount ? Number(totalAmount) : 0}
+                nbDays={30}
+              />
+            }
+          />
+          <StatBox
+            title="Estimated APY (with last 7D perfs)"
+            loading={loading || pending}
+            content={
+              <ApyDisplay
+                totalRewardsOverPeriod={stats.last7Days.totalRewards}
+                amountStacked={totalAmount ? Number(totalAmount) : 0}
+                nbDays={7}
+              />
+            }
+          />
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -418,14 +537,21 @@ function BlocksPerDayPanel({
 export default function StatsPanel({
   filteredBlocks,
   loading,
+  resolvedAddresses,
 }: {
   filteredBlocks: Block[];
   loading: boolean;
+  resolvedAddresses: ResolvedAddress[];
 }) {
   const stats = useBlocksStats(filteredBlocks);
 
   return (
     <div className="space-y-4">
+      <ApyPanel
+        stats={stats}
+        loading={loading}
+        resolvedAddresses={resolvedAddresses}
+      />
       <TotalsPanel stats={stats} loading={loading} />
       <div className={"flex justify-between gap-3 md:flex-col"}>
         <RewardsPerDayPanel stats={stats} loading={loading} />

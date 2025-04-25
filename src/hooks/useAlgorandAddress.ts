@@ -1,4 +1,4 @@
-import { resolveNFD } from "@/fetchTransactionsWithRewards.ts";
+import { resolveNFD } from "@/queries/getResolvedNFD";
 import * as React from "react";
 import { ResolvedAddress } from "@/components/heatmap/types.ts";
 
