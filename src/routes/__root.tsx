@@ -24,7 +24,12 @@ export const Route = createRootRoute({
         <div className="relative mr-auto flex h-16 justify-between">
           <div className="relative z-10 flex px-2 lg:px-0">
             <div className="flex items-center">
-              <a href={"/"} className={"flex items-center gap-2"}>
+              <a
+                href={"/"}
+                className={
+                  "text-foreground flex items-center gap-2 no-underline"
+                }
+              >
                 <img
                   alt="Algo Node Rewards"
                   src="/logo.png"

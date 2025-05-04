@@ -13,6 +13,7 @@ import {
   EyeOffIcon,
   HeartPulseIcon,
   KeyRoundIcon,
+  Loader,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import {
@@ -22,6 +23,11 @@ import {
   TooltipTrigger,
 } from "../ui/mobile-tooltip";
 import { useNavigate, useSearch } from "@tanstack/react-router";
+import { useAverageBlockTime } from "@/hooks/useAverageBlockTime";
+import { format, formatDistanceToNow } from "date-fns";
+import { useBlock } from "@/hooks/useBlock";
+import { ExplorerLink } from "../explorer-link";
+import React from "react";
 
 function BalanceBadge({ account }: { account: Account }) {
   const isBalanceOverThreshold =
@@ -58,7 +64,9 @@ function IncentiveEligibilityBadge({ account }: { account: Account }) {
 }
 
 function LastHeartbeatBadge({ account }: { account: Account }) {
-  if (account.lastHeartbeat === undefined) {
+  const { data: block } = useBlock(account.lastHeartbeat);
+
+  if (account.lastHeartbeat === undefined || block === undefined) {
     return <DotBadge className="text-md" color="red" label="No heartbeat" />;
   }
   return (
@@ -67,17 +75,43 @@ function LastHeartbeatBadge({ account }: { account: Account }) {
         <TooltipTrigger>
           <span className="text-md inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 font-medium text-gray-900 ring-1 ring-gray-200 ring-inset dark:text-white dark:ring-gray-800">
             <HeartPulseIcon className="size-4" /> Last heartbeat:{" "}
-            {`${Number(account.round) - account.lastHeartbeat} rounds ago`}
+            {formatDistanceToNow(new Date(block.timestamp * 1000), {
+              addSuffix: true,
+            })}
           </span>
         </TooltipTrigger>
-        <TooltipContent>Round {account.lastHeartbeat}</TooltipContent>
+        <TooltipContent>
+          {" "}
+          <ExplorerLink
+            className="text-indigo-300 underline hover:text-indigo-400"
+            type={"block"}
+            id={block.round.toString()}
+          >
+            Block #{block.round}
+          </ExplorerLink>{" "}
+          {format(new Date(block.timestamp * 1000), "PPpp")}
+        </TooltipContent>
       </Tooltip>
     </TooltipProvider>
   );
 }
 
 function LastBlockProposedBadge({ account }: { account: Account }) {
-  if (account.lastProposed === undefined) {
+  const { data: block } = useBlock(account.lastProposed);
+  // Add a state to trigger re-renders
+  const [, setForceUpdate] = React.useState(0);
+
+  // Set up an interval to update the component every minute
+  React.useEffect(() => {
+    const intervalId = setInterval(() => {
+      setForceUpdate((prev) => prev + 1); // Increment to trigger re-render
+    }, 60000); // 60000ms = 1 minute
+
+    // Clean up the interval when component unmounts
+    return () => clearInterval(intervalId);
+  }, []);
+
+  if (account.lastProposed === undefined || block === undefined) {
     return (
       <DotBadge className="text-md" color="red" label="No block proposed" />
     );
@@ -87,24 +121,59 @@ function LastBlockProposedBadge({ account }: { account: Account }) {
       <Tooltip>
         <TooltipTrigger>
           <span className="text-md inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 font-medium text-gray-900 ring-1 ring-gray-200 ring-inset dark:text-white dark:ring-gray-800">
-            <BoxIcon className="size-4" /> Last proposed block:{" "}
-            {Number(account.round) - account.lastProposed} rounds ago
+            <BoxIcon className="size-4" />
+            Last proposed block:{" "}
+            {formatDistanceToNow(new Date(block.timestamp * 1000), {
+              addSuffix: true,
+            })}
           </span>
         </TooltipTrigger>
-        <TooltipContent>Round {account.lastProposed}</TooltipContent>
+        <TooltipContent>
+          <ExplorerLink
+            className="text-indigo-300 underline hover:text-indigo-400"
+            type={"block"}
+            id={account.lastProposed.toString()}
+          >
+            Block #{account.lastProposed}
+          </ExplorerLink>{" "}
+          {format(new Date(block.timestamp * 1000), "PPpp")}
+        </TooltipContent>
       </Tooltip>
     </TooltipProvider>
   );
 }
 
 function ParticipationKeyBadge({ account }: { account: Account }) {
+  const { data: averageBlockTime, isPending } = useAverageBlockTime();
+
+  if (isPending) return <Loader className="size-4 animate-spin" />;
+
   if (!account.participation) {
     return (
       <DotBadge className="text-md" color="red" label="No participation key" />
     );
   }
-
   const remainingRounds = account.participation.voteLastValid - account.round;
+
+  if (!averageBlockTime)
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            <span className="text-md inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 font-medium text-gray-900 ring-1 ring-gray-200 ring-inset dark:text-white dark:ring-gray-800">
+              <KeyRoundIcon className="size-4" />
+              {`Participation key remaining rounds: ${remainingRounds}`}
+            </span>
+          </TooltipTrigger>
+          <TooltipContent>
+            Until round {account.participation.voteLastValid}
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+
+  const expirationTimeInSeconds = Number(remainingRounds) * averageBlockTime;
+  const expirationDate = new Date(Date.now() + expirationTimeInSeconds * 1000);
 
   return (
     <TooltipProvider>
@@ -112,11 +181,18 @@ function ParticipationKeyBadge({ account }: { account: Account }) {
         <TooltipTrigger>
           <span className="text-md inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 font-medium text-gray-900 ring-1 ring-gray-200 ring-inset dark:text-white dark:ring-gray-800">
             <KeyRoundIcon className="size-4" />
-            {`Participation key remaining rounds: ${remainingRounds}`}
+            {`Participation key expiration: ${formatDistanceToNow(
+              expirationDate,
+              { addSuffix: true },
+            )}`}
           </span>
         </TooltipTrigger>
         <TooltipContent>
-          Until round {account.participation.voteLastValid}
+          Key expire on round {account.participation.voteLastValid}. That's{" "}
+          {remainingRounds} rounds from now.
+          <br />
+          With an average block time of {averageBlockTime} seconds, it will
+          expire approximately on {format(expirationDate, "PPpp")}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
