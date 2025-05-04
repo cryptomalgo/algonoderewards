@@ -35,6 +35,10 @@ export default function AddressView({ addresses }: { addresses: string }) {
       to: "/$addresses",
       params: { addresses: uniqueAddresses.join(",") },
       replace: true,
+      search: (prev) => ({
+        hideBalance: false,
+        theme: prev.theme ?? "system",
+      }),
     });
   };
   // Track selected addresses with a state
