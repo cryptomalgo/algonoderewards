@@ -13,6 +13,7 @@ import PercentageChange from "./percentage-change";
 import { ResolvedAddress } from "@/components/heatmap/types";
 import { useAccounts } from "@/hooks/useAccounts";
 import { calculateAPYAndProjection } from "@/lib/utils";
+import { useSearch } from "@tanstack/react-router";
 
 const AVERAGE_DAY_IN_MONTH = Number((365 / 12).toFixed(2)); // 30.42
 function PreviousRewardTooltip({
@@ -60,10 +61,12 @@ function ApyDisplay({
   totalRewardsOverPeriod,
   amountStacked,
   nbDays,
+  hidden,
 }: {
   totalRewardsOverPeriod: number;
   amountStacked: number;
   nbDays: number;
+  hidden: boolean;
 }) {
   const apy = calculateAPYAndProjection(
     totalRewardsOverPeriod,
@@ -82,6 +85,7 @@ function ApyDisplay({
             <AlgoAmountDisplay
               className="text-sm"
               showAnimation
+              hidden={hidden}
               microAlgoAmount={apy.projectedTotal}
             />
           </div>
@@ -118,6 +122,9 @@ function ApyPanel({
   loading: boolean;
   resolvedAddresses: ResolvedAddress[];
 }) {
+  const search = useSearch({ from: "/$addresses" });
+  const isAmountHidden = search.hideBalance;
+
   const { data, pending } = useAccounts(resolvedAddresses);
 
   let totalAmount = 0n;
@@ -141,6 +148,7 @@ function ApyPanel({
                 totalRewardsOverPeriod={stats.allTime.totalRewards}
                 amountStacked={totalAmount ? Number(totalAmount) : 0}
                 nbDays={stats.allTime.totalDays}
+                hidden={isAmountHidden}
               />
             }
           />
@@ -152,6 +160,7 @@ function ApyPanel({
                 totalRewardsOverPeriod={stats.last30Days.totalRewards}
                 amountStacked={totalAmount ? Number(totalAmount) : 0}
                 nbDays={30}
+                hidden={isAmountHidden}
               />
             }
           />
@@ -163,6 +172,7 @@ function ApyPanel({
                 totalRewardsOverPeriod={stats.last7Days.totalRewards}
                 amountStacked={totalAmount ? Number(totalAmount) : 0}
                 nbDays={7}
+                hidden={isAmountHidden}
               />
             }
           />

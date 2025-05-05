@@ -15,13 +15,13 @@ import {
   KeyRoundIcon,
 } from "lucide-react";
 import { Button } from "../ui/button";
-import React from "react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/mobile-tooltip";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 
 function BalanceBadge({ account }: { account: Account }) {
   const isBalanceOverThreshold =
@@ -140,7 +140,24 @@ export default function AccountStatus({
 }) {
   const { data: account, isPending, isError, error } = useAccount(address);
 
-  const [isBalanceHidden, setIsBalanceHidden] = React.useState(false);
+  // Read from search params instead of local state
+  const search = useSearch({ from: "/$addresses" });
+  const navigate = useNavigate({ from: "/$addresses" });
+
+  const isBalanceHidden = search.hideBalance;
+
+  // Toggle handler that updates the URL
+  const toggleBalanceVisibility = () => {
+    console.log("Toggling balance visibility");
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        hideBalance: !isBalanceHidden,
+      }),
+      replace: true, // Replace the URL to avoid adding to history stack
+    });
+  };
+
   if (isPending) {
     return <Spinner />;
   }
@@ -164,7 +181,9 @@ export default function AccountStatus({
           <Button
             variant="ghost"
             className="size-4"
-            onClick={() => setIsBalanceHidden(!isBalanceHidden)}
+            onClick={() => {
+              toggleBalanceVisibility();
+            }}
           >
             {isBalanceHidden ? (
               <EyeOffIcon className="size-4" />

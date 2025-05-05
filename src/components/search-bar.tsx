@@ -45,6 +45,10 @@ export default function SearchBar() {
         params: {
           addresses: uniqueAddresses.join(","),
         },
+        search: (prev) => ({
+          hideBalance: prev.hideBalance ?? false,
+          theme: prev.theme ?? "system",
+        }),
       });
     }
   };
