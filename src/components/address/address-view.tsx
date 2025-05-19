@@ -38,6 +38,7 @@ export default function AddressView({ addresses }: { addresses: string }) {
       search: (prev) => ({
         hideBalance: false,
         theme: prev.theme ?? "system",
+        statsPanelTheme: prev.statsPanelTheme ?? "indigo",
       }),
     });
   };

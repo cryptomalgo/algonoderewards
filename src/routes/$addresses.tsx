@@ -5,6 +5,7 @@ import { ThemeSetting } from "@/components/theme-provider";
 type AddressSearch = {
   hideBalance: boolean;
   theme: ThemeSetting;
+  statsPanelTheme: "light" | "indigo";
 };
 
 export const Route = createFileRoute("/$addresses")({
@@ -12,6 +13,12 @@ export const Route = createFileRoute("/$addresses")({
   validateSearch: (search: Record<string, unknown>): AddressSearch => {
     return {
       hideBalance: search.hideBalance === true,
+      statsPanelTheme:
+        typeof search.statsPanelTheme === "string" &&
+        ["light", "indigo"].includes(search.statsPanelTheme)
+          ? (search.statsPanelTheme as "light" | "indigo")
+          : "indigo",
+
       theme:
         typeof search.theme === "string" &&
         ["dark", "light", "system"].includes(search.theme)
