@@ -24,11 +24,19 @@ function PreviousRewardTooltip({
 }) {
   return (
     <span>
-      <AlgoAmountDisplay showAnimation={false} microAlgoAmount={total} />{" "}
+      <AlgoAmountDisplay
+        showUsdValue={false}
+        showAnimation={false}
+        microAlgoAmount={total}
+      />{" "}
       rewarded from {startDate.toLocaleDateString()} to{" "}
       {endDate.toLocaleDateString()}, so{" "}
-      <AlgoAmountDisplay showAnimation={false} microAlgoAmount={average} /> per
-      day in average
+      <AlgoAmountDisplay
+        showUsdValue={false}
+        showAnimation={false}
+        microAlgoAmount={average}
+      />{" "}
+      per day in average
     </span>
   );
 }
