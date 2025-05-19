@@ -224,7 +224,6 @@ export default function AccountStatus({
 
   // Toggle handler that updates the URL
   const toggleBalanceVisibility = () => {
-    console.log("Toggling balance visibility");
     navigate({
       search: (prev) => ({
         ...prev,

@@ -5,7 +5,7 @@ import { Error } from "@/components/error";
 import Heatmap from "@/components/heatmap/heatmap";
 import AddressBreadcrumb from "./address-breadcrumb";
 import AddressFilters from "./address-filters";
-import StatsPanel from "./stats/stats-panel";
+import StatsPanels from "./stats/stats-panels";
 import AddAddress from "./add-address";
 import { useNavigate } from "@tanstack/react-router";
 import CopyButton from "@/components/copy-to-clipboard.tsx";
@@ -38,6 +38,7 @@ export default function AddressView({ addresses }: { addresses: string }) {
       search: (prev) => ({
         hideBalance: false,
         theme: prev.theme ?? "system",
+        statsPanelTheme: prev.statsPanelTheme ?? "indigo",
       }),
     });
   };
@@ -111,7 +112,7 @@ export default function AddressView({ addresses }: { addresses: string }) {
           </div>
 
           <div className="rounded-lg px-2 py-6 sm:px-3 md:px-4 lg:px-5">
-            <StatsPanel
+            <StatsPanels
               resolvedAddresses={resolvedAddresses}
               filteredBlocks={filteredBlocks}
               loading={loading}

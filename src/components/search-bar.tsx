@@ -48,6 +48,7 @@ export default function SearchBar() {
         search: (prev) => ({
           hideBalance: prev.hideBalance ?? false,
           theme: prev.theme ?? "system",
+          statsPanelTheme: prev.statsPanelTheme ?? "indigo",
         }),
       });
     }

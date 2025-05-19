@@ -16,10 +16,24 @@ import { DownloadIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useAlgoPrice } from "@/hooks/useAlgoPrice";
 import AlgorandLogo from "@/components/algorand-logo.tsx";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 
 export default function Settings({ blocks }: { blocks: Block[] }) {
   const { themeSetting, setThemeSetting } = useTheme();
   const { price: algoPrice, loading: priceLoading } = useAlgoPrice();
+  const navigate = useNavigate({ from: "/$addresses" });
+  const search = useSearch({ from: "/$addresses" });
+  const statsPanelTheme = search.statsPanelTheme;
+
+  const changeStatsPanelTheme = (newTheme: "light" | "indigo") => {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        statsPanelTheme: newTheme,
+      }),
+      replace: true, // Replace the URL to avoid adding to history stack
+    });
+  };
 
   return (
     <DropdownMenu>
@@ -69,6 +83,7 @@ export default function Settings({ blocks }: { blocks: Block[] }) {
           Appearance
         </DropdownMenuLabel>
         <div className="px-2 py-1.5">
+          <span className="text-sm">Theme</span>
           <ToggleGroup
             type="single"
             value={themeSetting}
@@ -142,6 +157,60 @@ export default function Settings({ blocks }: { blocks: Block[] }) {
                 <MoonIcon
                   className={`h-4 w-4 ${themeSetting === "dark" ? "fill-current text-indigo-400" : ""}`}
                 />
+              </motion.div>
+            </ToggleGroupItem>
+          </ToggleGroup>
+        </div>
+
+        <div className="px-2 py-1.5">
+          <span className="text-sm">Light mode stats</span>
+
+          <ToggleGroup
+            type="single"
+            value={statsPanelTheme || "light"}
+            onValueChange={(value) => {
+              if (value) changeStatsPanelTheme(value as "light" | "indigo");
+            }}
+            className="relative gap-0.5 rounded-full border border-gray-200 bg-gray-50 p-1 dark:border-gray-700 dark:bg-gray-800"
+          >
+            {/* Animated background highlight */}
+            <motion.div
+              className="absolute top-0 left-0 h-full rounded-full"
+              initial={false}
+              animate={{
+                width: "50%",
+                x: statsPanelTheme === "light" ? 0 : "100%",
+              }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            />
+
+            <ToggleGroupItem
+              value="light"
+              aria-label="Light Stats Theme"
+              className="relative rounded-full bg-transparent px-3 py-1 text-gray-600 transition-colors duration-200 first:rounded-l-full hover:bg-slate-200 data-[state=on]:bg-slate-200 data-[state=on]:shadow-xs dark:text-gray-300 dark:hover:bg-gray-700 dark:data-[state=on]:bg-gray-700"
+            >
+              <motion.div
+                animate={{
+                  scale: statsPanelTheme === "light" ? 1.1 : 1,
+                }}
+                transition={{ type: "spring", stiffness: 400, damping: 20 }}
+              >
+                <span className="px-2">Light</span>
+              </motion.div>
+            </ToggleGroupItem>
+
+            <ToggleGroupItem
+              value="indigo"
+              aria-label="Indigo Stats Theme"
+              className="relative rounded-full px-3 py-1 text-gray-600 transition-colors duration-200 last:rounded-r-full hover:bg-slate-200 data-[state=on]:bg-slate-200 data-[state=on]:shadow-xs dark:text-gray-300 dark:hover:bg-gray-700 dark:data-[state=on]:bg-gray-700"
+            >
+              <motion.div
+                animate={{
+                  scale: statsPanelTheme === "indigo" ? 1.1 : 1,
+                }}
+                transition={{ type: "spring", stiffness: 400, damping: 20 }}
+              >
+                <span className="px-2">Indigo</span>
               </motion.div>
             </ToggleGroupItem>
           </ToggleGroup>
