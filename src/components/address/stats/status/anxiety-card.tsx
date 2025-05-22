@@ -21,7 +21,6 @@ export function AnxietyCard({ account }: { account: Account }) {
             Learn more
           </a>
         </div>
-
         <AnxietyBox account={account} />
       </div>
     </div>

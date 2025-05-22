@@ -12,7 +12,13 @@ import { format, formatDistanceToNow } from "date-fns";
 import { BoxIcon } from "lucide-react";
 import React from "react";
 
-export function LastBlockProposedBadge({ account }: { account: Account }) {
+export function LastBlockProposedBadge({
+  account,
+  hidden,
+}: {
+  account: Account;
+  hidden: boolean;
+}) {
   const { data: block } = useBlock(account.lastProposed);
   // Add a state to trigger re-renders
   const [, setForceUpdate] = React.useState(0);
@@ -40,9 +46,11 @@ export function LastBlockProposedBadge({ account }: { account: Account }) {
             <span className="text-md inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 font-medium text-gray-900 ring-1 ring-gray-200 ring-inset dark:text-white dark:ring-gray-800">
               <BoxIcon className="size-4" />
               Last block:{" "}
-              {formatDistanceToNow(new Date(block.timestamp * 1000), {
-                addSuffix: true,
-              })}
+              {hidden
+                ? "about *** ago"
+                : formatDistanceToNow(new Date(block.timestamp * 1000), {
+                    addSuffix: true,
+                  })}
             </span>
           </TooltipTrigger>
           <TooltipContent>

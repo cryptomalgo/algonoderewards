@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/mobile-tooltip";
 import AlgoAmountDisplay from "@/components/algo-amount-display";
 import Spinner from "@/components/spinner";
+import { useSearch } from "@tanstack/react-router";
 
 /**
  * Calculate the likelihood of not receiving rewards based on stake and rounds since last reward
@@ -34,6 +35,10 @@ function calculateLikelihoodOfNoRewards(
 }
 
 export function AnxietyBox({ account }: { account: Account }) {
+  const search = useSearch({ from: "/$addresses" });
+
+  const isBalanceHidden = search.hideBalance;
+
   const {
     data: stakeInfo,
     isPending: isStakeInfoPending,
@@ -101,12 +106,13 @@ export function AnxietyBox({ account }: { account: Account }) {
           </Tooltip>
         </TooltipProvider>
       </div>
-      <LastBlockProposedBadge account={account} />
+      <LastBlockProposedBadge account={account} hidden={isBalanceHidden} />
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger>
             <AnticipatedTimeBetweenBlocksBadge
               ancitipatedTimeInMinutes={anticipatedBlockTimeMinutes}
+              hidden={isBalanceHidden}
             />
           </TooltipTrigger>
           <TooltipContent>
