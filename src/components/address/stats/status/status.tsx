@@ -45,7 +45,6 @@ export default function AccountStatus({
             </div>
           </div>
         </div>
-
         <AnxietyCard account={account} />
       </div>
     </div>

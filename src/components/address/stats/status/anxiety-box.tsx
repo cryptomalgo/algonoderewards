@@ -8,11 +8,11 @@ import { AnxietyGauge } from "./anxiety-gauge";
 import { LastBlockProposedBadge } from "./last-block-proposed-badge";
 import AnticipatedTimeBetweenBlocksBadge from "./anticipated-time-between-blocks-badge";
 import {
+  TooltipProvider,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/mobile-tooltip";
-import { TooltipProvider } from "@radix-ui/react-tooltip";
 import AlgoAmountDisplay from "@/components/algo-amount-display";
 import Spinner from "@/components/spinner";
 
@@ -89,8 +89,8 @@ export function AnxietyBox({ account }: { account: Account }) {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-center">
-        <Tooltip>
-          <TooltipProvider>
+        <TooltipProvider>
+          <Tooltip>
             <TooltipTrigger>
               <AnxietyGauge value={Math.round(likelihoodOfNoRewards)} />
             </TooltipTrigger>
@@ -98,16 +98,16 @@ export function AnxietyBox({ account }: { account: Account }) {
               Shows how normal it is to not have proposed a block since the last
               one, based on expected timing between proposed blocks.
             </TooltipContent>
-          </TooltipProvider>
-        </Tooltip>
+          </Tooltip>
+        </TooltipProvider>
       </div>
       <LastBlockProposedBadge account={account} />
-      <Tooltip>
-        <TooltipProvider>
+      <TooltipProvider>
+        <Tooltip>
           <TooltipTrigger>
             <AnticipatedTimeBetweenBlocksBadge
               ancitipatedTimeInMinutes={anticipatedBlockTimeMinutes}
-            />{" "}
+            />
           </TooltipTrigger>
           <TooltipContent>
             The estimated number of rounds between proposed blocks is{" "}
@@ -134,8 +134,8 @@ export function AnxietyBox({ account }: { account: Account }) {
             <strong>{Math.round(anticipatedBlockTimeMinutes)}</strong> minutes
             so {formatMinutes(Math.round(anticipatedBlockTimeMinutes))}.
           </TooltipContent>
-        </TooltipProvider>
-      </Tooltip>
+        </Tooltip>
+      </TooltipProvider>
     </div>
   );
 }
