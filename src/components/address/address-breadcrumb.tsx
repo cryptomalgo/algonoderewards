@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import { ResolvedAddress } from "@/components/heatmap/types";
 import { cn, displayAlgoAddress } from "@/lib/utils";
-import Spinner from "@/components/spinner";
+import Spinner from "@/components/spinner.tsx";
 import {
   Tooltip,
   TooltipContent,

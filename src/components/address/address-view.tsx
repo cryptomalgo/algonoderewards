@@ -13,7 +13,7 @@ import { displayAlgoAddress } from "@/lib/utils.ts";
 import CumulativeRewardsChart from "@/components/address/charts/cumulative-rewards-chart";
 import CumulativeBlocksChart from "@/components/address/charts/cumulative-blocks-chart";
 import RewardByDayHourChart from "@/components/address/charts/reward-by-day-hour-chart.tsx";
-import AccountStatus from "./status";
+import AccountStatus from "./stats/status/status";
 
 export default function AddressView({ addresses }: { addresses: string }) {
   const navigate = useNavigate();

@@ -24,3 +24,20 @@ export function calculateAPYAndProjection(
   const projectedTotal = (rewards / days) * 365;
   return { apy, projectedTotal };
 }
+
+export function formatMinutes(minutes: number): string {
+  if (minutes < 0) {
+    throw new Error("Minutes cannot be negative");
+  }
+
+  // Calculate hours and remaining minutes
+  const hours = Math.floor(minutes / 60);
+  const mins = Math.floor(minutes % 60);
+
+  // Format the result
+  if (hours > 0) {
+    return `${hours}h ${mins}m`;
+  } else {
+    return `${mins}m`;
+  }
+}

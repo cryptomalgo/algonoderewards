@@ -4,7 +4,7 @@ import { displayAlgoAddress } from "@/lib/utils";
 import CopyButton from "@/components/copy-to-clipboard";
 import { ResolvedAddress } from "@/components/heatmap/types";
 import { useAccount } from "@/hooks/useAccounts";
-import AccountStatus from "./status";
+import AccountStatus from "./stats/status/status";
 
 export default function AddressFilters({
   showFilters,
