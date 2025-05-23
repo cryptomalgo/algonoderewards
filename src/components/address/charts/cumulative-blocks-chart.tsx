@@ -88,9 +88,9 @@ export default function CumulativeBlocksChart({ blocks }: { blocks: Block[] }) {
   }
 
   const parseISODate = (dateStr: string) => {
-    const arr = dateStr.split("-").map(s => Number(s));
+    const arr = dateStr.split("-").map((s) => Number(s));
     return new Date(arr[0], --arr[1], arr[2]);
-  }
+  };
 
   const formatDate = (dateStr: string) => {
     const date = parseISODate(dateStr);
