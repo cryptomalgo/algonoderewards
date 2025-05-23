@@ -13,7 +13,7 @@ A React application to track and visualize the rewards from running an Algorand 
 
 ## Website
 
-You can access the website at [algonoderewards.com](algonoderewards.com)
+You can access the website at [algonoderewards.com](https://algonoderewards.com)
 
 ![app screenshot](screenshot.png)
 

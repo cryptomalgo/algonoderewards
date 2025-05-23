@@ -87,8 +87,13 @@ export default function CumulativeBlocksChart({ blocks }: { blocks: Block[] }) {
     );
   }
 
+  const parseISODate = (dateStr: string) => {
+    const arr = dateStr.split("-").map((s) => Number(s));
+    return new Date(arr[0], --arr[1], arr[2]);
+  };
+
   const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
+    const date = parseISODate(dateStr);
     return date.toLocaleDateString(undefined, {
       month: "short",
       day: "numeric",
@@ -96,7 +101,7 @@ export default function CumulativeBlocksChart({ blocks }: { blocks: Block[] }) {
   };
 
   const formatTooltipDate = (dateStr: string) => {
-    const date = new Date(dateStr);
+    const date = parseISODate(dateStr);
     return date.toLocaleDateString(undefined, {
       weekday: "long",
       year: "numeric",
