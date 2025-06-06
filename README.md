@@ -25,6 +25,7 @@ You can access the website at [algonoderewards.com](https://algonoderewards.com)
   - Estimated APY (Annual Percentage Yield)
   - Total rewards
   - Total blocks
+  - No block probability gauge
   - Max blocks/rewards in a day
   - Min/max reward
   - Average rewards per day/month total/last 30D/last 7D
@@ -33,6 +34,7 @@ You can access the website at [algonoderewards.com](https://algonoderewards.com)
   - Rewards History chart
   - Blocks History chart
   - Block Distribution chart by Day and Hour
+  - Block reward intervals chart
 
 - Responsive design for both desktop and mobile
 - Dark/light/system theme modes

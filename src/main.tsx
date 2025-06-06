@@ -10,7 +10,7 @@ import { routeTree } from "./routeTree.gen";
 import { ThemeProvider } from "@/components/theme-provider.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 scan({
-  enabled: true,
+  enabled: false,
 });
 
 // Create a new router instance
