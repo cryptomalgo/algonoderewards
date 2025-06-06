@@ -14,6 +14,7 @@ import CumulativeRewardsChart from "@/components/address/charts/cumulative-rewar
 import CumulativeBlocksChart from "@/components/address/charts/cumulative-blocks-chart";
 import RewardByDayHourChart from "@/components/address/charts/reward-by-day-hour-chart.tsx";
 import AccountStatus from "./stats/status/status";
+import BlockRewardIntervals from "./charts/block-reward-intervals";
 
 export default function AddressView({ addresses }: { addresses: string }) {
   const navigate = useNavigate();
@@ -120,6 +121,10 @@ export default function AddressView({ addresses }: { addresses: string }) {
             <Heatmap blocks={filteredBlocks} />
             <CumulativeRewardsChart blocks={filteredBlocks} />
             <CumulativeBlocksChart blocks={filteredBlocks} />
+            <BlockRewardIntervals
+              blocks={filteredBlocks}
+              resolvedAddresses={resolvedAddresses}
+            />
             <RewardByDayHourChart blocks={filteredBlocks} />
           </div>
         </div>
