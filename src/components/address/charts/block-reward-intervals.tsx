@@ -38,8 +38,14 @@ const CHART_COLORS = {
   expectedRounds: "#7dd3fc",
   roundsSinceLastReward: "#c4b5fd",
   barGradient: {
-    start: "#6366f1",
-    end: "#a5b4fc",
+    light: {
+      start: "#6366f1",
+      end: "#a5b4fc",
+    },
+    dark: {
+      start: "#6366f1",
+      end: "#4f46e5",
+    },
   },
 } as const;
 
@@ -676,12 +682,20 @@ export default function BlockRewardIntervals({
               >
                 <stop
                   offset="5%"
-                  stopColor={CHART_COLORS.barGradient.start}
+                  stopColor={
+                    theme === "light"
+                      ? CHART_COLORS.barGradient.light.start
+                      : CHART_COLORS.barGradient.dark.start
+                  }
                   stopOpacity={0.8}
                 />
                 <stop
                   offset="95%"
-                  stopColor={CHART_COLORS.barGradient.end}
+                  stopColor={
+                    theme === "light"
+                      ? CHART_COLORS.barGradient.light.end
+                      : CHART_COLORS.barGradient.dark.end
+                  }
                   stopOpacity={theme === "dark" ? 0.3 : 0.6}
                 />
               </linearGradient>
