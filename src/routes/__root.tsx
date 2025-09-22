@@ -3,6 +3,7 @@ import React, { Suspense } from "react";
 import Footer from "@/components/footer.tsx";
 import { Toaster } from "@/components/ui/sonner";
 import { GithubCorner } from "@/components/github-corner";
+import { Algoland } from "@/components/algoland";
 
 const TanStackRouterDevtools =
   process.env.NODE_ENV === "production"
@@ -23,7 +24,7 @@ export const Route = createRootRoute({
       <header className="mx-auto w-full max-w-7xl px-2 sm:px-4 lg:divide-y lg:divide-gray-200 lg:px-8">
         <div className="relative mr-auto flex h-16 justify-between">
           <div className="relative z-10 flex px-2 lg:px-0">
-            <div className="flex items-center">
+            <div className="flex flex-wrap items-center">
               <a
                 href={"/"}
                 className={
@@ -37,6 +38,7 @@ export const Route = createRootRoute({
                 />
                 <h1 className={"text-lg"}>Algo Node Rewards</h1>
               </a>
+              <Algoland />
             </div>
           </div>
         </div>

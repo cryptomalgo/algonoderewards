@@ -111,7 +111,6 @@ export default function AddressView({ addresses }: { addresses: string }) {
               </div>
             )}
           </div>
-
           <div className="rounded-lg px-2 py-6 sm:px-3 md:px-4 lg:px-5">
             <StatsPanels
               resolvedAddresses={resolvedAddresses}
