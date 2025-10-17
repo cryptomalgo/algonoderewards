@@ -109,6 +109,23 @@ function PrivacyPolicy() {
                 rates for Algorand. This connection does not transmit any
                 personal information.
               </p>
+
+              <h3 className="mt-6 text-lg font-semibold text-gray-900 dark:text-white">
+                NFD API
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300">
+                I use the NFD API (
+                <a
+                  href="https://api-docs.nf.domains/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:underline dark:text-blue-400"
+                >
+                  https://api-docs.nf.domains/
+                </a>
+                ) to convert .algo addresses to wallet addresses. This API does
+                not transmit any personal information from you.
+              </p>
             </div>
           </section>
 
