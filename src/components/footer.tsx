@@ -35,6 +35,15 @@ const Footer = () => {
         <p className="mt-4 text-center text-sm/6 text-gray-500 md:order-1">
           Not affiliated with The Algorand Foundation or any other entity.
         </p>
+
+        <div className="mt-4 flex items-center space-x-4 text-center text-sm/6 text-gray-500 md:order-1">
+          <a
+            href="/privacy-policy"
+            className="text-blue-500 transition-colors hover:underline dark:text-blue-400"
+          >
+            Privacy Policy
+          </a>
+        </div>
       </div>
     </footer>
   );
