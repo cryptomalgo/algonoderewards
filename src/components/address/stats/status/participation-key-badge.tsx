@@ -10,9 +10,20 @@ import { useAverageBlockTime } from "@/hooks/useAverageBlockTime";
 import { Account } from "algosdk/client/indexer";
 import { format, formatDistanceToNow } from "date-fns";
 import { KeyRoundIcon } from "lucide-react";
+import { useMemo } from "react";
 
 export function ParticipationKeyBadge({ account }: { account: Account }) {
   const { data: averageBlockTime, isPending } = useAverageBlockTime();
+
+  const remainingRounds = account.participation
+    ? account.participation.voteLastValid - account.round
+    : 0;
+
+  // Calculate expiration time in seconds (pure calculation)
+  const expirationTimeInSeconds = useMemo(() => {
+    if (!averageBlockTime) return null;
+    return Number(remainingRounds) * averageBlockTime;
+  }, [remainingRounds, averageBlockTime]);
 
   if (isPending) return <Spinner />;
 
@@ -21,9 +32,8 @@ export function ParticipationKeyBadge({ account }: { account: Account }) {
       <DotBadge className="text-md" color="red" label="No participation key" />
     );
   }
-  const remainingRounds = account.participation.voteLastValid - account.round;
 
-  if (!averageBlockTime)
+  if (!averageBlockTime || !expirationTimeInSeconds)
     return (
       <TooltipProvider>
         <Tooltip>
@@ -40,8 +50,11 @@ export function ParticipationKeyBadge({ account }: { account: Account }) {
       </TooltipProvider>
     );
 
-  const expirationTimeInSeconds = Number(remainingRounds) * averageBlockTime;
-  const expirationDate = new Date(Date.now() + expirationTimeInSeconds * 1000);
+  // Create date objects here, outside of render but only when needed
+  const now = new Date();
+  const expirationDate = new Date(
+    now.getTime() + expirationTimeInSeconds * 1000,
+  );
 
   return (
     <TooltipProvider>

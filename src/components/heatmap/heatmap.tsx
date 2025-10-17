@@ -1,8 +1,8 @@
-import React, { useMemo, useCallback, useState, useRef } from "react";
+import React, { useMemo, useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { Block } from "algosdk/client/indexer";
 import MonthView from "@/components/heatmap/month-view.tsx";
-import { DayWithRewards, DisplayMonth } from "@/components/heatmap/types.ts";
+import { DisplayMonth } from "@/components/heatmap/types.ts";
 function generateDays(
   month: number,
   year: number,
@@ -75,20 +75,11 @@ const Heatmap: React.FC<{ blocks: Block[] }> = ({ blocks }) => {
     return { transactionsByDate: dateMap, maxCount: Math.max(maxCount, 1) };
   }, [blocks]);
 
-  // Cache generated days to avoid redundant calculations
-  const daysCache = useRef(new Map<string, Date[]>());
-
-  const getDaysWithRewards = useCallback(
-    (month: number, year: number): DayWithRewards[] => {
-      const cacheKey = `${month}-${year}`;
-      let days = daysCache.current.get(cacheKey);
-
-      if (!days) {
-        days = generateDays(month, year, true);
-        daysCache.current.set(cacheKey, days);
-      }
-
-      return days.map((day) => {
+  // Generate days with rewards for all display months
+  const monthsData = useMemo(() => {
+    return displayMonths.map(({ month, year }) => {
+      const days = generateDays(month, year, true);
+      const daysWithRewards = days.map((day) => {
         const dateStr = day.toLocaleDateString("en-US");
         const dayData = transactionsByDate.get(dateStr) || {
           count: 0,
@@ -101,9 +92,14 @@ const Heatmap: React.FC<{ blocks: Block[] }> = ({ blocks }) => {
           totalAmount: dayData.totalAmount,
         };
       });
-    },
-    [transactionsByDate],
-  );
+
+      return {
+        month,
+        year,
+        daysWithRewards,
+      };
+    });
+  }, [displayMonths, transactionsByDate]);
 
   const handlePreviousMonth = () => {
     setDisplayMonths((prev) => {
@@ -140,12 +136,12 @@ const Heatmap: React.FC<{ blocks: Block[] }> = ({ blocks }) => {
           <span className="sr-only">Next month</span>
           <ChevronRightIcon className="size-5" aria-hidden="true" />
         </button>
-        {displayMonths.map((month) => (
+        {monthsData.map((monthData) => (
           <MonthView
-            key={`${month.month}-${month.year}`}
-            month={month.month}
-            year={month.year}
-            daysWithRewards={getDaysWithRewards(month.month, month.year)}
+            key={`${monthData.month}-${monthData.year}`}
+            month={monthData.month}
+            year={monthData.year}
+            daysWithRewards={monthData.daysWithRewards}
             maxRewardCount={maxCount}
           />
         ))}

@@ -128,23 +128,17 @@ function useScreenSize() {
   return screenWidth;
 }
 function useStartDateFilter(blocks: Block[]) {
-  const [startDate, setStartDate] = useState<Date | undefined>();
-  const [minDate, setMinDate] = useState<Date | undefined>();
-  const maxDate = useMemo(() => new Date(), []); // Always today
-
-  useEffect(() => {
+  const minDate = useMemo(() => {
     if (blocks && blocks.length > 0) {
       const timestamps = blocks.map((block) => block.timestamp);
       const minTimestamp = Math.min(...timestamps);
-
-      const utcMinDate = new Date(minTimestamp * 1000);
-      setMinDate(utcMinDate);
-
-      if (!startDate) {
-        setStartDate(utcMinDate);
-      }
+      return new Date(minTimestamp * 1000);
     }
-  }, [blocks, startDate]);
+    return undefined;
+  }, [blocks]);
+
+  const [startDate, setStartDate] = useState<Date | undefined>(minDate);
+  const maxDate = useMemo(() => new Date(), []); // Always today
 
   const filteredBlocks = useMemo(() => {
     if (!startDate) {
@@ -409,13 +403,13 @@ function ChartTooltip({
 }: {
   active?: boolean;
   payload?: Payload<ValueType, NameType>[] | undefined;
-  label?: string;
+  label?: string | number;
   chartData: ChartDataItem[];
   averageBlockTime: number;
 }) {
   if (!active || !payload?.length) return null;
 
-  const data = chartData.find((d) => d.interval === label);
+  const data = chartData.find((d) => d.interval === String(label));
 
   // Calculate time estimates
   const formatTimeRange = (lowerRounds: number, upperRounds: number) => {
@@ -545,13 +539,17 @@ export default function BlockRewardIntervals({
     return calculateIntervalConfig(Number(totalStake), userStake);
   }, [totalStake, userStake]);
 
-  const [blocksInterval, setBlocksInterval] = useState<number>(1000);
+  // Use the computed default when we have valid stake data, otherwise use state
+  const hasValidStakeData = userStake > 0 && Number(totalStake) > 0;
+  const [userSetInterval, setUserSetInterval] = useState<number | null>(null);
 
-  useEffect(() => {
-    if (userStake > 0 && Number(totalStake) > 0) {
-      setBlocksInterval(intervalConfig.default);
-    }
-  }, [intervalConfig.default, userStake, totalStake]);
+  const blocksInterval = hasValidStakeData
+    ? (userSetInterval ?? intervalConfig.default)
+    : (userSetInterval ?? 1000);
+
+  const setBlocksInterval = (value: number) => {
+    setUserSetInterval(value);
+  };
 
   const intervalCounts = useMemo(() => {
     return calculateIntervalCounts(filteredBlocks, blocksInterval);

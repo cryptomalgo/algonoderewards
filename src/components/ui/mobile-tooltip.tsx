@@ -1,6 +1,6 @@
 //From https://github.com/shadcn-ui/ui/issues/2402
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import {
   TooltipProvider as OriginalTooltipProvider,
   Tooltip as OriginalTooltip,
@@ -28,11 +28,10 @@ export const TooltipProvider = ({
   children,
   ...props
 }: TooltipProviderProps) => {
-  const [isTouch, setTouch] = useState<boolean | undefined>(undefined);
-
-  useEffect(() => {
-    setTouch(window.matchMedia("(pointer: coarse)").matches);
-  }, []);
+  const [isTouch] = useState<boolean | undefined>(() => {
+    if (typeof window === "undefined") return undefined;
+    return window.matchMedia("(pointer: coarse)").matches;
+  });
 
   return (
     <TouchContext.Provider value={isTouch}>
