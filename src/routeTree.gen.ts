@@ -9,9 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as AddressesRouteImport } from './routes/$addresses'
 import { Route as IndexRouteImport } from './routes/index'
 
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AddressesRoute = AddressesRouteImport.update({
   id: '/$addresses',
   path: '/$addresses',
@@ -26,31 +32,42 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$addresses': typeof AddressesRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$addresses': typeof AddressesRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/$addresses': typeof AddressesRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$addresses'
+  fullPaths: '/' | '/$addresses' | '/privacy-policy'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$addresses'
-  id: '__root__' | '/' | '/$addresses'
+  to: '/' | '/$addresses' | '/privacy-policy'
+  id: '__root__' | '/' | '/$addresses' | '/privacy-policy'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AddressesRoute: typeof AddressesRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/$addresses': {
       id: '/$addresses'
       path: '/$addresses'
@@ -71,6 +88,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AddressesRoute: AddressesRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
