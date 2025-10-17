@@ -1,0 +1,2 @@
+# Ignore route file generated automatically during build
+src/routeTree.gen.ts

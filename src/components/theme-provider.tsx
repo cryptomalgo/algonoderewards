@@ -49,42 +49,33 @@ export function ThemeProvider({
     return getThemeFromUrl() || defaultThemeSetting;
   });
 
-  const [actualTheme, setActualTheme] = useState<Theme>("light");
+  const [systemTheme, setSystemTheme] = useState<Theme>(() => {
+    if (typeof window === "undefined") return "light";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  });
 
   const setThemeSetting = (newTheme: ThemeSetting) => {
     setThemeSettingState(newTheme);
     setThemeSettingInUrl(newTheme);
   };
 
+  // Compute actual theme without storing it in state
+  const actualTheme: Theme =
+    themeSetting === "system" ? systemTheme : themeSetting;
+
   useEffect(() => {
     const root = window.document.documentElement;
-
     root.classList.remove("light", "dark");
-
-    if (themeSetting === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-        .matches
-        ? "dark"
-        : "light";
-      root.classList.add(systemTheme);
-      setActualTheme(systemTheme);
-    } else {
-      root.classList.add(themeSetting);
-      setActualTheme(themeSetting);
-    }
-  }, [themeSetting]);
+    root.classList.add(actualTheme);
+  }, [actualTheme]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
     const handleChange = () => {
-      if (themeSetting === "system") {
-        const root = window.document.documentElement;
-        const newTheme = mediaQuery.matches ? "dark" : "light";
-        root.classList.remove("light", "dark");
-        root.classList.add(newTheme);
-        setActualTheme(newTheme);
-      }
+      setSystemTheme(mediaQuery.matches ? "dark" : "light");
     };
 
     mediaQuery.addEventListener("change", handleChange);
@@ -92,7 +83,7 @@ export function ThemeProvider({
     return () => {
       mediaQuery.removeEventListener("change", handleChange);
     };
-  }, [themeSetting]);
+  }, []);
 
   return (
     <ThemeContext.Provider
@@ -111,6 +102,7 @@ export function ThemeProvider({
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useTheme = (): ThemeContextType => {
   const context = useContext(ThemeContext);
 

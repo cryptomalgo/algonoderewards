@@ -17,11 +17,10 @@ export default function NumberDisplay({
   animate: shouldAnimate = true,
 }: NumberDisplayProps) {
   const motionValue = useMotionValue(0);
-  const [displayValue, setDisplayValue] = useState(0);
+  const [displayValue, setDisplayValue] = useState(value);
 
   useEffect(() => {
     if (!shouldAnimate) {
-      setDisplayValue(value);
       return;
     }
 
@@ -36,9 +35,12 @@ export default function NumberDisplay({
     return controls.stop;
   }, [value, duration, motionValue, shouldAnimate]);
 
+  // Update displayValue directly when animation is disabled
+  const actualDisplayValue = shouldAnimate ? displayValue : value;
+
   const formattedValue = formatOptions
-    ? new Intl.NumberFormat(undefined, formatOptions).format(displayValue)
-    : displayValue.toString();
+    ? new Intl.NumberFormat(undefined, formatOptions).format(actualDisplayValue)
+    : actualDisplayValue.toString();
 
   return (
     <motion.span

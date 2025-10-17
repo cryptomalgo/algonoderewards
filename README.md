@@ -21,7 +21,6 @@ You can access the website at [algonoderewards.com](https://algonoderewards.com)
 
 - Node status
 - Rewards statistics
-
   - Estimated APY (Annual Percentage Yield)
   - Total rewards
   - Total blocks
