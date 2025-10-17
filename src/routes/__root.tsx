@@ -3,7 +3,7 @@ import React, { Suspense } from "react";
 import Footer from "@/components/footer.tsx";
 import { Toaster } from "@/components/ui/sonner";
 import { GithubCorner } from "@/components/github-corner";
-import { Algoland } from "@/components/algoland";
+import XgovBanner from "@/components/xgov-banner";
 
 const TanStackRouterDevtools =
   process.env.NODE_ENV === "production"
@@ -20,6 +20,7 @@ const TanStackRouterDevtools =
 export const Route = createRootRoute({
   component: () => (
     <>
+      <XgovBanner />
       <GithubCorner />
       <header className="mx-auto w-full max-w-7xl px-2 sm:px-4 lg:divide-y lg:divide-gray-200 lg:px-8">
         <div className="relative mr-auto flex h-16 justify-between">
@@ -38,7 +39,6 @@ export const Route = createRootRoute({
                 />
                 <h1 className={"text-lg"}>Algo Node Rewards</h1>
               </a>
-              <Algoland />
             </div>
           </div>
         </div>
