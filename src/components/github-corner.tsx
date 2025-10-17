@@ -11,7 +11,7 @@ export function GithubCorner() {
       <svg
         viewBox="0 0 250 250"
         className={
-          "text-background absolute top-0 right-0 h-12 w-12 border-0 fill-slate-300 sm:h-16 sm:w-16 lg:h-20 lg:w-20 dark:fill-gray-500"
+          "text-background absolute right-0 h-12 w-12 border-0 fill-slate-300 sm:h-16 sm:w-16 lg:h-20 lg:w-20 dark:fill-gray-500"
         }
         aria-hidden="true"
       >
