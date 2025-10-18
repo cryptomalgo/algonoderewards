@@ -269,17 +269,13 @@ function processChartData(
     })
     .sort((a, b) => a.lowerValue - b.lowerValue);
 
-  // If no existing intervals, return empty array
-  if (existingIntervals.length === 0) {
-    return [];
-  }
-
-  // Find the full range we need to cover
-  const minInterval = existingIntervals[0].lowerValue;
+  // If no existing intervals, show at least a few empty intervals starting from 0
   const maxInterval =
-    existingIntervals[existingIntervals.length - 1].upperValue;
+    existingIntervals.length === 0
+      ? blocksInterval * 5 // Show at least 5 empty intervals when no data
+      : existingIntervals[existingIntervals.length - 1].upperValue;
 
-  // Generate all intervals in the range
+  // Generate all intervals in the range starting from 0
   const allIntervals: Array<{
     interval: string;
     range: string;
@@ -290,7 +286,7 @@ function processChartData(
   }> = [];
 
   for (
-    let upperValue = minInterval + blocksInterval;
+    let upperValue = blocksInterval;
     upperValue <= maxInterval;
     upperValue += blocksInterval
   ) {
