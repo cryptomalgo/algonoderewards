@@ -249,8 +249,6 @@ function processChartData(
   filteredBlocks: Block[],
   blocksInterval: number,
   notSelectedProb: number,
-  expectedAverageRounds: number,
-  roundsSinceLastReward: number,
 ) {
   const totalPairs = filteredBlocks.length > 1 ? filteredBlocks.length - 1 : 0;
 
@@ -271,25 +269,11 @@ function processChartData(
     })
     .sort((a, b) => a.lowerValue - b.lowerValue);
 
-  // Calculate the maximum interval needed to include reference lines
-  const dataMaxInterval =
+  // If no existing intervals, show at least a few empty intervals starting from 0
+  const maxInterval =
     existingIntervals.length === 0
       ? blocksInterval * 5 // Show at least 5 empty intervals when no data
       : existingIntervals[existingIntervals.length - 1].upperValue;
-
-  // Ensure we include intervals that contain the reference lines
-  const expectedRoundsUpperBound =
-    Math.ceil(expectedAverageRounds / blocksInterval) * blocksInterval;
-  const roundsSinceLastRewardUpperBound =
-    Math.ceil(roundsSinceLastReward / blocksInterval) * blocksInterval;
-
-  // The chart should extend to include both reference values
-  const maxInterval = Math.max(
-    dataMaxInterval,
-    expectedRoundsUpperBound,
-    roundsSinceLastRewardUpperBound,
-    blocksInterval * 3, // Minimum of 3 intervals to show
-  );
 
   // Generate all intervals in the range starting from 0
   const allIntervals: Array<{
@@ -567,6 +551,15 @@ export default function BlockRewardIntervals({
     return calculateIntervalCounts(filteredBlocks, blocksInterval);
   }, [filteredBlocks, blocksInterval]);
 
+  const chartData = useMemo(() => {
+    return processChartData(
+      intervalCounts,
+      filteredBlocks,
+      blocksInterval,
+      notSelectedProb,
+    );
+  }, [intervalCounts, filteredBlocks, blocksInterval, notSelectedProb]);
+
   const {
     data: currentRound,
     isPending: isCurrentRoundPending,
@@ -579,24 +572,6 @@ export default function BlockRewardIntervals({
     const lastBlockRound = Number(lastBlock.round || 0);
     return Number(currentRound) - lastBlockRound;
   }, [currentRound, currentRoundError, filteredBlocks]);
-
-  const chartData = useMemo(() => {
-    return processChartData(
-      intervalCounts,
-      filteredBlocks,
-      blocksInterval,
-      notSelectedProb,
-      expectedAverageRounds,
-      roundsSinceLastReward,
-    );
-  }, [
-    intervalCounts,
-    filteredBlocks,
-    blocksInterval,
-    notSelectedProb,
-    expectedAverageRounds,
-    roundsSinceLastReward,
-  ]);
 
   if (
     isStakeInfoPending ||
