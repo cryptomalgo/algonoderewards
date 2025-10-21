@@ -42,6 +42,7 @@ export function BlocksPerDayPanel({
         <StatBox
           title="Average blocks per day"
           loading={loading}
+          skeletonLines={1}
           content={
             <Tooltip>
               <TooltipTrigger>
@@ -58,6 +59,7 @@ export function BlocksPerDayPanel({
         <StatBox
           title="Average blocks per month"
           loading={loading}
+          skeletonLines={1}
           content={
             <Tooltip>
               <TooltipTrigger>
@@ -77,6 +79,7 @@ export function BlocksPerDayPanel({
         <StatBox
           title="Average blocks per day (last 30D)"
           loading={loading}
+          skeletonLines={1}
           content={
             <div className="flex items-center">
               <Tooltip>
@@ -105,6 +108,7 @@ export function BlocksPerDayPanel({
         <StatBox
           title="Average blocks per day (last 7D)"
           loading={loading}
+          skeletonLines={1}
           content={
             <div className="flex items-center">
               <Tooltip>

@@ -16,7 +16,7 @@ import {
 import { useTheme } from "@/components/theme-provider";
 import { useStakeInfo } from "@/hooks/useStakeInfo";
 import { AlgoAmount } from "@algorandfoundation/algokit-utils/types/amount";
-import Spinner from "@/components/spinner";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ResolvedAddress } from "@/components/heatmap/types";
 import { useAccounts } from "@/hooks/useAccounts";
 import { StartDatePicker } from "@/components/ui/start-date-picker";
@@ -604,7 +604,14 @@ const BlockRewardIntervals = React.memo(function BlockRewardIntervals({
     isCurrentRoundPending ||
     isAverageBlockTimePending
   ) {
-    return <Spinner />;
+    return (
+      <div className="-mx-6 mt-6 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:mx-0 sm:p-6 dark:border-gray-800 dark:bg-gray-900">
+        <Skeleton className="mb-4 h-6 w-48" />
+        <div style={{ width: "100%", height: "320px" }}>
+          <Skeleton className="h-full w-full" />
+        </div>
+      </div>
+    );
   }
 
   if (stakeInfoError) {

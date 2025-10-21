@@ -97,6 +97,7 @@ export function ApyPanel({
         <StatBox
           title="Estimated APY"
           loading={loading || pending}
+          skeletonLines={3}
           content={
             <ApyDisplay
               totalRewardsOverPeriod={stats.allTime.totalRewards}
@@ -109,6 +110,7 @@ export function ApyPanel({
         <StatBox
           title="Estimated APY (with last 30D perfs)"
           loading={loading || pending}
+          skeletonLines={3}
           content={
             <ApyDisplay
               totalRewardsOverPeriod={stats.last30Days.totalRewards}
@@ -121,6 +123,7 @@ export function ApyPanel({
         <StatBox
           title="Estimated APY (with last 7D perfs)"
           loading={loading || pending}
+          skeletonLines={3}
           content={
             <ApyDisplay
               totalRewardsOverPeriod={stats.last7Days.totalRewards}

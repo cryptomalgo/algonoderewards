@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { ResolvedAddress } from "@/components/heatmap/types";
 import { cn, displayAlgoAddress } from "@/lib/utils";
-import Spinner from "@/components/spinner.tsx";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tooltip,
   TooltipContent,
@@ -59,7 +59,9 @@ const AddressBreadcrumb = React.memo<{
                 aria-current={"page"}
                 className="ml-4 hidden text-sm font-medium text-gray-500 hover:text-gray-700 md:block dark:text-gray-400 dark:hover:text-gray-300"
               >
-                {resolvedAddresses.length === 0 && <Spinner />}
+                {resolvedAddresses.length === 0 && (
+                  <Skeleton className="h-4 w-32" />
+                )}
                 {resolvedAddresses.length === 1 &&
                   (resolvedAddresses[0].nfd ?? resolvedAddresses[0].address)}
                 {resolvedAddresses.length > 1 &&
@@ -70,7 +72,9 @@ const AddressBreadcrumb = React.memo<{
                 aria-current={"page"}
                 className="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700 md:hidden dark:text-gray-400 dark:hover:text-gray-300"
               >
-                {resolvedAddresses.length === 0 && <Spinner />}
+                {resolvedAddresses.length === 0 && (
+                  <Skeleton className="h-4 w-24" />
+                )}
                 {resolvedAddresses.length === 1 &&
                   (resolvedAddresses[0].nfd ??
                     displayAlgoAddress(resolvedAddresses[0].address))}

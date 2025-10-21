@@ -8,6 +8,7 @@ import AddAddress from "./add-address";
 import { useNavigate } from "@tanstack/react-router";
 import CopyButton from "@/components/copy-to-clipboard.tsx";
 import { displayAlgoAddress } from "@/lib/utils.ts";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Lazy load ALL heavy components for better performance
 const Heatmap = lazy(() => import("@/components/heatmap/heatmap"));
@@ -82,37 +83,76 @@ export default function AddressView({ addresses }: { addresses: string }) {
 
   // Enhanced loading placeholders for different content types
   const StatsFallback = () => (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      {[1, 2, 3, 4].map((i) => (
-        <div
-          key={i}
-          className="animate-pulse rounded-lg bg-gray-100 p-6 dark:bg-gray-800"
-        >
-          <div className="h-4 w-16 rounded bg-gray-200 dark:bg-gray-700"></div>
-          <div className="mt-2 h-8 w-24 rounded bg-gray-200 dark:bg-gray-700"></div>
+    <div className="space-y-4">
+      {/* APY Panel */}
+      <div className="mb-4 rounded-lg bg-slate-100 shadow-sm dark:bg-white/6">
+        <div className="mx-auto h-full max-w-7xl rounded-lg p-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="rounded-sm bg-slate-50 px-3 py-2 sm:px-4 sm:py-3 md:py-4 lg:py-5 dark:bg-black/10"
+              >
+                <Skeleton className="mb-1 h-4 w-16" />
+                <Skeleton className="h-6 w-20" />
+              </div>
+            ))}
+          </div>
         </div>
-      ))}
-    </div>
-  );
-
-  const HeatmapFallback = () => (
-    <div className="mt-6 animate-pulse rounded-lg bg-gray-100 p-6 dark:bg-gray-800">
-      <div className="mb-4 h-6 w-32 rounded bg-gray-200 dark:bg-gray-700"></div>
-      <div className="grid grid-cols-7 gap-1">
-        {Array.from({ length: 49 }).map((_, i) => (
+      </div>
+      {/* Totals Panel */}
+      <div className="mb-4 rounded-lg bg-slate-100 shadow-sm dark:bg-white/6">
+        <div className="mx-auto h-full max-w-7xl rounded-lg p-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="rounded-sm bg-slate-50 px-3 py-2 sm:px-4 sm:py-3 md:py-4 lg:py-5 dark:bg-black/10"
+              >
+                <Skeleton className="mb-1 h-4 w-24" />
+                <Skeleton className="h-6 w-28" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      {/* Rewards/Blocks Per Day Panels */}
+      <div className="flex justify-between gap-3 md:flex-col">
+        {[1, 2].map((i) => (
           <div
             key={i}
-            className="h-4 w-4 rounded bg-gray-200 dark:bg-gray-700"
-          ></div>
+            className="mb-4 flex-1 rounded-lg bg-slate-100 shadow-sm dark:bg-white/6"
+          >
+            <div className="mx-auto h-full max-w-7xl rounded-lg p-4">
+              <div className="rounded-sm bg-slate-50 px-3 py-2 sm:px-4 sm:py-3 md:py-4 lg:py-5 dark:bg-black/10">
+                <Skeleton className="mb-1 h-4 w-20" />
+                <Skeleton className="h-6 w-16" />
+              </div>
+            </div>
+          </div>
         ))}
       </div>
     </div>
   );
 
-  // Simple loading placeholder for charts
+  const HeatmapFallback = () => (
+    <div className="mt-6 rounded-lg bg-gray-100 p-6 dark:bg-gray-800">
+      <Skeleton className="mb-4 h-6 w-32" />
+      <div className="grid grid-cols-7 gap-1">
+        {Array.from({ length: 49 }).map((_, i) => (
+          <Skeleton key={i} className="h-4 w-4" />
+        ))}
+      </div>
+    </div>
+  );
+
+  // Enhanced loading placeholder for charts with proper structure
   const ChartFallback = () => (
-    <div className="flex h-80 animate-pulse items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800">
-      <div className="text-gray-500 dark:text-gray-400">Loading chart...</div>
+    <div className="-mx-6 mt-6 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:mx-0 sm:p-6 dark:border-gray-800 dark:bg-gray-900">
+      <Skeleton className="mb-2 h-6 w-32" />
+      <div className="mt-2" style={{ width: "100%", height: "320px" }}>
+        <Skeleton className="h-full w-full" />
+      </div>
     </div>
   );
 
@@ -157,7 +197,52 @@ export default function AddressView({ addresses }: { addresses: string }) {
                   </h2>
                   <CopyButton address={resolvedAddresses[0].address} />
                 </div>
-                <Suspense fallback={<div className="h-20 animate-pulse"></div>}>
+                <Suspense
+                  fallback={
+                    <div className="my-2">
+                      <div className="item flex flex-col gap-2">
+                        <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center">
+                          {/* Balance Card Skeleton */}
+                          <div className="text-md flex h-fit w-fit min-w-40 flex-col gap-x-1.5 rounded-md px-3 py-2 font-medium ring-1 ring-gray-200 ring-inset dark:ring-gray-800">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-1">
+                                <Skeleton className="h-4 w-4" />
+                                <Skeleton className="h-4 w-12" />
+                              </div>
+                              <Skeleton className="h-4 w-4" />
+                            </div>
+                            <Skeleton className="h-6 w-20" />
+                          </div>
+                          {/* Badges Skeleton */}
+                          <div className="flex flex-col gap-2">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <Skeleton className="h-6 w-20 rounded-md" />
+                              <Skeleton className="h-6 w-24 rounded-md" />
+                              <Skeleton className="h-6 w-16 rounded-md" />
+                            </div>
+                            <div className="flex flex-wrap items-center gap-2">
+                              <Skeleton className="h-6 w-18 rounded-md" />
+                              <Skeleton className="h-6 w-22 rounded-md" />
+                            </div>
+                          </div>
+                        </div>
+                        {/* Anxiety Card Skeleton */}
+                        <div className="text-md flex w-fit min-w-40 flex-col gap-x-1.5 rounded-md px-3 py-2 font-medium ring-1 ring-gray-200 ring-inset dark:ring-gray-800">
+                          <div className="flex flex-col justify-between">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-1">
+                                <Skeleton className="h-4 w-4" />
+                                <Skeleton className="h-4 w-32" />
+                              </div>
+                              <Skeleton className="h-3 w-16" />
+                            </div>
+                            <Skeleton className="mt-2 h-8 w-24" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                >
                   <AccountStatus address={resolvedAddresses[0]} />
                 </Suspense>
               </div>
@@ -173,9 +258,8 @@ export default function AddressView({ addresses }: { addresses: string }) {
               />
             </Suspense>
 
-            {/* Priority 2: Heatmap with deferred data for smooth updates */}
             <Suspense fallback={<HeatmapFallback />}>
-              <Heatmap blocks={deferredBlocks} />
+              <Heatmap blocks={filteredBlocks} />
             </Suspense>
 
             {/* Priority 3: Heavy charts with lazy loading and Suspense */}

@@ -18,16 +18,19 @@ export function TotalsPanel({
         <StatBox
           title="Total rewards"
           loading={loading}
+          skeletonLines={2}
           content={<AlgoAmountDisplay microAlgoAmount={stats.totalRewards} />}
         />
         <StatBox
           title="Total blocks"
           loading={loading}
+          skeletonLines={1}
           content={<NumberDisplay value={stats.totalNbOfBlocksWithRewards} />}
         />
         <StatBox
           title="Max blocks in a day"
           loading={loading}
+          skeletonLines={1}
           content={
             <NumberTooltip
               value={<NumberDisplay value={stats.maxBlocksInDay} />}
@@ -38,6 +41,7 @@ export function TotalsPanel({
         <StatBox
           title="Max rewards in a day"
           loading={loading}
+          skeletonLines={2}
           content={
             <AmountTooltip
               amount={
@@ -50,6 +54,7 @@ export function TotalsPanel({
         <StatBox
           title="Min reward"
           loading={loading}
+          skeletonLines={2}
           content={
             <AmountTooltip
               amount={<AlgoAmountDisplay microAlgoAmount={stats.minReward} />}
@@ -60,6 +65,7 @@ export function TotalsPanel({
         <StatBox
           title="Max reward"
           loading={loading}
+          skeletonLines={2}
           content={
             <AmountTooltip
               amount={<AlgoAmountDisplay microAlgoAmount={stats.maxReward} />}

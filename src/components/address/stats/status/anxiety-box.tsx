@@ -14,7 +14,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/mobile-tooltip";
 import AlgoAmountDisplay from "@/components/algo-amount-display";
-import Spinner from "@/components/spinner";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useSearch } from "@tanstack/react-router";
 
 /**
@@ -55,7 +55,7 @@ export const AnxietyBox = React.memo(function AnxietyBox({
   } = useAverageBlockTime();
 
   if (isStakeInfoPending || isBlockTimePending) {
-    return <Spinner />;
+    return <Skeleton className="h-8 w-24" />;
   }
   if (stakeInfoError) {
     return (

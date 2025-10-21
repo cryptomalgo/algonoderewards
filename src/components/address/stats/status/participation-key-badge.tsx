@@ -1,6 +1,6 @@
 import React from "react";
 import { DotBadge } from "@/components/dot-badge";
-import Spinner from "@/components/spinner";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tooltip,
   TooltipContent,
@@ -26,7 +26,7 @@ export const ParticipationKeyBadge = React.memo<{ account: Account }>(
       return Number(remainingRounds) * averageBlockTime;
     }, [remainingRounds, averageBlockTime]);
 
-    if (isPending) return <Spinner />;
+    if (isPending) return <Skeleton className="h-6 w-24 rounded-md" />;
 
     if (!account.participation) {
       return (

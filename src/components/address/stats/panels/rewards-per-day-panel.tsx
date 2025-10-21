@@ -53,6 +53,7 @@ export function RewardsPerDayPanel({
         <StatBox
           title="Average rewards per day"
           loading={loading}
+          skeletonLines={2}
           content={
             <Tooltip>
               <TooltipTrigger>
@@ -78,6 +79,7 @@ export function RewardsPerDayPanel({
         <StatBox
           title="Average rewards per month"
           loading={loading}
+          skeletonLines={2}
           content={
             <Tooltip>
               <TooltipTrigger>
@@ -105,6 +107,7 @@ export function RewardsPerDayPanel({
         <StatBox
           title="Average rewards per day (last 30D)"
           loading={loading}
+          skeletonLines={2}
           content={
             <div className="flex flex-wrap items-center">
               <Tooltip>
@@ -141,6 +144,7 @@ export function RewardsPerDayPanel({
         <StatBox
           title="Average rewards per day (last 7D)"
           loading={loading}
+          skeletonLines={2}
           content={
             <div className="flex flex-wrap items-center">
               <Tooltip>
