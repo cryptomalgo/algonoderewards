@@ -6,7 +6,6 @@ import StatBox from "../stat-box";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/mobile-tooltip";
 import { AVERAGE_DAY_IN_MONTH } from "@/constants";
@@ -55,58 +54,52 @@ export function RewardsPerDayPanel({
           title="Average rewards per day"
           loading={loading}
           content={
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  <AlgoAmountDisplay
-                    microAlgoAmount={stats.allTime.avgRewardsPerDay}
-                  />
-                </TooltipTrigger>
-                <TooltipContent>
-                  {stats.allTime.startDate !== null &&
-                    stats.allTime.endDate && (
-                      <>
-                        <AlgoAmountDisplay
-                          showAnimation={false}
-                          showUsdValue={false}
-                          microAlgoAmount={stats.allTime.totalRewards}
-                        />
-                        {` rewarded in ${stats.allTime.totalDays} days (from ${stats.allTime.startDate.toLocaleDateString()} to ${stats.allTime.endDate.toLocaleDateString()})`}
-                      </>
-                    )}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <AlgoAmountDisplay
+                  microAlgoAmount={stats.allTime.avgRewardsPerDay}
+                />
+              </TooltipTrigger>
+              <TooltipContent>
+                {stats.allTime.startDate !== null && stats.allTime.endDate && (
+                  <>
+                    <AlgoAmountDisplay
+                      showAnimation={false}
+                      showUsdValue={false}
+                      microAlgoAmount={stats.allTime.totalRewards}
+                    />
+                    {` rewarded in ${stats.allTime.totalDays} days (from ${stats.allTime.startDate.toLocaleDateString()} to ${stats.allTime.endDate.toLocaleDateString()})`}
+                  </>
+                )}
+              </TooltipContent>
+            </Tooltip>
           }
         />{" "}
         <StatBox
           title="Average rewards per month"
           loading={loading}
           content={
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  <AlgoAmountDisplay
-                    microAlgoAmount={
-                      stats.allTime.avgRewardsPerDay * AVERAGE_DAY_IN_MONTH
-                    }
-                  />
-                </TooltipTrigger>
-                <TooltipContent>
-                  {stats.allTime.startDate !== null &&
-                    stats.allTime.endDate && (
-                      <>
-                        <AlgoAmountDisplay
-                          showAnimation={false}
-                          showUsdValue={false}
-                          microAlgoAmount={stats.allTime.avgRewardsPerDay}
-                        />
-                        {` by day x ${AVERAGE_DAY_IN_MONTH} days in a month (365/12)`}
-                      </>
-                    )}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <AlgoAmountDisplay
+                  microAlgoAmount={
+                    stats.allTime.avgRewardsPerDay * AVERAGE_DAY_IN_MONTH
+                  }
+                />
+              </TooltipTrigger>
+              <TooltipContent>
+                {stats.allTime.startDate !== null && stats.allTime.endDate && (
+                  <>
+                    <AlgoAmountDisplay
+                      showAnimation={false}
+                      showUsdValue={false}
+                      microAlgoAmount={stats.allTime.avgRewardsPerDay}
+                    />
+                    {` by day x ${AVERAGE_DAY_IN_MONTH} days in a month (365/12)`}
+                  </>
+                )}
+              </TooltipContent>
+            </Tooltip>
           }
         />
         <StatBox
@@ -114,23 +107,21 @@ export function RewardsPerDayPanel({
           loading={loading}
           content={
             <div className="flex flex-wrap items-center">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <AlgoAmountDisplay
-                      microAlgoAmount={stats.last30Days.avgRewardsPerDay}
-                    />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <AlgoAmountDisplay
-                      showAnimation={false}
-                      showUsdValue={false}
-                      microAlgoAmount={stats.last30Days.totalRewards}
-                    />{" "}
-                    {`rewarded from ${stats.last30Days.startDate.toLocaleDateString()} to ${stats.last30Days.endDate.toLocaleDateString()}`}
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <AlgoAmountDisplay
+                    microAlgoAmount={stats.last30Days.avgRewardsPerDay}
+                  />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <AlgoAmountDisplay
+                    showAnimation={false}
+                    showUsdValue={false}
+                    microAlgoAmount={stats.last30Days.totalRewards}
+                  />{" "}
+                  {`rewarded from ${stats.last30Days.startDate.toLocaleDateString()} to ${stats.last30Days.endDate.toLocaleDateString()}`}
+                </TooltipContent>
+              </Tooltip>
               <PercentageChange
                 className={"mt-1 self-start"}
                 percentage={stats.last30Days.change.rewards.percentage}
@@ -152,23 +143,21 @@ export function RewardsPerDayPanel({
           loading={loading}
           content={
             <div className="flex flex-wrap items-center">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <AlgoAmountDisplay
-                      microAlgoAmount={stats.last7Days.avgRewardsPerDay}
-                    />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <AlgoAmountDisplay
-                      showUsdValue={false}
-                      showAnimation={false}
-                      microAlgoAmount={stats.last7Days.totalRewards}
-                    />{" "}
-                    {`rewarded from ${stats.last7Days.startDate.toLocaleDateString()} to ${stats.last7Days.endDate.toLocaleDateString()}`}
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <AlgoAmountDisplay
+                    microAlgoAmount={stats.last7Days.avgRewardsPerDay}
+                  />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <AlgoAmountDisplay
+                    showUsdValue={false}
+                    showAnimation={false}
+                    microAlgoAmount={stats.last7Days.totalRewards}
+                  />{" "}
+                  {`rewarded from ${stats.last7Days.startDate.toLocaleDateString()} to ${stats.last7Days.endDate.toLocaleDateString()}`}
+                </TooltipContent>
+              </Tooltip>
 
               <PercentageChange
                 className={"mt-1 self-start"}

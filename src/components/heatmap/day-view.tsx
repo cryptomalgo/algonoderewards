@@ -3,7 +3,6 @@ import { cn } from "@/lib/utils.ts";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/mobile-tooltip.tsx";
 import AlgoAmountDisplay from "@/components/algo-amount-display.tsx";
@@ -59,13 +58,13 @@ function isCurrentDate(dateString: string): boolean {
   );
 }
 
-const DayView: React.FC<{
+const DayView = React.memo<{
   day: DayWithRewards;
   month: number;
   dayIdx: number;
   maxRewardCount: number;
   totalDays: number;
-}> = ({ day, dayIdx, maxRewardCount, month, totalDays }) => {
+}>(({ day, dayIdx, maxRewardCount, month, totalDays }) => {
   // Get dark mode status from theme context
   const { theme } = useTheme();
   const isDarkMode = theme === "dark";
@@ -145,69 +144,67 @@ const DayView: React.FC<{
   const isLastRowEnd = dayIdx === totalDays - 1;
 
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild={true}>
-          <motion.span
-            style={{
-              backgroundColor: animatedBgColor,
-              color: textColorValue,
-            }}
-            initial={{
-              backgroundColor: colorData.backgroundColor,
-              color: colorData.textColor,
-            }}
-            animate={{
-              backgroundColor: colorData.backgroundColor,
-              color: colorData.textColor,
-            }}
-            transition={{ duration: 0.5, ease: "easeInOut" }}
+    <Tooltip>
+      <TooltipTrigger asChild={true}>
+        <motion.span
+          style={{
+            backgroundColor: animatedBgColor,
+            color: textColorValue,
+          }}
+          initial={{
+            backgroundColor: colorData.backgroundColor,
+            color: colorData.textColor,
+          }}
+          animate={{
+            backgroundColor: colorData.backgroundColor,
+            color: colorData.textColor,
+          }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+          className={cn(
+            dayIdx === 0 && "rounded-tl-lg",
+            dayIdx === 6 && "rounded-tr-lg",
+            isLastRowStart && "rounded-bl-lg",
+            isLastRowEnd && "rounded-br-lg",
+            "relative py-1.5 hover:bg-gray-100 focus:z-10 dark:hover:bg-gray-700",
+            !isCurrentMonth && "text-gray-400",
+            "data-[state=open]:ring-2 data-[state=open]:ring-gray-500 dark:data-[state=open]:ring-gray-400",
+            dayIdx === dayIdx - 7 && "rounded-bl-lg",
+            dayIdx === dayIdx - 1 && "rounded-br-lg",
+            "relative py-1.5 hover:bg-gray-100 focus:z-10 dark:hover:bg-gray-700",
+            !isCurrentMonth && "text-gray-400 dark:text-gray-500",
+            "data-[state=open]:ring-2 data-[state=open]:ring-gray-500 dark:data-[state=open]:ring-gray-400",
+          )}
+        >
+          <time
+            dateTime={day.date}
             className={cn(
-              dayIdx === 0 && "rounded-tl-lg",
-              dayIdx === 6 && "rounded-tr-lg",
-              isLastRowStart && "rounded-bl-lg",
-              isLastRowEnd && "rounded-br-lg",
-              "relative py-1.5 hover:bg-gray-100 focus:z-10 dark:hover:bg-gray-700",
-              !isCurrentMonth && "text-gray-400",
-              "data-[state=open]:ring-2 data-[state=open]:ring-gray-500 dark:data-[state=open]:ring-gray-400",
-              dayIdx === dayIdx - 7 && "rounded-bl-lg",
-              dayIdx === dayIdx - 1 && "rounded-br-lg",
-              "relative py-1.5 hover:bg-gray-100 focus:z-10 dark:hover:bg-gray-700",
-              !isCurrentMonth && "text-gray-400 dark:text-gray-500",
-              "data-[state=open]:ring-2 data-[state=open]:ring-gray-500 dark:data-[state=open]:ring-gray-400",
+              isCurrentDate(day.date) &&
+                "bg-indigo-900 text-white dark:bg-indigo-700 dark:text-white",
+              "mx-auto flex size-7 items-center justify-center rounded-full",
             )}
           >
-            <time
-              dateTime={day.date}
-              className={cn(
-                isCurrentDate(day.date) &&
-                  "bg-indigo-900 text-white dark:bg-indigo-700 dark:text-white",
-                "mx-auto flex size-7 items-center justify-center rounded-full",
-              )}
-            >
-              {dayDate.toLocaleDateString("en-US", {
-                day: "2-digit",
-              })}
-            </time>
-          </motion.span>
-        </TooltipTrigger>
-        {isCurrentMonth && !isInTheFuture && (
-          <TooltipContent className="flex flex-col gap-1 p-2">
-            <p className="text-sm font-semibold">{formattedDate}</p>
-            <div className={"flex flex-col gap-1"}>
-              <span className="font-medium">
-                {day.count} {day.count > 1 ? "blocks" : "block"}
-              </span>
-              <AlgoAmountDisplay
-                showAnimation={false}
-                microAlgoAmount={day.totalAmount}
-              />
-            </div>
-          </TooltipContent>
-        )}
-      </Tooltip>
-    </TooltipProvider>
+            {dayDate.toLocaleDateString("en-US", {
+              day: "2-digit",
+            })}
+          </time>
+        </motion.span>
+      </TooltipTrigger>
+      {isCurrentMonth && !isInTheFuture && (
+        <TooltipContent className="flex flex-col gap-1 p-2">
+          <p className="text-sm font-semibold">{formattedDate}</p>
+          <div className={"flex flex-col gap-1"}>
+            <span className="font-medium">
+              {day.count} {day.count > 1 ? "blocks" : "block"}
+            </span>
+            <AlgoAmountDisplay
+              showAnimation={false}
+              microAlgoAmount={day.totalAmount}
+            />
+          </div>
+        </TooltipContent>
+      )}
+    </Tooltip>
   );
-};
+});
 
 export default DayView;

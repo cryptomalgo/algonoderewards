@@ -1,3 +1,4 @@
+import React from "react";
 import { Block } from "algosdk/client/indexer";
 import { useMemo, useState, useEffect } from "react";
 import {
@@ -513,7 +514,7 @@ function ChartTooltip({
   );
 }
 
-export default function BlockRewardIntervals({
+const BlockRewardIntervals = React.memo(function BlockRewardIntervals({
   blocks,
   resolvedAddresses,
 }: {
@@ -690,8 +691,12 @@ export default function BlockRewardIntervals({
           />
         </div>
       </div>
-      <div className="mt-2 h-150">
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="mt-2" style={{ width: "100%", height: "600px" }}>
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
+          initialDimension={{ width: 1000, height: 600 }}
+        >
           <ComposedChart
             data={chartData}
             margin={{
@@ -934,4 +939,6 @@ export default function BlockRewardIntervals({
       </div>
     </div>
   );
-}
+});
+
+export default BlockRewardIntervals;

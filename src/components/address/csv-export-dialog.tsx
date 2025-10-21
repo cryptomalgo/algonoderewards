@@ -16,7 +16,6 @@ import { Label } from "@/components/ui/label";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/mobile-tooltip";
 import { CSV_COLUMNS, CsvColumnId } from "@/lib/csv-columns.ts";
@@ -250,48 +249,43 @@ export default function CsvExportDialog({
               </div>
 
               <div className="space-y-3 rounded-md border p-3">
-                <TooltipProvider>
-                  {CSV_COLUMNS.map((column) => (
-                    <div
-                      key={column.id}
-                      className="flex items-center space-x-2"
-                    >
-                      <Checkbox
-                        id={column.id}
-                        checked={selectedColumns.includes(column.id)}
-                        onCheckedChange={() => handleColumnToggle(column.id)}
-                        disabled={isExporting}
-                      />
-                      <div className="flex flex-1 items-center">
-                        <Label
-                          htmlFor={column.id}
-                          className="cursor-pointer text-sm font-normal"
-                        >
-                          {column.label}
-                        </Label>
+                {CSV_COLUMNS.map((column) => (
+                  <div key={column.id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={column.id}
+                      checked={selectedColumns.includes(column.id)}
+                      onCheckedChange={() => handleColumnToggle(column.id)}
+                      disabled={isExporting}
+                    />
+                    <div className="flex flex-1 items-center">
+                      <Label
+                        htmlFor={column.id}
+                        className="cursor-pointer text-sm font-normal"
+                      >
+                        {column.label}
+                      </Label>
 
-                        {column.help && (
-                          <Tooltip delayDuration={300}>
-                            <TooltipTrigger asChild>
-                              <div className="ml-1 cursor-help">
-                                <HelpCircle className="h-3.5 w-3.5 text-gray-700 dark:text-gray-300" />
-                              </div>
-                            </TooltipTrigger>
-                            <TooltipContent side="right" className="max-w-xs">
-                              <p className="text-xs">{column.help}</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        )}
+                      {column.help && (
+                        <Tooltip delayDuration={300}>
+                          <TooltipTrigger asChild>
+                            <div className="ml-1 cursor-help">
+                              <HelpCircle className="h-3.5 w-3.5 text-gray-700 dark:text-gray-300" />
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent side="right" className="max-w-xs">
+                            <p className="text-xs">{column.help}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      )}
 
-                        {column.example && (
-                          <span className="ml-2 text-xs text-gray-400 dark:text-gray-500">
-                            {column.example}
-                          </span>
-                        )}
-                      </div>
+                      {column.example && (
+                        <span className="ml-2 text-xs text-gray-400 dark:text-gray-500">
+                          {column.example}
+                        </span>
+                      )}
                     </div>
-                  ))}
-                </TooltipProvider>
+                  </div>
+                ))}
               </div>
             </div>
 

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import {
   ScatterChart,
   Scatter,
@@ -46,7 +46,7 @@ const DAYS = [
   "Sunday",
 ];
 
-export default function RewardByDayHourChart({
+const RewardByDayHourChart = React.memo(function RewardByDayHourChart({
   blocks,
 }: RewardByDayHourChartProps) {
   const { theme } = useTheme();
@@ -128,8 +128,12 @@ export default function RewardByDayHourChart({
       <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100">
         Block Distribution by Day and Hour
       </h3>
-      <div className="h-80">
-        <ResponsiveContainer width="100%" height="100%">
+      <div style={{ width: "100%", height: "320px" }}>
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
+          initialDimension={{ width: 800, height: 320 }}
+        >
           <ScatterChart
             margin={{
               top: 20,
@@ -200,4 +204,6 @@ export default function RewardByDayHourChart({
       </p>
     </div>
   );
-}
+});
+
+export default RewardByDayHourChart;

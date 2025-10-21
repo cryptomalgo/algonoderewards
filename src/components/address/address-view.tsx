@@ -1,25 +1,36 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useDeferredValue, Suspense, lazy } from "react";
 import { useBlocks } from "@/hooks/useRewardTransactions";
 import { useAlgorandAddresses } from "@/hooks/useAlgorandAddress";
 import { Error } from "@/components/error";
-import Heatmap from "@/components/heatmap/heatmap";
 import AddressBreadcrumb from "./address-breadcrumb";
 import AddressFilters from "./address-filters";
-import StatsPanels from "./stats/stats-panels";
 import AddAddress from "./add-address";
 import { useNavigate } from "@tanstack/react-router";
 import CopyButton from "@/components/copy-to-clipboard.tsx";
 import { displayAlgoAddress } from "@/lib/utils.ts";
-import CumulativeRewardsChart from "@/components/address/charts/cumulative-rewards-chart";
-import CumulativeBlocksChart from "@/components/address/charts/cumulative-blocks-chart";
-import RewardByDayHourChart from "@/components/address/charts/reward-by-day-hour-chart.tsx";
-import AccountStatus from "./stats/status/status";
-import BlockRewardIntervals from "./charts/block-reward-intervals";
+
+// Lazy load ALL heavy components for better performance
+const Heatmap = lazy(() => import("@/components/heatmap/heatmap"));
+const StatsPanels = lazy(() => import("./stats/stats-panels"));
+const AccountStatus = lazy(() => import("./stats/status/status"));
+const CumulativeRewardsChart = lazy(
+  () => import("@/components/address/charts/cumulative-rewards-chart"),
+);
+const CumulativeBlocksChart = lazy(
+  () => import("@/components/address/charts/cumulative-blocks-chart"),
+);
+const RewardByDayHourChart = lazy(
+  () => import("@/components/address/charts/reward-by-day-hour-chart.tsx"),
+);
+const BlockRewardIntervals = lazy(
+  () => import("./charts/block-reward-intervals"),
+);
 
 export default function AddressView({ addresses }: { addresses: string }) {
   const navigate = useNavigate();
   const [showFilters, setShowFilters] = useState(false);
   const [showAddAddress, setShowAddAddress] = useState(false);
+
   const addressesArray = useMemo(
     () => addresses.split(",").filter(Boolean),
     [addresses],
@@ -66,6 +77,45 @@ export default function AddressView({ addresses }: { addresses: string }) {
     );
   }, [blocks, selectedAddresses]);
 
+  // Use React 18 useDeferredValue for smooth UI updates during heavy rendering
+  const deferredBlocks = useDeferredValue(filteredBlocks);
+
+  // Enhanced loading placeholders for different content types
+  const StatsFallback = () => (
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {[1, 2, 3, 4].map((i) => (
+        <div
+          key={i}
+          className="animate-pulse rounded-lg bg-gray-100 p-6 dark:bg-gray-800"
+        >
+          <div className="h-4 w-16 rounded bg-gray-200 dark:bg-gray-700"></div>
+          <div className="mt-2 h-8 w-24 rounded bg-gray-200 dark:bg-gray-700"></div>
+        </div>
+      ))}
+    </div>
+  );
+
+  const HeatmapFallback = () => (
+    <div className="mt-6 animate-pulse rounded-lg bg-gray-100 p-6 dark:bg-gray-800">
+      <div className="mb-4 h-6 w-32 rounded bg-gray-200 dark:bg-gray-700"></div>
+      <div className="grid grid-cols-7 gap-1">
+        {Array.from({ length: 49 }).map((_, i) => (
+          <div
+            key={i}
+            className="h-4 w-4 rounded bg-gray-200 dark:bg-gray-700"
+          ></div>
+        ))}
+      </div>
+    </div>
+  );
+
+  // Simple loading placeholder for charts
+  const ChartFallback = () => (
+    <div className="flex h-80 animate-pulse items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800">
+      <div className="text-gray-500 dark:text-gray-400">Loading chart...</div>
+    </div>
+  );
+
   if (hasError) {
     return <Error />;
   }
@@ -96,7 +146,7 @@ export default function AddressView({ addresses }: { addresses: string }) {
               selectedAddresses={selectedAddresses}
               setSelectedAddresses={setSelectedAddresses}
             />
-            {resolvedAddresses.length === 1 && !showAddAddress && (
+            {resolvedAddresses.length === 1 && (
               <div>
                 <div className={"flex flex-wrap items-center gap-2"}>
                   <h2 className="block text-xl/7 text-gray-700 sm:hidden sm:truncate sm:text-lg sm:tracking-tight">
@@ -107,24 +157,46 @@ export default function AddressView({ addresses }: { addresses: string }) {
                   </h2>
                   <CopyButton address={resolvedAddresses[0].address} />
                 </div>
-                <AccountStatus address={resolvedAddresses[0]} />
+                <Suspense fallback={<div className="h-20 animate-pulse"></div>}>
+                  <AccountStatus address={resolvedAddresses[0]} />
+                </Suspense>
               </div>
             )}
           </div>
           <div className="rounded-lg px-2 py-6 sm:px-3 md:px-4 lg:px-5">
-            <StatsPanels
-              resolvedAddresses={resolvedAddresses}
-              filteredBlocks={filteredBlocks}
-              loading={loading}
-            />
-            <Heatmap blocks={filteredBlocks} />
-            <CumulativeRewardsChart blocks={filteredBlocks} />
-            <CumulativeBlocksChart blocks={filteredBlocks} />
-            <BlockRewardIntervals
-              blocks={filteredBlocks}
-              resolvedAddresses={resolvedAddresses}
-            />
-            <RewardByDayHourChart blocks={filteredBlocks} />
+            {/* Priority 1: Stats panels with lazy loading */}
+            <Suspense fallback={<StatsFallback />}>
+              <StatsPanels
+                resolvedAddresses={resolvedAddresses}
+                filteredBlocks={filteredBlocks}
+                loading={loading}
+              />
+            </Suspense>
+
+            {/* Priority 2: Heatmap with deferred data for smooth updates */}
+            <Suspense fallback={<HeatmapFallback />}>
+              <Heatmap blocks={deferredBlocks} />
+            </Suspense>
+
+            {/* Priority 3: Heavy charts with lazy loading and Suspense */}
+            <Suspense fallback={<ChartFallback />}>
+              <CumulativeRewardsChart blocks={deferredBlocks} />
+            </Suspense>
+
+            <Suspense fallback={<ChartFallback />}>
+              <CumulativeBlocksChart blocks={deferredBlocks} />
+            </Suspense>
+
+            <Suspense fallback={<ChartFallback />}>
+              <BlockRewardIntervals
+                blocks={deferredBlocks}
+                resolvedAddresses={resolvedAddresses}
+              />
+            </Suspense>
+
+            <Suspense fallback={<ChartFallback />}>
+              <RewardByDayHourChart blocks={deferredBlocks} />
+            </Suspense>
           </div>
         </div>
       </main>

@@ -1,9 +1,9 @@
+import React from "react";
 import { DotBadge } from "@/components/dot-badge";
 import { ExplorerLink } from "@/components/explorer-link";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/mobile-tooltip";
 import { useBlock } from "@/hooks/useBlock";
@@ -11,14 +11,14 @@ import { Account } from "algosdk/client/indexer";
 import { format, formatDistanceToNow } from "date-fns";
 import { HeartPulseIcon } from "lucide-react";
 
-export function LastHeartbeatBadge({ account }: { account: Account }) {
-  const { data: block } = useBlock(account.lastHeartbeat);
+export const LastHeartbeatBadge = React.memo<{ account: Account }>(
+  ({ account }) => {
+    const { data: block } = useBlock(account.lastHeartbeat);
 
-  if (account.lastHeartbeat === undefined || block === undefined) {
-    return <DotBadge className="text-md" color="red" label="No heartbeat" />;
-  }
-  return (
-    <TooltipProvider>
+    if (account.lastHeartbeat === undefined || block === undefined) {
+      return <DotBadge className="text-md" color="red" label="No heartbeat" />;
+    }
+    return (
       <Tooltip>
         <TooltipTrigger>
           <span className="text-md inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 font-medium text-gray-900 ring-1 ring-gray-200 ring-inset dark:text-white dark:ring-gray-800">
@@ -40,6 +40,6 @@ export function LastHeartbeatBadge({ account }: { account: Account }) {
           {format(new Date(block.timestamp * 1000), "PPpp")}
         </TooltipContent>
       </Tooltip>
-    </TooltipProvider>
-  );
-}
+    );
+  },
+);

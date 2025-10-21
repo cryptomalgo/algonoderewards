@@ -1,6 +1,6 @@
 //From https://github.com/shadcn-ui/ui/issues/2402
 
-import { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import {
   TooltipProvider as OriginalTooltipProvider,
   Tooltip as OriginalTooltip,
@@ -40,37 +40,37 @@ export const TooltipProvider = ({
   );
 };
 
-export const Tooltip = (props: TooltipProps & PopoverProps) => {
+export const Tooltip = React.memo((props: TooltipProps & PopoverProps) => {
   const isTouch = useTouch();
 
   return isTouch ? <Popover {...props} /> : <OriginalTooltip {...props} />;
-};
+});
 
-export const TooltipTrigger = (
-  props: TooltipTriggerProps & PopoverTriggerProps,
-) => {
-  const isTouch = useTouch();
-  return isTouch ? (
-    <PopoverTrigger {...props} />
-  ) : (
-    <OriginalTooltipTrigger {...props} />
-  );
-};
+export const TooltipTrigger = React.memo(
+  (props: TooltipTriggerProps & PopoverTriggerProps) => {
+    const isTouch = useTouch();
+    return isTouch ? (
+      <PopoverTrigger {...props} />
+    ) : (
+      <OriginalTooltipTrigger {...props} />
+    );
+  },
+);
 
-export const TooltipContent = (
-  props: TooltipContentProps & PopoverContentProps,
-) => {
-  const isTouch = useTouch();
+export const TooltipContent = React.memo(
+  (props: TooltipContentProps & PopoverContentProps) => {
+    const isTouch = useTouch();
 
-  return isTouch ? (
-    <PopoverContent
-      {...props}
-      className={cn(
-        props.className,
-        "bg-tooltip text-tooltip-foreground border-border w-auto max-w-[200px] rounded-md border p-4 shadow-md",
-      )}
-    />
-  ) : (
-    <OriginalTooltipContent {...props} />
-  );
-};
+    return isTouch ? (
+      <PopoverContent
+        {...props}
+        className={cn(
+          props.className,
+          "bg-tooltip text-tooltip-foreground border-border w-auto max-w-[200px] rounded-md border p-4 shadow-md",
+        )}
+      />
+    ) : (
+      <OriginalTooltipContent {...props} />
+    );
+  },
+);
