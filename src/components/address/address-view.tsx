@@ -197,54 +197,7 @@ export default function AddressView({ addresses }: { addresses: string }) {
                   </h2>
                   <CopyButton address={resolvedAddresses[0].address} />
                 </div>
-                <Suspense
-                  fallback={
-                    <div className="my-2">
-                      <div className="item flex flex-col gap-2">
-                        <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center">
-                          {/* Balance Card Skeleton */}
-                          <div className="text-md flex h-fit w-fit min-w-40 flex-col gap-x-1.5 rounded-md px-3 py-2 font-medium ring-1 ring-gray-200 ring-inset dark:ring-gray-800">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-1">
-                                <Skeleton className="h-4 w-4" />
-                                <Skeleton className="h-4 w-12" />
-                              </div>
-                              <Skeleton className="h-4 w-4" />
-                            </div>
-                            <Skeleton className="h-6 w-20" />
-                          </div>
-                          {/* Badges Skeleton */}
-                          <div className="flex flex-col gap-2">
-                            <div className="flex flex-wrap items-center gap-2">
-                              <Skeleton className="h-6 w-20 rounded-md" />
-                              <Skeleton className="h-6 w-24 rounded-md" />
-                              <Skeleton className="h-6 w-16 rounded-md" />
-                            </div>
-                            <div className="flex flex-wrap items-center gap-2">
-                              <Skeleton className="h-6 w-18 rounded-md" />
-                              <Skeleton className="h-6 w-22 rounded-md" />
-                            </div>
-                          </div>
-                        </div>
-                        {/* Anxiety Card Skeleton */}
-                        <div className="text-md flex w-fit min-w-40 flex-col gap-x-1.5 rounded-md px-3 py-2 font-medium ring-1 ring-gray-200 ring-inset dark:ring-gray-800">
-                          <div className="flex flex-col justify-between">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-1">
-                                <Skeleton className="h-4 w-4" />
-                                <Skeleton className="h-4 w-32" />
-                              </div>
-                              <Skeleton className="h-3 w-16" />
-                            </div>
-                            <Skeleton className="mt-2 h-8 w-24" />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  }
-                >
-                  <AccountStatus address={resolvedAddresses[0]} />
-                </Suspense>
+                <AccountStatus address={resolvedAddresses[0]} />
               </div>
             )}
           </div>
