@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Tooltip,
   TooltipTrigger,
@@ -14,7 +13,7 @@ interface MemoizedTooltipProps {
   align?: "start" | "center" | "end";
 }
 
-export const MemoizedTooltip = React.memo(function MemoizedTooltip({
+export const MemoizedTooltip = function MemoizedTooltip({
   trigger,
   content,
   className,
@@ -31,13 +30,13 @@ export const MemoizedTooltip = React.memo(function MemoizedTooltip({
       </TooltipContent>
     </Tooltip>
   );
-});
+};
 
 // Memoized TooltipContent component for direct usage
-export const MemoizedTooltipContent = React.memo(TooltipContent);
+export const MemoizedTooltipContent = TooltipContent;
 
 // Memoized TooltipTrigger component for direct usage
-export const MemoizedTooltipTrigger = React.memo(TooltipTrigger);
+export const MemoizedTooltipTrigger = TooltipTrigger;
 
 // Specialized memoized tooltip for number displays with dates
 interface NumberTooltipProps {
@@ -45,12 +44,12 @@ interface NumberTooltipProps {
   dateString: string;
 }
 
-export const NumberTooltip = React.memo(function NumberTooltip({
+export const NumberTooltip = function NumberTooltip({
   value,
   dateString,
 }: NumberTooltipProps) {
   return <MemoizedTooltip trigger={value} content={dateString} />;
-});
+};
 
 // Specialized memoized tooltip for amount displays with dates
 interface AmountTooltipProps {
@@ -58,12 +57,12 @@ interface AmountTooltipProps {
   dateString: string;
 }
 
-export const AmountTooltip = React.memo(function AmountTooltip({
+export const AmountTooltip = function AmountTooltip({
   amount,
   dateString,
 }: AmountTooltipProps) {
   return <MemoizedTooltip trigger={amount} content={dateString} />;
-});
+};
 
 // Comprehensive memoized tooltip for complex use cases
 interface ComplexTooltipProps {
@@ -75,7 +74,7 @@ interface ComplexTooltipProps {
   asChild?: boolean;
 }
 
-export const ComplexTooltip = React.memo(function ComplexTooltip({
+export const ComplexTooltip = function ComplexTooltip({
   children,
   content,
   className,
@@ -91,4 +90,4 @@ export const ComplexTooltip = React.memo(function ComplexTooltip({
       </TooltipContent>
     </Tooltip>
   );
-});
+};

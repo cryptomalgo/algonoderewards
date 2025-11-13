@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import {
   ScatterChart,
   Scatter,
@@ -46,7 +46,7 @@ const DAYS = [
   "Sunday",
 ];
 
-const RewardByDayHourChart = React.memo(function RewardByDayHourChart({
+const RewardByDayHourChart = function RewardByDayHourChart({
   blocks,
 }: RewardByDayHourChartProps) {
   const { theme } = useTheme();
@@ -204,6 +204,6 @@ const RewardByDayHourChart = React.memo(function RewardByDayHourChart({
       </p>
     </div>
   );
-});
+};
 
 export default RewardByDayHourChart;

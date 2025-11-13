@@ -27,6 +27,81 @@ const BlockRewardIntervals = lazy(
   () => import("./charts/block-reward-intervals"),
 );
 
+// Enhanced loading placeholders for different content types
+const StatsFallback = () => (
+  <div className="space-y-4">
+    {/* APY Panel */}
+    <div className="mb-4 rounded-lg bg-slate-100 shadow-sm dark:bg-white/6">
+      <div className="mx-auto h-full max-w-7xl rounded-lg p-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className="rounded-sm bg-slate-50 px-3 py-2 sm:px-4 sm:py-3 md:py-4 lg:py-5 dark:bg-black/10"
+            >
+              <Skeleton className="mb-1 h-4 w-16" />
+              <Skeleton className="h-6 w-20" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+    {/* Totals Panel */}
+    <div className="mb-4 rounded-lg bg-slate-100 shadow-sm dark:bg-white/6">
+      <div className="mx-auto h-full max-w-7xl rounded-lg p-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="rounded-sm bg-slate-50 px-3 py-2 sm:px-4 sm:py-3 md:py-4 lg:py-5 dark:bg-black/10"
+            >
+              <Skeleton className="mb-1 h-4 w-24" />
+              <Skeleton className="h-6 w-28" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+    {/* Rewards/Blocks Per Day Panels */}
+    <div className="flex justify-between gap-3 md:flex-col">
+      {[1, 2].map((i) => (
+        <div
+          key={i}
+          className="mb-4 flex-1 rounded-lg bg-slate-100 shadow-sm dark:bg-white/6"
+        >
+          <div className="mx-auto h-full max-w-7xl rounded-lg p-4">
+            <div className="rounded-sm bg-slate-50 px-3 py-2 sm:px-4 sm:py-3 md:py-4 lg:py-5 dark:bg-black/10">
+              <Skeleton className="mb-1 h-4 w-20" />
+              <Skeleton className="h-6 w-16" />
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+const HeatmapFallback = () => (
+  <div className="mt-6 rounded-lg bg-gray-100 p-6 dark:bg-gray-800">
+    <Skeleton className="mb-4 h-6 w-32" />
+    <div className="grid grid-cols-7 gap-1">
+      {Array.from({ length: 49 }).map((_, i) => (
+        <Skeleton key={i} className="h-4 w-4" />
+      ))}
+    </div>
+  </div>
+);
+
+// Enhanced loading placeholder for charts with proper structure
+const ChartFallback = () => (
+  <div className="-mx-6 mt-6 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:mx-0 sm:p-6 dark:border-gray-800 dark:bg-gray-900">
+    <Skeleton className="mb-2 h-6 w-32" />
+    <div className="mt-2" style={{ width: "100%", height: "320px" }}>
+      <Skeleton className="h-full w-full" />
+    </div>
+  </div>
+);
+
 export default function AddressView({ addresses }: { addresses: string }) {
   const navigate = useNavigate();
   const [showFilters, setShowFilters] = useState(false);
@@ -55,15 +130,30 @@ export default function AddressView({ addresses }: { addresses: string }) {
       }),
     });
   };
-  // Track selected addresses with a state
-  const [selectedAddresses, setSelectedAddresses] = useState<string[]>([]);
 
-  // Set all addresses as selected when resolvedAddresses changes
+  // Track selected addresses with a state - derive initial value from resolvedAddresses
+  const [selectedAddresses, setSelectedAddresses] = useState<string[]>(() =>
+    resolvedAddresses?.length > 0
+      ? resolvedAddresses.map((addr) => addr.address)
+      : [],
+  );
+
+  // Sync selectedAddresses when resolvedAddresses changes (but only the keys, not on every render)
+  const resolvedAddressKeys = useMemo(
+    () =>
+      resolvedAddresses?.length > 0
+        ? resolvedAddresses.map((addr) => addr.address).join(",")
+        : "",
+    [resolvedAddresses],
+  );
+
+  // Update selected addresses when the resolved addresses change (new addresses loaded)
   useMemo(() => {
     if (resolvedAddresses?.length > 0) {
       setSelectedAddresses(resolvedAddresses.map((addr) => addr.address));
     }
-  }, [resolvedAddresses]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resolvedAddressKeys]);
 
   const { data: blocks, loading, hasError } = useBlocks(resolvedAddresses);
 
@@ -80,81 +170,6 @@ export default function AddressView({ addresses }: { addresses: string }) {
 
   // Use React 18 useDeferredValue for smooth UI updates during heavy rendering
   const deferredBlocks = useDeferredValue(filteredBlocks);
-
-  // Enhanced loading placeholders for different content types
-  const StatsFallback = () => (
-    <div className="space-y-4">
-      {/* APY Panel */}
-      <div className="mb-4 rounded-lg bg-slate-100 shadow-sm dark:bg-white/6">
-        <div className="mx-auto h-full max-w-7xl rounded-lg p-4">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="rounded-sm bg-slate-50 px-3 py-2 sm:px-4 sm:py-3 md:py-4 lg:py-5 dark:bg-black/10"
-              >
-                <Skeleton className="mb-1 h-4 w-16" />
-                <Skeleton className="h-6 w-20" />
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-      {/* Totals Panel */}
-      <div className="mb-4 rounded-lg bg-slate-100 shadow-sm dark:bg-white/6">
-        <div className="mx-auto h-full max-w-7xl rounded-lg p-4">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="rounded-sm bg-slate-50 px-3 py-2 sm:px-4 sm:py-3 md:py-4 lg:py-5 dark:bg-black/10"
-              >
-                <Skeleton className="mb-1 h-4 w-24" />
-                <Skeleton className="h-6 w-28" />
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-      {/* Rewards/Blocks Per Day Panels */}
-      <div className="flex justify-between gap-3 md:flex-col">
-        {[1, 2].map((i) => (
-          <div
-            key={i}
-            className="mb-4 flex-1 rounded-lg bg-slate-100 shadow-sm dark:bg-white/6"
-          >
-            <div className="mx-auto h-full max-w-7xl rounded-lg p-4">
-              <div className="rounded-sm bg-slate-50 px-3 py-2 sm:px-4 sm:py-3 md:py-4 lg:py-5 dark:bg-black/10">
-                <Skeleton className="mb-1 h-4 w-20" />
-                <Skeleton className="h-6 w-16" />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  const HeatmapFallback = () => (
-    <div className="mt-6 rounded-lg bg-gray-100 p-6 dark:bg-gray-800">
-      <Skeleton className="mb-4 h-6 w-32" />
-      <div className="grid grid-cols-7 gap-1">
-        {Array.from({ length: 49 }).map((_, i) => (
-          <Skeleton key={i} className="h-4 w-4" />
-        ))}
-      </div>
-    </div>
-  );
-
-  // Enhanced loading placeholder for charts with proper structure
-  const ChartFallback = () => (
-    <div className="-mx-6 mt-6 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:mx-0 sm:p-6 dark:border-gray-800 dark:bg-gray-900">
-      <Skeleton className="mb-2 h-6 w-32" />
-      <div className="mt-2" style={{ width: "100%", height: "320px" }}>
-        <Skeleton className="h-full w-full" />
-      </div>
-    </div>
-  );
 
   if (hasError) {
     return <Error />;

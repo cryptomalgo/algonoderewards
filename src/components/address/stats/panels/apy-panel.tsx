@@ -12,9 +12,8 @@ import {
 import NumberDisplay from "@/components/number-display";
 import AlgoAmountDisplay from "@/components/algo-amount-display";
 import { Panel } from "../panel";
-import React from "react";
 
-const ApyDisplay = React.memo(function ApyDisplay({
+const ApyDisplay = function ApyDisplay({
   totalRewardsOverPeriod,
   amountStacked,
   nbDays,
@@ -66,7 +65,7 @@ const ApyDisplay = React.memo(function ApyDisplay({
       </TooltipContent>
     </Tooltip>
   );
-});
+};
 
 export function ApyPanel({
   stats,

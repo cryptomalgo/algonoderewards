@@ -1,4 +1,3 @@
-import React from "react";
 import { Block } from "algosdk/client/indexer";
 import { useBlocksStats } from "@/hooks/useBlocksStats";
 import { ResolvedAddress } from "@/components/heatmap/types";
@@ -7,7 +6,7 @@ import { RewardsPerDayPanel } from "./panels/rewards-per-day-panel";
 import { ApyPanel } from "./panels/apy-panel";
 import { TotalsPanel } from "./panels/total-panel";
 
-const StatsPanels = React.memo(function StatsPanels({
+const StatsPanels = function StatsPanels({
   filteredBlocks,
   loading,
   resolvedAddresses,
@@ -32,6 +31,6 @@ const StatsPanels = React.memo(function StatsPanels({
       </div>
     </div>
   );
-});
+};
 
 export default StatsPanels;

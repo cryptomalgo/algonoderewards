@@ -415,7 +415,7 @@ function ChartTooltip({
   averageBlockTime,
 }: {
   active?: boolean;
-  payload?: Payload<ValueType, NameType>[] | undefined;
+  payload?: readonly Payload<ValueType, NameType>[] | undefined;
   label?: string | number;
   chartData: ChartDataItem[];
   averageBlockTime: number;

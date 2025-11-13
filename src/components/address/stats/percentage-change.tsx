@@ -7,12 +7,17 @@ import {
 import { cn } from "@/lib/utils";
 import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
 
-const PercentageChange = React.memo<{
+const PercentageChange = ({
+  percentage,
+  direction,
+  previousValueDisplay,
+  className,
+}: {
   percentage: number;
   direction: "up" | "down" | "none";
   previousValueDisplay: React.ReactNode;
   className?: string;
-}>(({ percentage, direction, previousValueDisplay, className }) => {
+}) => {
   if (direction === "none") return null;
 
   const Icon = direction === "up" ? ArrowUpIcon : ArrowDownIcon;
@@ -41,6 +46,6 @@ const PercentageChange = React.memo<{
       <TooltipContent>{previousValueDisplay}</TooltipContent>
     </Tooltip>
   );
-});
+};
 
 export default PercentageChange;

@@ -150,4 +150,4 @@ const Heatmap: React.FC<{ blocks: Block[] }> = ({ blocks }) => {
   );
 };
 
-export default React.memo(Heatmap);
+export default Heatmap;
