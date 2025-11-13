@@ -16,6 +16,7 @@
 - Write tests for new functionality
 - Ensure TypeScript types are properly defined
 - Follow existing code patterns and conventions in the codebase
+- **Always run `npm run ci` after big changes** to check for errors, lint files, type-check, build, and run tests
 
 ### Loading States
 
