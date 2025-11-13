@@ -1,3 +1,4 @@
+import React from "react";
 import { DotBadge } from "@/components/dot-badge";
 import { useAverageBlockTime } from "@/hooks/useAverageBlockTime";
 import { useStakeInfo } from "@/hooks/useStakeInfo";
@@ -8,13 +9,12 @@ import { AnxietyGauge } from "./anxiety-gauge";
 import { LastBlockProposedBadge } from "./last-block-proposed-badge";
 import AnticipatedTimeBetweenBlocksBadge from "./anticipated-time-between-blocks-badge";
 import {
-  TooltipProvider,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/mobile-tooltip";
 import AlgoAmountDisplay from "@/components/algo-amount-display";
-import Spinner from "@/components/spinner";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useSearch } from "@tanstack/react-router";
 
 /**
@@ -34,7 +34,11 @@ function calculateLikelihoodOfNoRewards(
   return (1 - percentageOfTotalStake) ** roundsSinceLastReward * 100;
 }
 
-export function AnxietyBox({ account }: { account: Account }) {
+export const AnxietyBox = React.memo(function AnxietyBox({
+  account,
+}: {
+  account: Account;
+}) {
   const search = useSearch({ from: "/$addresses" });
 
   const isBalanceHidden = search.hideBalance;
@@ -51,7 +55,7 @@ export function AnxietyBox({ account }: { account: Account }) {
   } = useAverageBlockTime();
 
   if (isStakeInfoPending || isBlockTimePending) {
-    return <Spinner />;
+    return <Skeleton className="h-8 w-24" />;
   }
   if (stakeInfoError) {
     return (
@@ -94,54 +98,50 @@ export function AnxietyBox({ account }: { account: Account }) {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-center">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <AnxietyGauge value={Math.round(likelihoodOfNoRewards)} />
-            </TooltipTrigger>
-            <TooltipContent>
-              Shows how normal it is to not have proposed a block since the last
-              one, based on expected timing between proposed blocks.
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </div>
-      <LastBlockProposedBadge account={account} hidden={isBalanceHidden} />
-      <TooltipProvider>
         <Tooltip>
           <TooltipTrigger>
-            <AnticipatedTimeBetweenBlocksBadge
-              ancitipatedTimeInMinutes={anticipatedBlockTimeMinutes}
-              hidden={isBalanceHidden}
-            />
+            <AnxietyGauge value={Math.round(likelihoodOfNoRewards)} />
           </TooltipTrigger>
           <TooltipContent>
-            The estimated number of rounds between proposed blocks is{" "}
-            <span className="dark:bg-accent bg-gray-700">
-              total stake / your stake
-            </span>
-            .
-            <br />
-            Based on the total stake of{" "}
-            <AlgoAmountDisplay
-              microAlgoAmount={totalStake.microAlgos}
-              showUsdValue={false}
-              showAnimation={false}
-            />{" "}
-            and your stake{" "}
-            <AlgoAmountDisplay
-              microAlgoAmount={accountStake.microAlgos}
-              showUsdValue={false}
-              showAnimation={false}
-            />{" "}
-            you should propose every{" "}
-            <strong>{Math.round(roundsBetweenBlocks)} rounds</strong>. <br />
-            With a average round time of {averageBlockTime}s it's{" "}
-            <strong>{Math.round(anticipatedBlockTimeMinutes)}</strong> minutes
-            so {formatMinutes(Math.round(anticipatedBlockTimeMinutes))}.
+            Shows how normal it is to not have proposed a block since the last
+            one, based on expected timing between proposed blocks.
           </TooltipContent>
         </Tooltip>
-      </TooltipProvider>
+      </div>
+      <LastBlockProposedBadge account={account} hidden={isBalanceHidden} />
+      <Tooltip>
+        <TooltipTrigger>
+          <AnticipatedTimeBetweenBlocksBadge
+            ancitipatedTimeInMinutes={anticipatedBlockTimeMinutes}
+            hidden={isBalanceHidden}
+          />
+        </TooltipTrigger>
+        <TooltipContent>
+          The estimated number of rounds between proposed blocks is{" "}
+          <span className="dark:bg-accent bg-gray-700">
+            total stake / your stake
+          </span>
+          .
+          <br />
+          Based on the total stake of{" "}
+          <AlgoAmountDisplay
+            microAlgoAmount={totalStake.microAlgos}
+            showUsdValue={false}
+            showAnimation={false}
+          />{" "}
+          and your stake{" "}
+          <AlgoAmountDisplay
+            microAlgoAmount={accountStake.microAlgos}
+            showUsdValue={false}
+            showAnimation={false}
+          />{" "}
+          you should propose every{" "}
+          <strong>{Math.round(roundsBetweenBlocks)} rounds</strong>. <br />
+          With a average round time of {averageBlockTime}s it's{" "}
+          <strong>{Math.round(anticipatedBlockTimeMinutes)}</strong> minutes so{" "}
+          {formatMinutes(Math.round(anticipatedBlockTimeMinutes))}.
+        </TooltipContent>
+      </Tooltip>
     </div>
   );
-}
+});

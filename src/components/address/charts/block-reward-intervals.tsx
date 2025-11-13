@@ -1,3 +1,4 @@
+import React from "react";
 import { Block } from "algosdk/client/indexer";
 import { useMemo, useState, useEffect } from "react";
 import {
@@ -15,7 +16,7 @@ import {
 import { useTheme } from "@/components/theme-provider";
 import { useStakeInfo } from "@/hooks/useStakeInfo";
 import { AlgoAmount } from "@algorandfoundation/algokit-utils/types/amount";
-import Spinner from "@/components/spinner";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ResolvedAddress } from "@/components/heatmap/types";
 import { useAccounts } from "@/hooks/useAccounts";
 import { StartDatePicker } from "@/components/ui/start-date-picker";
@@ -414,7 +415,7 @@ function ChartTooltip({
   averageBlockTime,
 }: {
   active?: boolean;
-  payload?: Payload<ValueType, NameType>[] | undefined;
+  payload?: readonly Payload<ValueType, NameType>[] | undefined;
   label?: string | number;
   chartData: ChartDataItem[];
   averageBlockTime: number;
@@ -513,7 +514,7 @@ function ChartTooltip({
   );
 }
 
-export default function BlockRewardIntervals({
+const BlockRewardIntervals = React.memo(function BlockRewardIntervals({
   blocks,
   resolvedAddresses,
 }: {
@@ -603,7 +604,14 @@ export default function BlockRewardIntervals({
     isCurrentRoundPending ||
     isAverageBlockTimePending
   ) {
-    return <Spinner />;
+    return (
+      <div className="-mx-6 mt-6 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:mx-0 sm:p-6 dark:border-gray-800 dark:bg-gray-900">
+        <Skeleton className="mb-4 h-6 w-48" />
+        <div style={{ width: "100%", height: "320px" }}>
+          <Skeleton className="h-full w-full" />
+        </div>
+      </div>
+    );
   }
 
   if (stakeInfoError) {
@@ -690,8 +698,12 @@ export default function BlockRewardIntervals({
           />
         </div>
       </div>
-      <div className="mt-2 h-150">
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="mt-2" style={{ width: "100%", height: "600px" }}>
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
+          initialDimension={{ width: 1000, height: 600 }}
+        >
           <ComposedChart
             data={chartData}
             margin={{
@@ -934,4 +946,6 @@ export default function BlockRewardIntervals({
       </div>
     </div>
   );
-}
+});
+
+export default BlockRewardIntervals;

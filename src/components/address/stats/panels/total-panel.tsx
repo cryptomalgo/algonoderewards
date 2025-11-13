@@ -1,11 +1,6 @@
 import AlgoAmountDisplay from "@/components/algo-amount-display";
 import NumberDisplay from "@/components/number-display";
-import {
-  TooltipProvider,
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-} from "@/components/ui/mobile-tooltip";
+import { NumberTooltip, AmountTooltip } from "@/components/ui/memoized-tooltip";
 import { BlockStats } from "@/hooks/useBlocksStats";
 import StatBox from "../stat-box";
 import { Panel } from "../panel";
@@ -23,71 +18,59 @@ export function TotalsPanel({
         <StatBox
           title="Total rewards"
           loading={loading}
+          skeletonLines={2}
           content={<AlgoAmountDisplay microAlgoAmount={stats.totalRewards} />}
         />
         <StatBox
           title="Total blocks"
           loading={loading}
+          skeletonLines={1}
           content={<NumberDisplay value={stats.totalNbOfBlocksWithRewards} />}
         />
         <StatBox
           title="Max blocks in a day"
           loading={loading}
+          skeletonLines={1}
           content={
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  <NumberDisplay value={stats.maxBlocksInDay} />
-                </TooltipTrigger>
-                <TooltipContent>
-                  {stats.maxBlocksInDayDateString}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <NumberTooltip
+              value={<NumberDisplay value={stats.maxBlocksInDay} />}
+              dateString={stats.maxBlocksInDayDateString}
+            />
           }
         />
         <StatBox
           title="Max rewards in a day"
           loading={loading}
+          skeletonLines={2}
           content={
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  <AlgoAmountDisplay microAlgoAmount={stats.maxRewardsInDay} />
-                </TooltipTrigger>
-                <TooltipContent>
-                  {stats.maxRewardsInDayDateString}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <AmountTooltip
+              amount={
+                <AlgoAmountDisplay microAlgoAmount={stats.maxRewardsInDay} />
+              }
+              dateString={stats.maxRewardsInDayDateString}
+            />
           }
         />
         <StatBox
           title="Min reward"
           loading={loading}
+          skeletonLines={2}
           content={
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  <AlgoAmountDisplay microAlgoAmount={stats.minReward} />
-                </TooltipTrigger>
-                <TooltipContent>{stats.minRewardDate}</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <AmountTooltip
+              amount={<AlgoAmountDisplay microAlgoAmount={stats.minReward} />}
+              dateString={stats.minRewardDate}
+            />
           }
         />
         <StatBox
           title="Max reward"
           loading={loading}
+          skeletonLines={2}
           content={
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  <AlgoAmountDisplay microAlgoAmount={stats.maxReward} />
-                </TooltipTrigger>
-                <TooltipContent>{stats.maxRewardDate}</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <AmountTooltip
+              amount={<AlgoAmountDisplay microAlgoAmount={stats.maxReward} />}
+              dateString={stats.maxRewardDate}
+            />
           }
         />
       </div>

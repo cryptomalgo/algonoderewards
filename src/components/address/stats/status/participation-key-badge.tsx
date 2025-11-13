@@ -1,9 +1,9 @@
+import React from "react";
 import { DotBadge } from "@/components/dot-badge";
-import Spinner from "@/components/spinner";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/mobile-tooltip";
 import { useAverageBlockTime } from "@/hooks/useAverageBlockTime";
@@ -12,30 +12,34 @@ import { format, formatDistanceToNow } from "date-fns";
 import { KeyRoundIcon } from "lucide-react";
 import { useMemo } from "react";
 
-export function ParticipationKeyBadge({ account }: { account: Account }) {
-  const { data: averageBlockTime, isPending } = useAverageBlockTime();
+export const ParticipationKeyBadge = React.memo<{ account: Account }>(
+  ({ account }) => {
+    const { data: averageBlockTime, isPending } = useAverageBlockTime();
 
-  const remainingRounds = account.participation
-    ? account.participation.voteLastValid - account.round
-    : 0;
+    const remainingRounds = account.participation
+      ? account.participation.voteLastValid - account.round
+      : 0;
 
-  // Calculate expiration time in seconds (pure calculation)
-  const expirationTimeInSeconds = useMemo(() => {
-    if (!averageBlockTime) return null;
-    return Number(remainingRounds) * averageBlockTime;
-  }, [remainingRounds, averageBlockTime]);
+    // Calculate expiration time in seconds (pure calculation)
+    const expirationTimeInSeconds = useMemo(() => {
+      if (!averageBlockTime) return null;
+      return Number(remainingRounds) * averageBlockTime;
+    }, [remainingRounds, averageBlockTime]);
 
-  if (isPending) return <Spinner />;
+    if (isPending) return <Skeleton className="h-6 w-24 rounded-md" />;
 
-  if (!account.participation) {
-    return (
-      <DotBadge className="text-md" color="red" label="No participation key" />
-    );
-  }
+    if (!account.participation) {
+      return (
+        <DotBadge
+          className="text-md"
+          color="red"
+          label="No participation key"
+        />
+      );
+    }
 
-  if (!averageBlockTime || !expirationTimeInSeconds)
-    return (
-      <TooltipProvider>
+    if (!averageBlockTime || !expirationTimeInSeconds)
+      return (
         <Tooltip>
           <TooltipTrigger>
             <span className="text-md inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 font-medium text-gray-900 ring-1 ring-gray-200 ring-inset dark:text-white dark:ring-gray-800">
@@ -47,17 +51,15 @@ export function ParticipationKeyBadge({ account }: { account: Account }) {
             Until round {account.participation.voteLastValid}
           </TooltipContent>
         </Tooltip>
-      </TooltipProvider>
+      );
+
+    // Create date objects here, outside of render but only when needed
+    const now = new Date();
+    const expirationDate = new Date(
+      now.getTime() + expirationTimeInSeconds * 1000,
     );
 
-  // Create date objects here, outside of render but only when needed
-  const now = new Date();
-  const expirationDate = new Date(
-    now.getTime() + expirationTimeInSeconds * 1000,
-  );
-
-  return (
-    <TooltipProvider>
+    return (
       <Tooltip>
         <TooltipTrigger>
           <span className="text-md inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 font-medium text-gray-900 ring-1 ring-gray-200 ring-inset dark:text-white dark:ring-gray-800">
@@ -76,6 +78,6 @@ export function ParticipationKeyBadge({ account }: { account: Account }) {
           expire approximately on {format(expirationDate, "PPpp")}
         </TooltipContent>
       </Tooltip>
-    </TooltipProvider>
-  );
-}
+    );
+  },
+);

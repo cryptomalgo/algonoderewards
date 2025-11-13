@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { Block } from "algosdk/client/indexer";
 import {
   Area,
@@ -25,7 +25,7 @@ type ChartData = {
   dailyAlgos: number;
 };
 
-export default function CumulativeRewardsChart({
+const CumulativeRewardsChart = React.memo(function CumulativeRewardsChart({
   blocks,
 }: {
   blocks: Block[];
@@ -146,8 +146,12 @@ export default function CumulativeRewardsChart({
       <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100">
         Rewards History
       </h3>
-      <div className="mt-2 h-80">
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="mt-2" style={{ width: "100%", height: "320px" }}>
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
+          initialDimension={{ width: 800, height: 320 }}
+        >
           <ComposedChart
             data={data}
             margin={{
@@ -296,4 +300,6 @@ export default function CumulativeRewardsChart({
       </div>
     </div>
   );
-}
+});
+
+export default CumulativeRewardsChart;

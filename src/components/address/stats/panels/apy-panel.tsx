@@ -7,14 +7,13 @@ import { calculateAPYAndProjection } from "@/lib/utils";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/mobile-tooltip";
 import NumberDisplay from "@/components/number-display";
 import AlgoAmountDisplay from "@/components/algo-amount-display";
 import { Panel } from "../panel";
 
-function ApyDisplay({
+const ApyDisplay = function ApyDisplay({
   totalRewardsOverPeriod,
   amountStacked,
   nbDays,
@@ -32,43 +31,41 @@ function ApyDisplay({
   );
 
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <div className="flex flex-col">
-            <span className="flex gap-1">
-              <NumberDisplay animate value={apy.apy} />%
-            </span>
-            <AlgoAmountDisplay
-              className="text-sm"
-              showAnimation
-              hidden={hidden}
-              microAlgoAmount={apy.projectedTotal}
-            />
-          </div>
-        </TooltipTrigger>
-        <TooltipContent>
-          <AlgoAmountDisplay
-            showAnimation={false}
-            showUsdValue={false}
-            microAlgoAmount={totalRewardsOverPeriod}
-          />
-          {` rewarded over ${nbDays} days with `}
-          <AlgoAmountDisplay
-            showAnimation={false}
-            showUsdValue={false}
-            microAlgoAmount={amountStacked}
-          />{" "}
-          stacked. <br />
-          APY is calculated as:{" "}
-          <span className={"dark:bg-accent bg-gray-700"}>
-            (rewards / algoStaked) * (365 / nbDays) * 100)
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div className="flex flex-col">
+          <span className="flex gap-1">
+            <NumberDisplay animate value={apy.apy} />%
           </span>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+          <AlgoAmountDisplay
+            className="text-sm"
+            showAnimation
+            hidden={hidden}
+            microAlgoAmount={apy.projectedTotal}
+          />
+        </div>
+      </TooltipTrigger>
+      <TooltipContent>
+        <AlgoAmountDisplay
+          showAnimation={false}
+          showUsdValue={false}
+          microAlgoAmount={totalRewardsOverPeriod}
+        />
+        {` rewarded over ${nbDays} days with `}
+        <AlgoAmountDisplay
+          showAnimation={false}
+          showUsdValue={false}
+          microAlgoAmount={amountStacked}
+        />{" "}
+        stacked. <br />
+        APY is calculated as:{" "}
+        <span className={"dark:bg-accent bg-gray-700"}>
+          (rewards / algoStaked) * (365 / nbDays) * 100)
+        </span>
+      </TooltipContent>
+    </Tooltip>
   );
-}
+};
 
 export function ApyPanel({
   stats,
@@ -99,6 +96,7 @@ export function ApyPanel({
         <StatBox
           title="Estimated APY"
           loading={loading || pending}
+          skeletonLines={3}
           content={
             <ApyDisplay
               totalRewardsOverPeriod={stats.allTime.totalRewards}
@@ -111,6 +109,7 @@ export function ApyPanel({
         <StatBox
           title="Estimated APY (with last 30D perfs)"
           loading={loading || pending}
+          skeletonLines={3}
           content={
             <ApyDisplay
               totalRewardsOverPeriod={stats.last30Days.totalRewards}
@@ -123,6 +122,7 @@ export function ApyPanel({
         <StatBox
           title="Estimated APY (with last 7D perfs)"
           loading={loading || pending}
+          skeletonLines={3}
           content={
             <ApyDisplay
               totalRewardsOverPeriod={stats.last7Days.totalRewards}

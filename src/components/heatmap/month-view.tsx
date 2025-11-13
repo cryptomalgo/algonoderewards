@@ -1,15 +1,19 @@
-import React from "react";
 import AlgoAmountDisplay from "@/components/algo-amount-display.tsx";
 import DayView from "./day-view";
 import { DayWithRewards } from "./types";
 import NumberDisplay from "@/components/number-display.tsx";
 
-const MonthView: React.FC<{
+const MonthView = ({
+  month,
+  year,
+  daysWithRewards,
+  maxRewardCount,
+}: {
   month: number;
   year: number;
   daysWithRewards: DayWithRewards[];
   maxRewardCount: number;
-}> = ({ month, year, daysWithRewards, maxRewardCount }) => {
+}) => {
   const monthName = new Date(year, month).toLocaleString("default", {
     month: "long",
   });

@@ -1,13 +1,13 @@
 import { useAccount } from "@/hooks/useAccounts";
 import { ResolvedAddress } from "../../../heatmap/types";
-import Spinner from "@/components/spinner.tsx";
-import { BalanceCard } from "./balance-card";
+import { BalanceCard, BalanceCardSkeleton } from "./balance-card";
 import { BalanceThresholdBadge } from "./balance-badge";
 import { IncentiveEligibilityBadge } from "./incentive-eligibility-badge";
 import { LastHeartbeatBadge } from "./last-heartbeat-badge";
 import { ParticipationKeyBadge } from "./participation-key-badge";
 import { StatusBadge } from "./status-badge";
-import { AnxietyCard } from "./anxiety-card";
+import { AnxietyCard, AnxietyCardSkeleton } from "./anxiety-card";
+import { StatusBadgesSkeleton } from "./status-badges-skeleton";
 
 export default function AccountStatus({
   address,
@@ -17,7 +17,17 @@ export default function AccountStatus({
   const { data: account, isPending, isError, error } = useAccount(address);
 
   if (isPending) {
-    return <Spinner />;
+    return (
+      <div className="my-2">
+        <div className="item flex flex-col gap-2">
+          <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center">
+            <BalanceCardSkeleton />
+            <StatusBadgesSkeleton />
+          </div>
+          <AnxietyCardSkeleton />
+        </div>
+      </div>
+    );
   }
 
   if (isError) {

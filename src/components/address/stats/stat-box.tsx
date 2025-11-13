@@ -1,6 +1,6 @@
 import { ErrorBoundary } from "react-error-boundary";
 import { AlertCircleIcon } from "lucide-react";
-import Spinner from "@/components/spinner.tsx";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useSearch } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 
@@ -8,10 +8,12 @@ export default function StatBox({
   title,
   content,
   loading,
+  skeletonLines = 2,
 }: {
   title: string;
   content: React.ReactNode;
   loading: boolean;
+  skeletonLines?: number;
 }) {
   const search = useSearch({ from: "/$addresses" });
   const statsPanelTheme = search.statsPanelTheme;
@@ -40,7 +42,15 @@ export default function StatBox({
               </div>
             }
           >
-            {loading ? <Spinner /> : content}
+            {loading ? (
+              <div className="flex flex-col gap-1">
+                {skeletonLines >= 1 && <Skeleton className="h-6 w-20" />}
+                {skeletonLines >= 2 && <Skeleton className="h-4 w-24" />}
+                {skeletonLines >= 3 && <Skeleton className="h-3 w-16" />}
+              </div>
+            ) : (
+              content
+            )}
           </ErrorBoundary>
         </span>
       </div>

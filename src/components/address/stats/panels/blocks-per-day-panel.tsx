@@ -4,7 +4,6 @@ import StatBox from "../stat-box";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/mobile-tooltip";
 import NumberDisplay from "@/components/number-display";
@@ -43,57 +42,54 @@ export function BlocksPerDayPanel({
         <StatBox
           title="Average blocks per day"
           loading={loading}
+          skeletonLines={1}
           content={
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  <NumberDisplay value={stats.allTime.avgBlocksPerDay} />
-                </TooltipTrigger>
-                <TooltipContent>
-                  {stats.allTime.startDate !== null &&
-                    stats.allTime.endDate &&
-                    `${stats.allTime.totalBlocks} blocks rewarded in ${stats.allTime.totalDays} days (from ${stats.allTime.startDate.toLocaleDateString()} to ${stats.allTime.endDate.toLocaleDateString()})`}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <NumberDisplay value={stats.allTime.avgBlocksPerDay} />
+              </TooltipTrigger>
+              <TooltipContent>
+                {stats.allTime.startDate !== null &&
+                  stats.allTime.endDate &&
+                  `${stats.allTime.totalBlocks} blocks rewarded in ${stats.allTime.totalDays} days (from ${stats.allTime.startDate.toLocaleDateString()} to ${stats.allTime.endDate.toLocaleDateString()})`}
+              </TooltipContent>
+            </Tooltip>
           }
         />
         <StatBox
           title="Average blocks per month"
           loading={loading}
+          skeletonLines={1}
           content={
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  <NumberDisplay
-                    value={stats.allTime.avgBlocksPerDay * AVERAGE_DAY_IN_MONTH}
-                  />
-                </TooltipTrigger>
-                <TooltipContent>
-                  {stats.allTime.startDate !== null &&
-                    stats.allTime.endDate &&
-                    `${stats.allTime.avgBlocksPerDay.toFixed(3)} blocks per day x ${AVERAGE_DAY_IN_MONTH} days in a month (365/12)`}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <NumberDisplay
+                  value={stats.allTime.avgBlocksPerDay * AVERAGE_DAY_IN_MONTH}
+                />
+              </TooltipTrigger>
+              <TooltipContent>
+                {stats.allTime.startDate !== null &&
+                  stats.allTime.endDate &&
+                  `${stats.allTime.avgBlocksPerDay.toFixed(3)} blocks per day x ${AVERAGE_DAY_IN_MONTH} days in a month (365/12)`}
+              </TooltipContent>
+            </Tooltip>
           }
         />
 
         <StatBox
           title="Average blocks per day (last 30D)"
           loading={loading}
+          skeletonLines={1}
           content={
             <div className="flex items-center">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <NumberDisplay value={stats.last30Days.avgBlocksPerDay} />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    {`${stats.last30Days.totalBlocks} blocks proposed from ${stats.last30Days.startDate.toLocaleString()} to ${stats.last30Days.endDate.toLocaleString()}`}
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <NumberDisplay value={stats.last30Days.avgBlocksPerDay} />
+                </TooltipTrigger>
+                <TooltipContent>
+                  {`${stats.last30Days.totalBlocks} blocks proposed from ${stats.last30Days.startDate.toLocaleString()} to ${stats.last30Days.endDate.toLocaleString()}`}
+                </TooltipContent>
+              </Tooltip>
               <PercentageChange
                 percentage={stats.last30Days.change.blocks.percentage}
                 direction={stats.last30Days.change.blocks.direction}
@@ -112,18 +108,17 @@ export function BlocksPerDayPanel({
         <StatBox
           title="Average blocks per day (last 7D)"
           loading={loading}
+          skeletonLines={1}
           content={
             <div className="flex items-center">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <NumberDisplay value={stats.last7Days.avgBlocksPerDay} />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    {`${stats.last7Days.totalBlocks} blocks proposed from ${stats.last7Days.startDate.toLocaleDateString()} to ${stats.last7Days.endDate.toLocaleDateString()}`}
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <NumberDisplay value={stats.last7Days.avgBlocksPerDay} />
+                </TooltipTrigger>
+                <TooltipContent>
+                  {`${stats.last7Days.totalBlocks} blocks proposed from ${stats.last7Days.startDate.toLocaleDateString()} to ${stats.last7Days.endDate.toLocaleDateString()}`}
+                </TooltipContent>
+              </Tooltip>
               <PercentageChange
                 percentage={stats.last7Days.change.blocks.percentage}
                 direction={stats.last7Days.change.blocks.direction}

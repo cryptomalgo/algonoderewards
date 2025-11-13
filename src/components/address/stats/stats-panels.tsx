@@ -6,7 +6,7 @@ import { RewardsPerDayPanel } from "./panels/rewards-per-day-panel";
 import { ApyPanel } from "./panels/apy-panel";
 import { TotalsPanel } from "./panels/total-panel";
 
-export default function StatsPanels({
+const StatsPanels = function StatsPanels({
   filteredBlocks,
   loading,
   resolvedAddresses,
@@ -31,4 +31,6 @@ export default function StatsPanels({
       </div>
     </div>
   );
-}
+};
+
+export default StatsPanels;
