@@ -17,6 +17,18 @@
 - Ensure TypeScript types are properly defined
 - Follow existing code patterns and conventions in the codebase
 
+### Loading States
+
+- **Use Skeleton components for loading states** - NOT Spinner components
+- Skeleton component is located at `src/components/ui/skeleton.tsx`
+- Create custom fallback components that match the structure of the content being loaded
+- Examples in `src/components/address/address-view.tsx`:
+  - `StatsFallback` - Mimics stats panel layout with skeleton placeholders
+  - `HeatmapFallback` - Shows skeleton grid matching heatmap structure
+  - `ChartFallback` - Displays skeleton for chart containers
+- Use `<Skeleton className="h-4 w-32" />` with specific height/width classes
+- Wrap skeletons in the same container structure as actual content for seamless transitions
+
 ### Communication
 
 - Keep responses concise and to the point
