@@ -9,6 +9,11 @@
 - Break down complex files into separate files with specific functions to improve readability and maintainability
 - Keep functions small and single-purpose
 - Extract reusable logic into separate utilities or hooks
+- Do not add comment to everything, explain it in the Chat but only add comments in the code where necessary for clarity (complex logic, important notes)
+- Do not add JSDoc comments unless specifically requested (no @param or @returns etc, we use TypeScript)
+- When you edit test files, run tests using VSCode test explorer instead of the terminal.
+- Do not create unused function that might be useful later, only implement what is needed for the current task
+- When you spend some time understanding the code, add a brief summary on this file (./.github/copilot-instructions.md) on the most suitable section
 
 ### Development Practices
 

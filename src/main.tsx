@@ -25,6 +25,12 @@ declare module "@tanstack/react-router" {
   }
 }
 
+// Remove loading spinner when React mounts
+const loadingElement = document.getElementById("app-loading");
+if (loadingElement) {
+  loadingElement.remove();
+}
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider>

@@ -1,28 +1,23 @@
-import { executePaginatedRequest } from "@algorandfoundation/algokit-utils";
-import { Block, BlockHeadersResponse } from "algosdk/client/indexer";
+import { MinimalBlock } from "@/lib/block-types";
 import { ResolvedAddress } from "@/components/heatmap/types.ts";
-import { indexerClient } from "@/lib/indexer-client";
+import { fetchBlocksWithCache } from "@/lib/block-fetcher";
 
 export async function getAccountsBlockHeaders(
   addresses: ResolvedAddress[],
-): Promise<Block[]> {
-  const blocks = await executePaginatedRequest(
-    (response: BlockHeadersResponse) => {
-      return response.blocks;
-    },
-    (nextToken) => {
-      let s = indexerClient
-        .searchForBlockHeaders()
-        .minRound(46512890)
-        .limit(1000)
-        .proposers(addresses.map((a: ResolvedAddress) => a.address));
-      if (nextToken) {
-        s = s.nextToken(nextToken);
-      }
-      return s;
-    },
-  );
-  return blocks.filter(
-    (block) => block.proposerPayout && block.proposerPayout > 0,
-  );
+  options?: {
+    enableCache?: boolean;
+    currentRound?: number;
+    onProgress?: (
+      syncedUntilRound: number,
+      startRound: number,
+      currentRound: number,
+      remainingRounds: number,
+    ) => void;
+  },
+): Promise<MinimalBlock[]> {
+  return fetchBlocksWithCache(addresses, {
+    enableCache: options?.enableCache,
+    currentRound: options?.currentRound,
+    onProgress: options?.onProgress,
+  });
 }

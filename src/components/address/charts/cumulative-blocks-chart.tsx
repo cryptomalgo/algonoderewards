@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Block } from "algosdk/client/indexer";
+import { MinimalBlock } from "@/lib/block-types";
 import {
   Area,
   XAxis,
@@ -24,7 +24,7 @@ type ChartData = {
 const CumulativeBlocksChart = React.memo(function CumulativeBlocksChart({
   blocks,
 }: {
-  blocks: Block[];
+  blocks: MinimalBlock[];
 }) {
   const { theme } = useTheme();
   const isSmall = useIsSmallScreen(640);

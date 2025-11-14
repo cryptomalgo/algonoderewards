@@ -14,7 +14,9 @@ import {
 } from "@/components/ui/tooltip.tsx";
 import Settings from "./settings.tsx";
 import { useTheme } from "@/components/theme-provider";
-import { Block } from "algosdk/client/indexer";
+import { MinimalBlock } from "@/lib/block-types";
+import { RefreshButton } from "./refresh-button";
+import { useNFDReverseMultiple } from "@/queries/useNFD";
 
 const AddressBreadcrumb = ({
   resolvedAddresses,
@@ -29,9 +31,23 @@ const AddressBreadcrumb = ({
   setShowFilters: (show: boolean) => void;
   showAddAddress: boolean;
   setShowAddAddress: (show: boolean) => void;
-  blocks: Block[];
+  blocks: MinimalBlock[];
 }) => {
   const { theme } = useTheme();
+
+  // Fetch NFD names for all addresses
+  const addresses = resolvedAddresses.map((addr) => addr.address);
+  const { data: nfdMap = {} } = useNFDReverseMultiple(addresses);
+
+  // Get display name for an address (NFD name with .algo suffix if available)
+  const getDisplayName = (address: string, short = false) => {
+    const nfdName = nfdMap[address];
+    if (nfdName) {
+      return `${nfdName}.algo`;
+    }
+    return short ? displayAlgoAddress(address) : address;
+  };
+
   return (
     <nav aria-label="Breadcrumb" className="flex justify-between">
       <ol role="list" className="flex items-center space-x-4">
@@ -61,7 +77,7 @@ const AddressBreadcrumb = ({
                 <Skeleton className="h-4 w-32" />
               )}
               {resolvedAddresses.length === 1 &&
-                (resolvedAddresses[0].nfd ?? resolvedAddresses[0].address)}
+                getDisplayName(resolvedAddresses[0].address)}
               {resolvedAddresses.length > 1 &&
                 `Multiple addresses (${resolvedAddresses.length})`}
             </a>
@@ -74,8 +90,7 @@ const AddressBreadcrumb = ({
                 <Skeleton className="h-4 w-24" />
               )}
               {resolvedAddresses.length === 1 &&
-                (resolvedAddresses[0].nfd ??
-                  displayAlgoAddress(resolvedAddresses[0].address))}
+                getDisplayName(resolvedAddresses[0].address, true)}
               {resolvedAddresses.length > 1 && "Multiple addresses"}
             </a>
 
@@ -132,7 +147,10 @@ const AddressBreadcrumb = ({
           </div>
         </li>
       </ol>
-      <Settings blocks={blocks} />
+      <div className="flex gap-2">
+        <RefreshButton />
+        <Settings blocks={blocks} />
+      </div>
     </nav>
   );
 };
