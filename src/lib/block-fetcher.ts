@@ -68,15 +68,10 @@ async function fetchNewBlocksFromAPI(
 
       // Calculate remaining rounds from current position to current round
       const remaining = currentRound - maxRoundFetched;
-      
+
       // Call progress callback with the current state
       // Progress bar: 0% = minStartRound, 100% = currentRound
-      onProgress?.(
-        maxRoundFetched,
-        minStartRound,
-        currentRound,
-        remaining,
-      );
+      onProgress?.(maxRoundFetched, minStartRound, currentRound, remaining);
 
       return response.blocks;
     },
@@ -188,7 +183,7 @@ export async function fetchBlocksWithCache(
   // Normal cache-enabled flow
   const cacheResults = await loadCachedBlocks(addresses);
   const minStartRound = await calculateMinStartRound(addresses);
-  
+
   // If the cache is already up to date or very close (within 10 rounds), just return cached data
   // This prevents errors when trying to fetch with minRound >= currentRound
   if (currentRound > 0 && minStartRound > currentRound - 10) {
@@ -199,7 +194,7 @@ export async function fetchBlocksWithCache(
     }
     return combineAndConvertBlocks(mergedBlocksByAddress);
   }
-  
+
   const newBlocks = await fetchNewBlocksFromAPI(addresses, minStartRound, {
     currentRound,
     onProgress,

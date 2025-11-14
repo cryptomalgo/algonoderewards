@@ -135,14 +135,18 @@ export function CacheList({ loading, caches, onCacheCleared }: CacheListProps) {
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p className="max-w-[200px] break-all font-mono text-xs">
+                    <p className="max-w-[200px] font-mono text-xs break-all">
                       {cache.address}
                     </p>
                   </TooltipContent>
                 </Tooltip>
                 <div className="flex flex-wrap gap-x-2 gap-y-1 text-[10px] text-gray-500 sm:gap-x-4 sm:text-xs dark:text-gray-400">
-                  <span className="whitespace-nowrap">{cache.blockCount} blocks</span>
-                  <span className="whitespace-nowrap">{formatBytes(cache.sizeInBytes)}</span>
+                  <span className="whitespace-nowrap">
+                    {cache.blockCount} blocks
+                  </span>
+                  <span className="whitespace-nowrap">
+                    {formatBytes(cache.sizeInBytes)}
+                  </span>
                   <span className="whitespace-nowrap">
                     Updated {formatDate(cache.lastUpdated)}
                   </span>

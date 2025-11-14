@@ -38,7 +38,7 @@ export function CacheStats({
       </div>
       <div className="rounded-lg border border-gray-200 bg-white p-2 sm:p-3 dark:border-gray-700 dark:bg-gray-900">
         <p className="text-xs text-gray-500 dark:text-gray-400">Total Size</p>
-        <div className="whitespace-nowrap text-xl font-semibold sm:text-2xl dark:text-gray-100">
+        <div className="text-xl font-semibold whitespace-nowrap sm:text-2xl dark:text-gray-100">
           {loading ? (
             <Skeleton className="h-6 w-16 sm:h-8 sm:w-20" />
           ) : (

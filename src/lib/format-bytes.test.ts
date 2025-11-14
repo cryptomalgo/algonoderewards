@@ -22,13 +22,13 @@ describe("formatBytes", () => {
     it("should round KB values with decimals", () => {
       // 1.5 KB = 1536 bytes -> rounds to 2 KB
       expect(formatBytes(1536)).toBe("2 KB");
-      
+
       // 358.29 KB = 366888.96 bytes = 366889 bytes -> rounds to 358 KB
       expect(formatBytes(366889)).toBe("358 KB");
-      
+
       // 100.7 KB = 103116.8 bytes = 103117 bytes -> rounds to 101 KB
       expect(formatBytes(103117)).toBe("101 KB");
-      
+
       // 99.4 KB = 101785.6 bytes = 101786 bytes -> rounds to 99 KB
       expect(formatBytes(101786)).toBe("99 KB");
     });
@@ -43,7 +43,7 @@ describe("formatBytes", () => {
     it("should format exact MB values", () => {
       // 1 MB = 1048576 bytes
       expect(formatBytes(1048576)).toBe("1 MB");
-      
+
       // 2 MB = 2097152 bytes
       expect(formatBytes(2097152)).toBe("2 MB");
     });
@@ -51,10 +51,10 @@ describe("formatBytes", () => {
     it("should round MB values with decimals", () => {
       // 1.5 MB = 1572864 bytes -> rounds to 2 MB
       expect(formatBytes(1572864)).toBe("2 MB");
-      
+
       // 2.3 MB = 2411724.8 bytes = 2411725 bytes -> rounds to 2 MB
       expect(formatBytes(2411725)).toBe("2 MB");
-      
+
       // 2.7 MB = 2831155.2 bytes = 2831155 bytes -> rounds to 3 MB
       expect(formatBytes(2831155)).toBe("3 MB");
     });

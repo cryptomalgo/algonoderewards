@@ -558,9 +558,7 @@ describe("Block Fetcher", () => {
       // Mock API response with blocks
       vi.mocked(executePaginatedRequest).mockImplementation(
         // @ts-expect-error - Mock function type
-        async (
-          processFunc: (response: { blocks: any[] }) => any[],
-        ) => {
+        async (processFunc: (response: { blocks: any[] }) => any[]) => {
           const mockResponse = {
             blocks: [
               {
@@ -628,9 +626,7 @@ describe("Block Fetcher", () => {
       // Mock API response with newer blocks
       vi.mocked(executePaginatedRequest).mockImplementation(
         // @ts-expect-error - Mock function type
-        async (
-          processFunc: (response: { blocks: any[] }) => any[],
-        ) => {
+        async (processFunc: (response: { blocks: any[] }) => any[]) => {
           const mockResponse = {
             blocks: [
               {
@@ -689,9 +685,7 @@ describe("Block Fetcher", () => {
 
       vi.mocked(executePaginatedRequest).mockImplementation(
         // @ts-expect-error - Mock function type
-        async (
-          processFunc: (response: { blocks: any[] }) => any[],
-        ) => {
+        async (processFunc: (response: { blocks: any[] }) => any[]) => {
           const mockResponse = {
             blocks: [
               {
@@ -723,9 +717,7 @@ describe("Block Fetcher", () => {
       // Should start from REWARDS_START_ROUND (46512890)
       expect(update.startRound).toBe(46512890);
       // Progress should be >= startRound
-      expect(update.syncedUntilRound).toBeGreaterThanOrEqual(
-        update.startRound,
-      );
+      expect(update.syncedUntilRound).toBeGreaterThanOrEqual(update.startRound);
     });
 
     it("should calculate remaining rounds correctly", async () => {
@@ -739,9 +731,7 @@ describe("Block Fetcher", () => {
 
       vi.mocked(executePaginatedRequest).mockImplementation(
         // @ts-expect-error - Mock function type
-        async (
-          processFunc: (response: { blocks: any[] }) => any[],
-        ) => {
+        async (processFunc: (response: { blocks: any[] }) => any[]) => {
           const mockResponse = {
             blocks: [
               {
