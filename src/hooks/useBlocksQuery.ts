@@ -4,7 +4,7 @@ import { fetchBlocksWithCache } from "@/lib/block-fetcher";
 import { useState } from "react";
 
 interface UseBlocksQueryOptions {
-  disableCache?: boolean;
+  enableCache?: boolean;
   currentRound?: number;
   onProgress?: (
     syncedUntilRound: number,
@@ -37,35 +37,49 @@ export function useBlocksQuery(
     queryFn: async () => {
       setProgressState((prev) => ({ ...prev, showProgress: true }));
 
-      const blocks = await fetchBlocksWithCache(addresses, {
-        disableCache: options?.disableCache,
-        currentRound: options?.currentRound,
-        onProgress: (syncedUntil, start, current, remaining) => {
-          setProgressState({
-            showProgress: true,
-            syncedUntilRound: syncedUntil,
-            startRound: start,
-            currentRound: current,
-            remainingRounds: remaining,
-          });
-          options?.onProgress?.(syncedUntil, start, current, remaining);
-        },
-      });
+      try {
+        const blocks = await fetchBlocksWithCache(addresses, {
+          enableCache: options?.enableCache,
+          currentRound: options?.currentRound,
+          onProgress: (syncedUntil, start, current, remaining) => {
+            setProgressState({
+              showProgress: true,
+              syncedUntilRound: syncedUntil,
+              startRound: start,
+              currentRound: current,
+              remainingRounds: remaining,
+            });
+            options?.onProgress?.(syncedUntil, start, current, remaining);
+          },
+        });
 
-      setProgressState((prev) => ({ ...prev, showProgress: false }));
-      return blocks;
+        setProgressState((prev) => ({ ...prev, showProgress: false }));
+        return blocks;
+      } catch (error) {
+        setProgressState((prev) => ({ ...prev, showProgress: false }));
+        throw error;
+      }
     },
     enabled: addresses.length > 0,
     staleTime: 1000 * 60 * 5, // 5 minutes
     gcTime: 1000 * 60 * 30, // 30 minutes
   });
 
+  // Determine if we should show progress based on query state
+  const shouldShowProgress =
+    query.isLoading || query.isFetching || progressState.showProgress;
+
   return {
     data: query.data ?? [],
     loading: query.isLoading,
     hasError: query.isError,
-    progress: progressState,
+    progress: {
+      ...progressState,
+      showProgress: shouldShowProgress && !query.isError,
+    },
     refetch: query.refetch,
+    closeProgress: () =>
+      setProgressState((prev) => ({ ...prev, showProgress: false })),
   };
 }
 

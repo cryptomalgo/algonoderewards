@@ -27,7 +27,7 @@ export function CacheManagementDialog({
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
 
-  const isCacheDisabled = search.disableCache ?? false;
+  const isCacheEnabled = search.enableCache ?? false;
 
   const { data: caches = [], isLoading: loading } = useQuery({
     queryKey: ["cache-addresses"],
@@ -46,9 +46,9 @@ export function CacheManagementDialog({
     await queryClient.invalidateQueries({ queryKey: ["cache-size"] });
   };
 
-  const handleToggleCache = async (disabled: boolean) => {
+  const handleToggleCache = async (enabled: boolean) => {
     // If disabling cache, clear all cached data first
-    if (disabled) {
+    if (!enabled) {
       try {
         await clearAllCache();
         toast.success("All caches cleared");
@@ -65,7 +65,7 @@ export function CacheManagementDialog({
     navigate({
       search: (prev) => ({
         ...prev,
-        disableCache: disabled,
+        enableCache: enabled,
       }),
       replace: true,
     });
@@ -100,7 +100,7 @@ export function CacheManagementDialog({
           <div className="min-h-0 space-y-4 overflow-y-auto sm:space-y-6">
             <ErrorBoundary>
               <CacheToggle
-                isCacheDisabled={isCacheDisabled}
+                isCacheEnabled={isCacheEnabled}
                 onToggle={handleToggleCache}
               />
             </ErrorBoundary>

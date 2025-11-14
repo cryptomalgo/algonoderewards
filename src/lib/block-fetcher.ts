@@ -170,7 +170,7 @@ function combineAndConvertBlocks(
 export async function fetchBlocksWithCache(
   addresses: ResolvedAddress[],
   options?: {
-    disableCache?: boolean;
+    enableCache?: boolean;
     currentRound?: number;
     onProgress?: (
       syncedUntilRound: number,
@@ -184,12 +184,12 @@ export async function fetchBlocksWithCache(
     return [];
   }
 
-  const disableCache = options?.disableCache ?? false;
+  const enableCache = options?.enableCache ?? false;
   const currentRound = options?.currentRound ?? 0;
   const onProgress = options?.onProgress;
 
   // If cache is disabled, fetch directly from API
-  if (disableCache) {
+  if (!enableCache) {
     const newBlocks = await fetchNewBlocksFromAPI(
       addresses,
       REWARDS_START_ROUND,

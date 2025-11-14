@@ -47,7 +47,7 @@ export default function SearchBar() {
         },
         search: (prev) => ({
           hideBalance: prev.hideBalance ?? false,
-          disableCache: prev.disableCache ?? false,
+          enableCache: prev.enableCache ?? false,
           theme: prev.theme ?? "system",
           statsPanelTheme: prev.statsPanelTheme ?? "indigo",
         }),

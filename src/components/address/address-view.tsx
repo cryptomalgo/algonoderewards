@@ -130,7 +130,7 @@ export default function AddressView({ addresses }: { addresses: string }) {
       replace: true,
       search: (prev) => ({
         hideBalance: false,
-        disableCache: prev.disableCache ?? false,
+        enableCache: prev.enableCache ?? false,
         theme: prev.theme ?? "system",
         statsPanelTheme: prev.statsPanelTheme ?? "indigo",
       }),
@@ -168,8 +168,9 @@ export default function AddressView({ addresses }: { addresses: string }) {
     loading,
     hasError,
     progress,
+    closeProgress,
   } = useBlocksQuery(resolvedAddresses, {
-    disableCache: search.disableCache,
+    enableCache: search.enableCache,
     currentRound: currentRound ? Number(currentRound) : undefined,
   });
 
@@ -286,7 +287,8 @@ export default function AddressView({ addresses }: { addresses: string }) {
         startRound={progress.startRound}
         currentRound={progress.currentRound}
         remainingRounds={progress.remainingRounds}
-        isCacheDisabled={search.disableCache}
+        isCacheDisabled={!search.enableCache}
+        onClose={closeProgress}
       />
     </div>
   );

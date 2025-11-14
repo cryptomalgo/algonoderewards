@@ -1,5 +1,6 @@
 import { Progress } from "@/components/ui/progress";
 import Spinner from "@/components/spinner";
+import { XIcon } from "lucide-react";
 
 interface FetchProgressScreenProps {
   isVisible: boolean;
@@ -8,6 +9,7 @@ interface FetchProgressScreenProps {
   currentRound: number;
   remainingRounds: number;
   isCacheDisabled?: boolean;
+  onClose?: () => void;
 }
 
 export function FetchProgressScreen({
@@ -17,6 +19,7 @@ export function FetchProgressScreen({
   currentRound,
   remainingRounds,
   isCacheDisabled = false,
+  onClose,
 }: FetchProgressScreenProps) {
   const totalRounds = currentRound - startRound;
   const processedRounds = syncedUntilRound - startRound;
@@ -29,7 +32,18 @@ export function FetchProgressScreen({
 
   return (
     <div className="bg-background/80 fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
-      <div className="bg-card mx-4 w-full max-w-md space-y-4 rounded-lg border p-4 shadow-lg sm:space-y-6 sm:p-6">
+      <div className="bg-card relative mx-4 w-full max-w-md space-y-4 rounded-lg border p-4 shadow-lg sm:space-y-6 sm:p-6">
+        {/* Close button */}
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="absolute top-2 right-2 rounded-full p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200"
+            aria-label="Close"
+          >
+            <XIcon className="h-4 w-4" />
+          </button>
+        )}
+
         <div className="space-y-1.5 text-center sm:space-y-2">
           <h2 className="text-base font-semibold sm:text-lg">
             Fetching Block Data

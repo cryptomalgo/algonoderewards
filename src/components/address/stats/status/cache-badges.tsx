@@ -30,7 +30,7 @@ function formatBytes(bytes: number): string {
 
 export function CacheBadges({ onClick }: CacheBadgesProps) {
   const search = useSearch({ from: "/$addresses" });
-  const isCacheDisabled = search.disableCache ?? false;
+  const isCacheEnabled = search.enableCache ?? false;
 
   const { data: totalSize = 0 } = useQuery({
     queryKey: ["cache-size"],
@@ -57,15 +57,15 @@ export function CacheBadges({ onClick }: CacheBadgesProps) {
           <span onClick={onClick} className="cursor-pointer">
             <DotBadge
               className="text-md"
-              color={isCacheDisabled ? "red" : "green"}
-              label={`Cache ${isCacheDisabled ? "disabled" : "enabled"}`}
+              color={isCacheEnabled ? "green" : "red"}
+              label={`Cache ${isCacheEnabled ? "enabled" : "disabled"}`}
             />
           </span>
         </TooltipTrigger>
         <TooltipContent>
-          {isCacheDisabled
-            ? "Caching is disabled. You can speed up future loads by enabling it."
-            : "Caching is enabled. Blocks are saved locally, only newer ones are fetched."}
+          {isCacheEnabled
+            ? "Caching is enabled. Blocks are saved locally, only newer ones are fetched."
+            : "Caching is disabled. You can speed up future loads by enabling it."}
         </TooltipContent>
       </Tooltip>
 

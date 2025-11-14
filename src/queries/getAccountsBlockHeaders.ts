@@ -5,7 +5,7 @@ import { fetchBlocksWithCache } from "@/lib/block-fetcher";
 export async function getAccountsBlockHeaders(
   addresses: ResolvedAddress[],
   options?: {
-    disableCache?: boolean;
+    enableCache?: boolean;
     currentRound?: number;
     onProgress?: (
       syncedUntilRound: number,
@@ -15,5 +15,9 @@ export async function getAccountsBlockHeaders(
     ) => void;
   },
 ): Promise<MinimalBlock[]> {
-  return fetchBlocksWithCache(addresses, options);
+  return fetchBlocksWithCache(addresses, {
+    enableCache: options?.enableCache,
+    currentRound: options?.currentRound,
+    onProgress: options?.onProgress,
+  });
 }

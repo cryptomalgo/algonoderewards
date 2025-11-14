@@ -5,7 +5,7 @@ import { ResolvedAddress } from "@/components/heatmap/types.ts";
 
 export const useBlocks = (
   addresses: ResolvedAddress[],
-  options?: { disableCache?: boolean; currentRound?: number },
+  options?: { enableCache?: boolean; currentRound?: number },
 ) => {
   const [data, setData] = React.useState<MinimalBlock[]>([]);
   const [loading, setLoading] = React.useState(true);
@@ -16,7 +16,7 @@ export const useBlocks = (
   const [currentRound, setCurrentRound] = React.useState(0);
   const [remainingRounds, setRemainingRounds] = React.useState(0);
 
-  const disableCache = options?.disableCache ?? false;
+  const enableCache = options?.enableCache ?? false;
   const currentRoundOption = options?.currentRound ?? 0;
 
   React.useEffect(() => {
@@ -34,7 +34,7 @@ export const useBlocks = (
         setRemainingRounds(0);
 
         const result = await getAccountsBlockHeaders(addresses, {
-          disableCache,
+          enableCache,
           currentRound: currentRoundOption,
           onProgress: (syncedUntil, start, current, remaining) => {
             setSyncedUntilRound(syncedUntil);
@@ -54,7 +54,7 @@ export const useBlocks = (
     };
 
     loadData();
-  }, [addresses, disableCache, currentRoundOption]);
+  }, [addresses, enableCache, currentRoundOption]);
 
   return {
     data,

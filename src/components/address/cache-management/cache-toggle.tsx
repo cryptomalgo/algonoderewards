@@ -2,13 +2,13 @@ import { Label } from "@/components/ui/label";
 import { CustomToggle } from "@/components/ui/custom-toggle";
 
 interface CacheToggleProps {
-  isCacheDisabled: boolean;
-  onToggle: (disabled: boolean) => void;
+  isCacheEnabled: boolean;
+  onToggle: (enabled: boolean) => void;
 }
 
-export function CacheToggle({ isCacheDisabled, onToggle }: CacheToggleProps) {
+export function CacheToggle({ isCacheEnabled, onToggle }: CacheToggleProps) {
   const handleToggle = () => {
-    onToggle(!isCacheDisabled);
+    onToggle(!isCacheEnabled);
   };
 
   return (
@@ -21,14 +21,14 @@ export function CacheToggle({ isCacheDisabled, onToggle }: CacheToggleProps) {
           Enable Caching
         </Label>
         <p className="text-[10px] leading-tight text-gray-500 sm:text-xs sm:leading-normal dark:text-gray-400">
-          {isCacheDisabled
-            ? "Caching is disabled. Data is fetched directly from the API."
-            : "Caching is enabled. Blocks are stored locally for faster access."}
+          {isCacheEnabled
+            ? "Caching is enabled. Blocks are stored locally for faster access."
+            : "Caching is disabled. Data is fetched directly from the API."}
         </p>
       </div>
       <CustomToggle
-        checked={!isCacheDisabled}
-        onCheckedChange={(checked) => onToggle(!checked)}
+        checked={isCacheEnabled}
+        onCheckedChange={(checked) => onToggle(checked)}
         name="cache-enabled"
         ariaLabel="Toggle cache"
       />

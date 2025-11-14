@@ -109,7 +109,9 @@ describe("Block Fetcher", () => {
         },
       ]);
 
-      const blocks = await fetchBlocksWithCache([resolvedAddress1]);
+      const blocks = await fetchBlocksWithCache([resolvedAddress1], {
+        enableCache: true,
+      });
 
       // Should have cached + new blocks
       expect(blocks.length).toBeGreaterThanOrEqual(2);
@@ -266,7 +268,9 @@ describe("Block Fetcher", () => {
         },
       ]);
 
-      await fetchBlocksWithCache([resolvedAddress1, resolvedAddress2]);
+      await fetchBlocksWithCache([resolvedAddress1, resolvedAddress2], {
+        enableCache: true,
+      });
 
       const cache1 = await getBlocksFromCache(address1);
       const cache2 = await getBlocksFromCache(address2);
@@ -437,10 +441,12 @@ describe("Block Fetcher", () => {
       vi.mocked(executePaginatedRequest).mockResolvedValueOnce([]);
 
       // Fetch blocks for both addresses
-      const blocks = await fetchBlocksWithCache([
-        resolvedAddress1,
-        resolvedAddress2,
-      ]);
+      const blocks = await fetchBlocksWithCache(
+        [resolvedAddress1, resolvedAddress2],
+        {
+          enableCache: true,
+        },
+      );
 
       expect(blocks.length).toBeGreaterThan(0);
 
@@ -465,7 +471,7 @@ describe("Block Fetcher", () => {
       expect(address2Blocks.map((b) => Number(b.round))).toEqual([46512920]);
     });
 
-    it("should bypass cache when disableCache option is true", async () => {
+    it("should bypass cache when enableCache option is false", async () => {
       // Pre-populate cache with blocks
       await saveBlocksToCache(address1, mockCachedBlocks1);
 
@@ -485,9 +491,9 @@ describe("Block Fetcher", () => {
         },
       ]);
 
-      // Fetch with disableCache option
+      // Fetch with enableCache option set to false
       const blocks = await fetchBlocksWithCache([resolvedAddress1], {
-        disableCache: true,
+        enableCache: false,
       });
 
       // Should only have the new block from API, not from cache
@@ -518,7 +524,7 @@ describe("Block Fetcher", () => {
       ]);
 
       const blocks = await fetchBlocksWithCache([resolvedAddress1], {
-        disableCache: true,
+        enableCache: false,
       });
 
       // Verify we got the block
