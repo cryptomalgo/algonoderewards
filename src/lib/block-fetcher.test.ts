@@ -14,6 +14,9 @@ vi.mock("@algorandfoundation/algokit-utils", () => ({
   executePaginatedRequest: vi.fn(async () => []),
 }));
 
+// Mock time library
+vi.useFakeTimers();
+
 describe("Block Fetcher", () => {
   // Use valid Algorand addresses (58 characters)
   const address1 = "CEX4PWPMPIR32NUAJHRA6T2YSRW3JZYL23VL4UTEZMWUHHTBO22C3HC4SU";
@@ -557,8 +560,7 @@ describe("Block Fetcher", () => {
 
       // Mock API response with blocks
       vi.mocked(executePaginatedRequest).mockImplementation(
-        // @ts-expect-error - Mock function type
-        async (processFunc: (response: { blocks: any[] }) => any[]) => {
+        async (processFunc: (response: { blocks: unknown[] }) => unknown[]) => {
           const mockResponse = {
             blocks: [
               {
@@ -625,8 +627,7 @@ describe("Block Fetcher", () => {
 
       // Mock API response with newer blocks
       vi.mocked(executePaginatedRequest).mockImplementation(
-        // @ts-expect-error - Mock function type
-        async (processFunc: (response: { blocks: any[] }) => any[]) => {
+        async (processFunc: (response: { blocks: unknown[] }) => unknown[]) => {
           const mockResponse = {
             blocks: [
               {
@@ -684,8 +685,7 @@ describe("Block Fetcher", () => {
       const mockCurrentRound = 46512900;
 
       vi.mocked(executePaginatedRequest).mockImplementation(
-        // @ts-expect-error - Mock function type
-        async (processFunc: (response: { blocks: any[] }) => any[]) => {
+        async (processFunc: (response: { blocks: unknown[] }) => unknown[]) => {
           const mockResponse = {
             blocks: [
               {
@@ -730,8 +730,7 @@ describe("Block Fetcher", () => {
       const mockFetchedRound = 46512920;
 
       vi.mocked(executePaginatedRequest).mockImplementation(
-        // @ts-expect-error - Mock function type
-        async (processFunc: (response: { blocks: any[] }) => any[]) => {
+        async (processFunc: (response: { blocks: unknown[] }) => unknown[]) => {
           const mockResponse = {
             blocks: [
               {

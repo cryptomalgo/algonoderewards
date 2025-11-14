@@ -45,7 +45,7 @@ export default function AccountStatus({
       <div className="item flex flex-col gap-2">
         <div className="flex flex-wrap items-center gap-2">
           <CacheManagementDialog>
-            <CacheBadges onClick={() => {}} />
+            <CacheBadges />
           </CacheManagementDialog>
         </div>
         <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center">

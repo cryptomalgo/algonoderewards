@@ -20,7 +20,11 @@ export async function initDB(): Promise<IDBDatabase> {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
 
     request.onerror = () => {
-      reject(new Error(`Failed to open database: ${request.error}`));
+      reject(
+        new Error(
+          `Failed to open database: ${request.error}. Operation: initDB`,
+        ),
+      );
     };
 
     request.onsuccess = () => {
@@ -53,7 +57,9 @@ export async function getBlocksFromCache(
 
     request.onerror = () => {
       reject(
-        new Error(`Failed to get blocks for ${address}: ${request.error}`),
+        new Error(
+          `Failed to get blocks for ${address}: ${request.error}. Operation: getBlocksFromCache`,
+        ),
       );
     };
 
@@ -96,7 +102,9 @@ export async function saveBlocksToCache(
 
     request.onerror = () => {
       reject(
-        new Error(`Failed to save blocks for ${address}: ${request.error}`),
+        new Error(
+          `Failed to save blocks for ${address}: ${request.error}. Operation: saveBlocksToCache`,
+        ),
       );
     };
 
@@ -132,7 +140,9 @@ export async function clearCacheForAddress(address: string): Promise<void> {
 
     request.onerror = () => {
       reject(
-        new Error(`Failed to clear cache for ${address}: ${request.error}`),
+        new Error(
+          `Failed to clear cache for ${address}: ${request.error}. Operation: clearCacheForAddress`,
+        ),
       );
     };
 

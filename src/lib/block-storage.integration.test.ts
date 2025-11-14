@@ -4,6 +4,7 @@ import {
   saveBlocksToCache,
   getBlocksFromCache,
   clearAllCache,
+  clearCacheForAddress,
 } from "@/lib/block-storage";
 import { useBlocksStats } from "@/hooks/useBlocksStats";
 import { MinimalBlock } from "@/lib/block-types";
@@ -111,5 +112,33 @@ describe("Cache integration with stats", () => {
     const { result } = renderHook(() => useBlocksStats(cached2!));
     expect(result.current.totalRewards).toBe(4500000);
     expect(result.current.totalNbOfBlocksWithRewards).toBe(3);
+  });
+
+  it("should clear cache for a specific address", async () => {
+    const blocks = createTestBlocks();
+
+    // Save to cache
+    await saveBlocksToCache(testAddress, blocks);
+
+    // Clear cache for the address
+    await clearCacheForAddress(testAddress);
+
+    // Verify cache is cleared
+    const cachedBlocks = await getBlocksFromCache(testAddress);
+    expect(cachedBlocks).toBeNull();
+  });
+
+  it("should clear all cache", async () => {
+    const blocks = createTestBlocks();
+
+    // Save to cache
+    await saveBlocksToCache(testAddress, blocks);
+
+    // Clear all cache
+    await clearAllCache();
+
+    // Verify all cache is cleared
+    const cachedBlocks = await getBlocksFromCache(testAddress);
+    expect(cachedBlocks).toBeNull();
   });
 });

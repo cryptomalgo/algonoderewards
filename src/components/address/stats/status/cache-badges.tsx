@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/mobile-tooltip";
 
 interface CacheBadgesProps {
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 interface CachedAddressInfo {
@@ -47,7 +47,7 @@ export function CacheBadges({ onClick }: CacheBadgesProps) {
       {/* Cache Status Badge */}
       <Tooltip>
         <TooltipTrigger asChild>
-          <span onClick={onClick} className="cursor-pointer">
+          <span onClick={onClick} className={onClick ? "cursor-pointer" : ""}>
             <DotBadge
               className="text-md"
               color={isCacheEnabled ? "green" : "red"}
@@ -66,7 +66,7 @@ export function CacheBadges({ onClick }: CacheBadgesProps) {
       {totalSize > 0 && (
         <Tooltip>
           <TooltipTrigger asChild>
-            <span onClick={onClick} className="cursor-pointer">
+            <span onClick={onClick} className={onClick ? "cursor-pointer" : ""}>
               <span className="text-md inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 font-medium text-gray-900 ring-1 ring-gray-200 ring-inset dark:text-white dark:ring-gray-800">
                 <Database className="size-3" />
                 {formatBytes(totalSize)}
