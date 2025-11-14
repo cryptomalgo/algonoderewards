@@ -6,7 +6,7 @@ import {
 } from "./block-types";
 
 const DB_NAME = "AlgoNodeRewardsDB";
-const DB_VERSION = 2; // Incremented to migrate from base64 to address format
+const DB_VERSION = 1;
 const BLOCKS_STORE = "blocks";
 
 interface BlockCache {
@@ -29,17 +29,8 @@ export async function initDB(): Promise<IDBDatabase> {
 
     request.onupgradeneeded = (event) => {
       const db = (event.target as IDBOpenDBRequest).result;
-      const oldVersion = event.oldVersion;
 
-      // Version 1 -> 2: Clear old cache with base64 proposer format
-      if (oldVersion < 2) {
-        // Clear all existing data since proposer format changed from base64 to address
-        if (db.objectStoreNames.contains(BLOCKS_STORE)) {
-          db.deleteObjectStore(BLOCKS_STORE);
-        }
-      }
-
-      // Create or recreate the store
+      // Create the store if it doesn't exist
       if (!db.objectStoreNames.contains(BLOCKS_STORE)) {
         const store = db.createObjectStore(BLOCKS_STORE, {
           keyPath: "address",

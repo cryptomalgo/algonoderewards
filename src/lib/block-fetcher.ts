@@ -11,9 +11,6 @@ import { MinimalBlock, toMinimalBlock } from "./block-types";
 
 const REWARDS_START_ROUND = 46512890;
 
-// Global progress tracker to ensure monotonic progress across all concurrent operations
-const globalProgressTracker = { lastProgress: 0 };
-
 async function loadCachedBlocks(addresses: ResolvedAddress[]) {
   return Promise.all(
     addresses.map(async (addr) => ({
@@ -55,13 +52,9 @@ async function fetchNewBlocksFromAPI(
 ) {
   const currentRound = options?.currentRound ?? 0;
   const onProgress = options?.onProgress;
-  const totalRounds = currentRound - REWARDS_START_ROUND;
 
   // Track the maximum round fetched so far, start with minStartRound to show initial progress
   let maxRoundFetched = minStartRound;
-
-  // Debounce progress updates to prevent race conditions
-  let progressUpdateTimeout: NodeJS.Timeout | null = null;
 
   const apiBlocks = await executePaginatedRequest(
     (response: BlockHeadersResponse) => {
@@ -73,31 +66,17 @@ async function fetchNewBlocksFromAPI(
         maxRoundFetched = Math.max(maxRoundFetched, lastBlockRound);
       }
 
-      // Calculate progress based on max round fetched
-      const currentProgress = maxRoundFetched - REWARDS_START_ROUND;
-
-      // Only update progress if it's higher than the global last progress
-      if (currentProgress > globalProgressTracker.lastProgress) {
-        const processedRounds = Math.min(currentProgress, totalRounds);
-
-        // Debounce the progress update to ensure proper ordering
-        if (progressUpdateTimeout) {
-          clearTimeout(progressUpdateTimeout);
-        }
-        progressUpdateTimeout = setTimeout(() => {
-          // Double-check the progress is still higher before updating
-          if (processedRounds > globalProgressTracker.lastProgress) {
-            const remaining = currentRound - maxRoundFetched;
-            onProgress?.(
-              maxRoundFetched,
-              REWARDS_START_ROUND,
-              currentRound,
-              remaining,
-            );
-            globalProgressTracker.lastProgress = processedRounds;
-          }
-        }, 10); // Small delay to allow for proper ordering
-      }
+      // Calculate remaining rounds from current position to current round
+      const remaining = currentRound - maxRoundFetched;
+      
+      // Call progress callback with the current state
+      // Progress bar: 0% = minStartRound, 100% = currentRound
+      onProgress?.(
+        maxRoundFetched,
+        minStartRound,
+        currentRound,
+        remaining,
+      );
 
       return response.blocks;
     },
@@ -209,6 +188,18 @@ export async function fetchBlocksWithCache(
   // Normal cache-enabled flow
   const cacheResults = await loadCachedBlocks(addresses);
   const minStartRound = await calculateMinStartRound(addresses);
+  
+  // If the cache is already up to date or very close (within 10 rounds), just return cached data
+  // This prevents errors when trying to fetch with minRound >= currentRound
+  if (currentRound > 0 && minStartRound > currentRound - 10) {
+    const mergedBlocksByAddress = new Map<string, MinimalBlock[]>();
+    for (let i = 0; i < cacheResults.length; i++) {
+      const { address, blocks: cachedBlocks } = cacheResults[i];
+      mergedBlocksByAddress.set(address, cachedBlocks || []);
+    }
+    return combineAndConvertBlocks(mergedBlocksByAddress);
+  }
+  
   const newBlocks = await fetchNewBlocksFromAPI(addresses, minStartRound, {
     currentRound,
     onProgress,

@@ -1,18 +1,11 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatBytes } from "@/lib/format-bytes";
 
 interface CacheStatsProps {
   loading: boolean;
   addressCount: number;
   totalBlocks: number;
   totalSize: number;
-}
-
-function formatBytes(bytes: number): string {
-  if (bytes === 0) return "0 B";
-  const k = 1024;
-  const sizes = ["B", "KB", "MB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 }
 
 export function CacheStats({
@@ -39,13 +32,13 @@ export function CacheStats({
           {loading ? (
             <Skeleton className="h-6 w-12 sm:h-8 sm:w-16" />
           ) : (
-            totalBlocks.toLocaleString()
+            totalBlocks
           )}
         </div>
       </div>
       <div className="rounded-lg border border-gray-200 bg-white p-2 sm:p-3 dark:border-gray-700 dark:bg-gray-900">
         <p className="text-xs text-gray-500 dark:text-gray-400">Total Size</p>
-        <div className="text-xl font-semibold sm:text-2xl dark:text-gray-100">
+        <div className="whitespace-nowrap text-xl font-semibold sm:text-2xl dark:text-gray-100">
           {loading ? (
             <Skeleton className="h-6 w-16 sm:h-8 sm:w-20" />
           ) : (

@@ -66,7 +66,7 @@ describe("Block Storage", () => {
       const db = await initDB();
       expect(db).toBeDefined();
       expect(db.name).toBe("AlgoNodeRewardsDB");
-      expect(db.version).toBe(2); // Updated from 1 to 2 for cache migration
+      expect(db.version).toBe(1);
       db.close();
     });
 

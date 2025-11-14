@@ -8,6 +8,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/mobile-tooltip";
 import { displayAlgoAddress } from "@/lib/utils";
+import { formatBytes } from "@/lib/format-bytes";
 import { useNFDReverseMultiple } from "@/queries/useNFD";
 import { Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
@@ -26,14 +27,6 @@ interface CacheListProps {
   loading: boolean;
   caches: CachedAddressInfo[];
   onCacheCleared: () => void;
-}
-
-function formatBytes(bytes: number): string {
-  if (bytes === 0) return "0 B";
-  const k = 1024;
-  const sizes = ["B", "KB", "MB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 }
 
 function formatDate(timestamp: number): string {
@@ -142,12 +135,14 @@ export function CacheList({ loading, caches, onCacheCleared }: CacheListProps) {
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p className="font-mono text-xs">{cache.address}</p>
+                    <p className="max-w-[200px] break-all font-mono text-xs">
+                      {cache.address}
+                    </p>
                   </TooltipContent>
                 </Tooltip>
                 <div className="flex flex-wrap gap-x-2 gap-y-1 text-[10px] text-gray-500 sm:gap-x-4 sm:text-xs dark:text-gray-400">
-                  <span>{cache.blockCount} blocks</span>
-                  <span>{formatBytes(cache.sizeInBytes)}</span>
+                  <span className="whitespace-nowrap">{cache.blockCount} blocks</span>
+                  <span className="whitespace-nowrap">{formatBytes(cache.sizeInBytes)}</span>
                   <span className="whitespace-nowrap">
                     Updated {formatDate(cache.lastUpdated)}
                   </span>

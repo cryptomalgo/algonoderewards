@@ -56,6 +56,9 @@ export function useBlocksQuery(
         setProgressState((prev) => ({ ...prev, showProgress: false }));
         return blocks;
       } catch (error) {
+        console.error("Failed to fetch blocks:", error);
+        console.error("Addresses:", addresses.map((a) => a.address));
+        console.error("Options:", options);
         setProgressState((prev) => ({ ...prev, showProgress: false }));
         throw error;
       }

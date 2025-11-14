@@ -539,4 +539,233 @@ describe("Block Fetcher", () => {
       expect(cachedBlocks).toBeNull();
     });
   });
+
+  describe("Progress tracking", () => {
+    it("should report progress starting from REWARDS_START_ROUND when no cache", async () => {
+      const { executePaginatedRequest } = await import(
+        "@algorandfoundation/algokit-utils"
+      );
+
+      const progressUpdates: Array<{
+        syncedUntilRound: number;
+        startRound: number;
+        currentRound: number;
+        remainingRounds: number;
+      }> = [];
+
+      const mockCurrentRound = 46513000;
+
+      // Mock API response with blocks
+      vi.mocked(executePaginatedRequest).mockImplementation(
+        // @ts-expect-error - Mock function type
+        async (
+          processFunc: (response: { blocks: any[] }) => any[],
+        ) => {
+          const mockResponse = {
+            blocks: [
+              {
+                round: BigInt(46512920),
+                timestamp: BigInt(1640000000),
+                proposer: { publicKey: proposer1Bytes },
+                proposerPayout: BigInt(1000000),
+              },
+            ],
+          };
+          return processFunc(mockResponse);
+        },
+      );
+
+      await fetchBlocksWithCache([resolvedAddress1], {
+        enableCache: false,
+        currentRound: mockCurrentRound,
+        onProgress: (syncedUntil, start, current, remaining) => {
+          progressUpdates.push({
+            syncedUntilRound: syncedUntil,
+            startRound: start,
+            currentRound: current,
+            remainingRounds: remaining,
+          });
+        },
+      });
+
+      // Verify progress updates were called
+      expect(progressUpdates.length).toBeGreaterThan(0);
+
+      // Verify first progress update
+      const firstUpdate = progressUpdates[0];
+      expect(firstUpdate.startRound).toBe(46512890); // REWARDS_START_ROUND
+      expect(firstUpdate.currentRound).toBe(mockCurrentRound);
+      expect(firstUpdate.syncedUntilRound).toBeGreaterThanOrEqual(
+        firstUpdate.startRound,
+      );
+
+      // Verify progress bar would start at 0%
+      const totalRounds = firstUpdate.currentRound - firstUpdate.startRound;
+      const processedRounds =
+        firstUpdate.syncedUntilRound - firstUpdate.startRound;
+      const progress = (processedRounds / totalRounds) * 100;
+      expect(progress).toBeGreaterThanOrEqual(0);
+      expect(progress).toBeLessThanOrEqual(100);
+    });
+
+    it("should report progress starting from cached round when cache enabled", async () => {
+      // Pre-populate cache
+      await saveBlocksToCache(address1, mockCachedBlocks1);
+
+      const { executePaginatedRequest } = await import(
+        "@algorandfoundation/algokit-utils"
+      );
+
+      const progressUpdates: Array<{
+        syncedUntilRound: number;
+        startRound: number;
+        currentRound: number;
+        remainingRounds: number;
+      }> = [];
+
+      const mockCurrentRound = 46513000;
+
+      // Mock API response with newer blocks
+      vi.mocked(executePaginatedRequest).mockImplementation(
+        // @ts-expect-error - Mock function type
+        async (
+          processFunc: (response: { blocks: any[] }) => any[],
+        ) => {
+          const mockResponse = {
+            blocks: [
+              {
+                round: BigInt(46512980),
+                timestamp: BigInt(1640002000),
+                proposer: { publicKey: proposer1Bytes },
+                proposerPayout: BigInt(1500000),
+              },
+            ],
+          };
+          return processFunc(mockResponse);
+        },
+      );
+
+      await fetchBlocksWithCache([resolvedAddress1], {
+        enableCache: true,
+        currentRound: mockCurrentRound,
+        onProgress: (syncedUntil, start, current, remaining) => {
+          progressUpdates.push({
+            syncedUntilRound: syncedUntil,
+            startRound: start,
+            currentRound: current,
+            remainingRounds: remaining,
+          });
+        },
+      });
+
+      // Verify progress updates were called
+      expect(progressUpdates.length).toBeGreaterThan(0);
+
+      // Verify first progress update starts from cached round + 1
+      const firstUpdate = progressUpdates[0];
+      expect(firstUpdate.startRound).toBe(46512951); // mockCachedBlocks1 max round is 46512950
+      expect(firstUpdate.currentRound).toBe(mockCurrentRound);
+
+      // Verify progress bar calculation is correct
+      const totalRounds = firstUpdate.currentRound - firstUpdate.startRound;
+      const processedRounds =
+        firstUpdate.syncedUntilRound - firstUpdate.startRound;
+      const progress = (processedRounds / totalRounds) * 100;
+      expect(progress).toBeGreaterThanOrEqual(0);
+      expect(progress).toBeLessThanOrEqual(100);
+    });
+
+    it("should show progress from minStartRound = REWARDS_START_ROUND when starting fresh", async () => {
+      const { executePaginatedRequest } = await import(
+        "@algorandfoundation/algokit-utils"
+      );
+
+      const progressUpdates: Array<{
+        syncedUntilRound: number;
+        startRound: number;
+      }> = [];
+
+      const mockCurrentRound = 46512900;
+
+      vi.mocked(executePaginatedRequest).mockImplementation(
+        // @ts-expect-error - Mock function type
+        async (
+          processFunc: (response: { blocks: any[] }) => any[],
+        ) => {
+          const mockResponse = {
+            blocks: [
+              {
+                round: BigInt(46512890),
+                timestamp: BigInt(1640000000),
+                proposer: { publicKey: proposer1Bytes },
+                proposerPayout: BigInt(1000000),
+              },
+            ],
+          };
+          return processFunc(mockResponse);
+        },
+      );
+
+      await fetchBlocksWithCache([resolvedAddress1], {
+        enableCache: false,
+        currentRound: mockCurrentRound,
+        onProgress: (syncedUntil, start) => {
+          progressUpdates.push({
+            syncedUntilRound: syncedUntil,
+            startRound: start,
+          });
+        },
+      });
+
+      expect(progressUpdates.length).toBeGreaterThan(0);
+      const update = progressUpdates[0];
+
+      // Should start from REWARDS_START_ROUND (46512890)
+      expect(update.startRound).toBe(46512890);
+      // Progress should be >= startRound
+      expect(update.syncedUntilRound).toBeGreaterThanOrEqual(
+        update.startRound,
+      );
+    });
+
+    it("should calculate remaining rounds correctly", async () => {
+      const { executePaginatedRequest } = await import(
+        "@algorandfoundation/algokit-utils"
+      );
+
+      let capturedRemaining = 0;
+      const mockCurrentRound = 46513000;
+      const mockFetchedRound = 46512920;
+
+      vi.mocked(executePaginatedRequest).mockImplementation(
+        // @ts-expect-error - Mock function type
+        async (
+          processFunc: (response: { blocks: any[] }) => any[],
+        ) => {
+          const mockResponse = {
+            blocks: [
+              {
+                round: BigInt(mockFetchedRound),
+                timestamp: BigInt(1640000000),
+                proposer: { publicKey: proposer1Bytes },
+                proposerPayout: BigInt(1000000),
+              },
+            ],
+          };
+          return processFunc(mockResponse);
+        },
+      );
+
+      await fetchBlocksWithCache([resolvedAddress1], {
+        enableCache: false,
+        currentRound: mockCurrentRound,
+        onProgress: (_, __, ___, remaining) => {
+          capturedRemaining = remaining;
+        },
+      });
+
+      // Remaining should be currentRound - syncedUntilRound
+      expect(capturedRemaining).toBe(mockCurrentRound - mockFetchedRound);
+    });
+  });
 });
