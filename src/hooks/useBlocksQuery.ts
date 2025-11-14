@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ResolvedAddress } from "@/components/heatmap/types";
 import { fetchBlocksWithCache } from "@/lib/block-fetcher";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface UseBlocksQueryOptions {
   enableCache?: boolean;
@@ -65,9 +65,21 @@ export function useBlocksQuery(
     gcTime: 1000 * 60 * 30, // 30 minutes
   });
 
-  // Determine if we should show progress based on query state
+  // Close progress modal when query finishes loading/fetching
+  useEffect(() => {
+    if (!query.isLoading && !query.isFetching) {
+      // Use a small timeout to ensure any final progress updates are shown
+      const timer = setTimeout(() => {
+        setProgressState((prev) => ({ ...prev, showProgress: false }));
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [query.isLoading, query.isFetching]);
+
+  // Show progress when query is actively loading or when internal state says to show it
   const shouldShowProgress =
-    query.isLoading || query.isFetching || progressState.showProgress;
+    (query.isLoading || query.isFetching || progressState.showProgress) &&
+    !query.isError;
 
   return {
     data: query.data ?? [],
@@ -75,7 +87,7 @@ export function useBlocksQuery(
     hasError: query.isError,
     progress: {
       ...progressState,
-      showProgress: shouldShowProgress && !query.isError,
+      showProgress: shouldShowProgress,
     },
     refetch: query.refetch,
     closeProgress: () =>
