@@ -14,7 +14,7 @@ export const Route = createFileRoute("/$addresses")({
   validateSearch: (search: Record<string, unknown>): AddressSearch => {
     return {
       hideBalance: search.hideBalance === true,
-      disableCache: search.disableCache === true,
+      disableCache: search.disableCache !== false,
       statsPanelTheme:
         typeof search.statsPanelTheme === "string" &&
         ["light", "indigo"].includes(search.statsPanelTheme)

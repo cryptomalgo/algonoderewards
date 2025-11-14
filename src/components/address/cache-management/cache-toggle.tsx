@@ -7,10 +7,17 @@ interface CacheToggleProps {
 }
 
 export function CacheToggle({ isCacheDisabled, onToggle }: CacheToggleProps) {
+  const handleToggle = () => {
+    onToggle(!isCacheDisabled);
+  };
+
   return (
-    <div className="flex items-center justify-between gap-3 rounded-lg border border-gray-200 bg-gray-50 p-3 sm:gap-4 sm:p-4 dark:border-gray-700 dark:bg-gray-900">
+    <div
+      onClick={handleToggle}
+      className="flex cursor-pointer items-center justify-between gap-3 rounded-lg border border-gray-200 bg-gray-50 p-3 transition-colors hover:bg-gray-100 sm:gap-4 sm:p-4 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800"
+    >
       <div className="min-w-0 flex-1 space-y-0.5 sm:space-y-1">
-        <Label className="text-xs font-medium sm:text-sm dark:text-gray-100">
+        <Label className="cursor-pointer text-xs font-medium sm:text-sm dark:text-gray-100">
           Enable Caching
         </Label>
         <p className="text-[10px] leading-tight text-gray-500 sm:text-xs sm:leading-normal dark:text-gray-400">
