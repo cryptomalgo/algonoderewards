@@ -9,13 +9,16 @@ import {
 import { MinimalBlock, toMinimalBlock } from "./block-types";
 import { ResolvedAddress } from "@/components/heatmap/types";
 
-// Mock executePaginatedRequest
+// Mock executePaginatedRequest to properly handle the processor and request builder pattern
 vi.mock("@algorandfoundation/algokit-utils", () => ({
-  executePaginatedRequest: vi.fn(async () => []),
+  executePaginatedRequest: vi.fn(
+    async (processFunc: (response: { blocks: unknown[] }) => unknown[]) => {
+      // Default: return empty response
+      const mockResponse = { blocks: [] };
+      return processFunc(mockResponse);
+    },
+  ),
 }));
-
-// Mock time library
-vi.useFakeTimers();
 
 describe("Block Fetcher", () => {
   // Use valid Algorand addresses (58 characters)

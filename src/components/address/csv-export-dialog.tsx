@@ -376,7 +376,7 @@ export default function CsvExportDialog({
             disabled={
               selectedColumns.length === 0 || isExporting || !dateRange?.from
             }
-            className="min-w-[80px]"
+            className="min-w-20"
           >
             {isExporting ? (
               <>
