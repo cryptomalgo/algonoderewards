@@ -1,5 +1,5 @@
 // src/hooks/useBlocksStats.ts
-import { Block } from "algosdk/client/indexer";
+import { MinimalBlock } from "@/lib/block-types";
 import { format } from "date-fns";
 import { useMemo } from "react";
 
@@ -52,7 +52,7 @@ export interface BlockStats {
   };
 }
 
-type BlockData = Pick<Block, "timestamp" | "proposerPayout">;
+type BlockData = Pick<MinimalBlock, "timestamp" | "proposerPayout">;
 
 export function useBlocksStats(filteredBlocks: BlockData[]): BlockStats {
   return useMemo(() => {

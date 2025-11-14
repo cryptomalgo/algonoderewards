@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/mobile-tooltip";
 import { CSV_COLUMNS, CsvColumnId } from "@/lib/csv-columns.ts";
 import { toast } from "sonner";
-import { Block } from "algosdk/client/indexer";
+import { MinimalBlock } from "@/lib/block-types";
 import { DateRange } from "react-day-picker";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
@@ -33,7 +33,7 @@ import { cn } from "@/lib/utils";
 
 interface CsvExportDialogProps {
   children: React.ReactNode;
-  blocks: Block[];
+  blocks: MinimalBlock[];
   onExport: (
     selectedColumns: CsvColumnId[],
     includeHeader: boolean,

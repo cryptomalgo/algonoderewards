@@ -1,5 +1,5 @@
 import React from "react";
-import { Block } from "algosdk/client/indexer";
+import { MinimalBlock } from "@/lib/block-types";
 import { useMemo, useState, useEffect } from "react";
 import {
   ComposedChart,
@@ -128,7 +128,7 @@ function useScreenSize() {
 
   return screenWidth;
 }
-function useStartDateFilter(blocks: Block[]) {
+function useStartDateFilter(blocks: MinimalBlock[]) {
   const minDate = useMemo(() => {
     if (blocks && blocks.length > 0) {
       const timestamps = blocks.map((block) => block.timestamp);
@@ -223,7 +223,7 @@ function useStakeCalculations(resolvedAddresses: ResolvedAddress[]) {
 
 // Function to calculate interval counts
 function calculateIntervalCounts(
-  filteredBlocks: Block[],
+  filteredBlocks: MinimalBlock[],
   blocksInterval: number,
 ) {
   const intervals: Record<number, number> = {};
@@ -247,7 +247,7 @@ function calculateIntervalCounts(
 // Function to process chart data
 function processChartData(
   intervalCounts: Record<number, number>,
-  filteredBlocks: Block[],
+  filteredBlocks: MinimalBlock[],
   blocksInterval: number,
   notSelectedProb: number,
   expectedAverageRounds: number,
@@ -518,7 +518,7 @@ const BlockRewardIntervals = React.memo(function BlockRewardIntervals({
   blocks,
   resolvedAddresses,
 }: {
-  blocks: Block[];
+  blocks: MinimalBlock[];
   resolvedAddresses: ResolvedAddress[];
 }) {
   const { theme } = useTheme();

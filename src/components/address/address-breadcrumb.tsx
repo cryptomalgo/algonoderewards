@@ -14,7 +14,8 @@ import {
 } from "@/components/ui/tooltip.tsx";
 import Settings from "./settings.tsx";
 import { useTheme } from "@/components/theme-provider";
-import { Block } from "algosdk/client/indexer";
+import { MinimalBlock } from "@/lib/block-types";
+import { RefreshButton } from "./refresh-button";
 
 const AddressBreadcrumb = ({
   resolvedAddresses,
@@ -29,7 +30,7 @@ const AddressBreadcrumb = ({
   setShowFilters: (show: boolean) => void;
   showAddAddress: boolean;
   setShowAddAddress: (show: boolean) => void;
-  blocks: Block[];
+  blocks: MinimalBlock[];
 }) => {
   const { theme } = useTheme();
   return (
@@ -132,7 +133,10 @@ const AddressBreadcrumb = ({
           </div>
         </li>
       </ol>
-      <Settings blocks={blocks} />
+      <div className="flex gap-2">
+        <RefreshButton />
+        <Settings blocks={blocks} />
+      </div>
     </nav>
   );
 };

@@ -1,14 +1,18 @@
 import { useMemo, useState, useDeferredValue, Suspense, lazy } from "react";
-import { useBlocks } from "@/hooks/useRewardTransactions";
+import { useSearch } from "@tanstack/react-router";
+import { useBlocksQuery } from "@/hooks/useBlocksQuery";
 import { useAlgorandAddresses } from "@/hooks/useAlgorandAddress";
 import { Error } from "@/components/error";
+import { ErrorBoundary } from "@/components/error-boundary";
+import { FetchProgressScreen } from "@/components/fetch-progress-screen";
+import { useCurrentRound } from "@/hooks/useCurrentRound";
 import AddressBreadcrumb from "./address-breadcrumb";
 import AddressFilters from "./address-filters";
 import AddAddress from "./add-address";
 import { useNavigate } from "@tanstack/react-router";
-import CopyButton from "@/components/copy-to-clipboard.tsx";
-import { displayAlgoAddress } from "@/lib/utils.ts";
 import { Skeleton } from "@/components/ui/skeleton";
+import { displayAlgoAddress } from "@/lib/utils.ts";
+import CopyButton from "@/components/copy-to-clipboard";
 
 // Lazy load ALL heavy components for better performance
 const Heatmap = lazy(() => import("@/components/heatmap/heatmap"));
@@ -104,6 +108,7 @@ const ChartFallback = () => (
 
 export default function AddressView({ addresses }: { addresses: string }) {
   const navigate = useNavigate();
+  const search = useSearch({ from: "/$addresses" });
   const [showFilters, setShowFilters] = useState(false);
   const [showAddAddress, setShowAddAddress] = useState(false);
 
@@ -125,6 +130,7 @@ export default function AddressView({ addresses }: { addresses: string }) {
       replace: true,
       search: (prev) => ({
         hideBalance: false,
+        disableCache: prev.disableCache ?? false,
         theme: prev.theme ?? "system",
         statsPanelTheme: prev.statsPanelTheme ?? "indigo",
       }),
@@ -155,17 +161,26 @@ export default function AddressView({ addresses }: { addresses: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resolvedAddressKeys]);
 
-  const { data: blocks, loading, hasError } = useBlocks(resolvedAddresses);
+  const { data: currentRound } = useCurrentRound();
+
+  const {
+    data: blocks,
+    loading,
+    hasError,
+    progress,
+  } = useBlocksQuery(resolvedAddresses, {
+    disableCache: search.disableCache,
+    currentRound: currentRound ? Number(currentRound) : undefined,
+  });
 
   // Filter blocks based on selected addresses
   const filteredBlocks = useMemo(() => {
     if (!blocks) return [];
     if (selectedAddresses.length === 0) return [];
 
-    return blocks.filter(
-      (block) =>
-        block.proposer && selectedAddresses.includes(block.proposer.toString()),
-    );
+    return blocks.filter((block: { proposer?: string }) => {
+      return block.proposer && selectedAddresses.includes(block.proposer);
+    });
   }, [blocks, selectedAddresses]);
 
   // Use React 18 useDeferredValue for smooth UI updates during heavy rendering
@@ -218,40 +233,61 @@ export default function AddressView({ addresses }: { addresses: string }) {
           </div>
           <div className="rounded-lg px-2 py-6 sm:px-3 md:px-4 lg:px-5">
             {/* Priority 1: Stats panels with lazy loading */}
-            <Suspense fallback={<StatsFallback />}>
-              <StatsPanels
-                resolvedAddresses={resolvedAddresses}
-                filteredBlocks={filteredBlocks}
-                loading={loading}
-              />
-            </Suspense>
+            <ErrorBoundary>
+              <Suspense fallback={<StatsFallback />}>
+                <StatsPanels
+                  resolvedAddresses={resolvedAddresses}
+                  filteredBlocks={filteredBlocks}
+                  loading={loading}
+                />
+              </Suspense>
+            </ErrorBoundary>
 
-            <Suspense fallback={<HeatmapFallback />}>
-              <Heatmap blocks={filteredBlocks} />
-            </Suspense>
+            <ErrorBoundary>
+              <Suspense fallback={<HeatmapFallback />}>
+                <Heatmap blocks={filteredBlocks} />
+              </Suspense>
+            </ErrorBoundary>
 
             {/* Priority 3: Heavy charts with lazy loading and Suspense */}
-            <Suspense fallback={<ChartFallback />}>
-              <CumulativeRewardsChart blocks={deferredBlocks} />
-            </Suspense>
+            <ErrorBoundary>
+              <Suspense fallback={<ChartFallback />}>
+                <CumulativeRewardsChart blocks={deferredBlocks} />
+              </Suspense>
+            </ErrorBoundary>
 
-            <Suspense fallback={<ChartFallback />}>
-              <CumulativeBlocksChart blocks={deferredBlocks} />
-            </Suspense>
+            <ErrorBoundary>
+              <Suspense fallback={<ChartFallback />}>
+                <CumulativeBlocksChart blocks={deferredBlocks} />
+              </Suspense>
+            </ErrorBoundary>
 
-            <Suspense fallback={<ChartFallback />}>
-              <BlockRewardIntervals
-                blocks={deferredBlocks}
-                resolvedAddresses={resolvedAddresses}
-              />
-            </Suspense>
+            <ErrorBoundary>
+              <Suspense fallback={<ChartFallback />}>
+                <BlockRewardIntervals
+                  blocks={deferredBlocks}
+                  resolvedAddresses={resolvedAddresses}
+                />
+              </Suspense>
+            </ErrorBoundary>
 
-            <Suspense fallback={<ChartFallback />}>
-              <RewardByDayHourChart blocks={deferredBlocks} />
-            </Suspense>
+            <ErrorBoundary>
+              <Suspense fallback={<ChartFallback />}>
+                <RewardByDayHourChart blocks={deferredBlocks} />
+              </Suspense>
+            </ErrorBoundary>
           </div>
         </div>
       </main>
+
+      <FetchProgressScreen
+        isVisible={progress.showProgress}
+        syncedUntilRound={progress.syncedUntilRound}
+        startRound={progress.startRound}
+        currentRound={progress.currentRound}
+        remainingRounds={progress.remainingRounds}
+        isCacheDisabled={search.disableCache}
+      />
     </div>
   );
 }

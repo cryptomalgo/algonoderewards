@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import { Block } from "algosdk/client/indexer";
+import { MinimalBlock } from "@/lib/block-types";
 import MonthView from "@/components/heatmap/month-view.tsx";
 import { DisplayMonth } from "@/components/heatmap/types.ts";
 function generateDays(
@@ -34,7 +34,7 @@ function generateDays(
   return days;
 }
 
-const Heatmap: React.FC<{ blocks: Block[] }> = ({ blocks }) => {
+const Heatmap: React.FC<{ blocks: MinimalBlock[] }> = ({ blocks }) => {
   const [displayMonths, setDisplayMonths] = useState<DisplayMonth[]>(() => {
     const now = new Date();
     const currentMonth = now.getMonth();

@@ -10,15 +10,16 @@ import { useTheme } from "@/components/theme-provider";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { motion } from "framer-motion";
 import { exportBlocksToCsv } from "@/lib/csv-export";
-import { Block } from "algosdk/client/indexer";
+import { MinimalBlock } from "@/lib/block-types";
 import CsvExportDialog from "@/components/address/csv-export-dialog.tsx";
-import { DownloadIcon } from "lucide-react";
+import { CacheManagementDialog } from "@/components/address/cache-management-dialog";
+import { DownloadIcon, DatabaseIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useAlgoPrice } from "@/hooks/useAlgoPrice";
 import AlgorandLogo from "@/components/algorand-logo.tsx";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 
-export default function Settings({ blocks }: { blocks: Block[] }) {
+export default function Settings({ blocks }: { blocks: MinimalBlock[] }) {
   const { themeSetting, setThemeSetting } = useTheme();
   const { price: algoPrice, loading: priceLoading } = useAlgoPrice();
   const navigate = useNavigate({ from: "/$addresses" });
@@ -77,6 +78,16 @@ export default function Settings({ blocks }: { blocks: Block[] }) {
             </div>
           </CsvExportDialog>
         </div>
+
+        <div className="px-2 py-1.5">
+          <CacheManagementDialog>
+            <div className="flex w-full cursor-pointer items-center rounded-md px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">
+              <DatabaseIcon className="mr-2 h-4 w-4" />
+              Cache Management
+            </div>
+          </CacheManagementDialog>
+        </div>
+
         <DropdownMenuSeparator className="dark:bg-gray-700" />
 
         <DropdownMenuLabel className="dark:text-gray-100">
