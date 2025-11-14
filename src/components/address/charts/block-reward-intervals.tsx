@@ -366,7 +366,24 @@ function processChartData(
     };
   });
 
-  return data;
+  // Check if we truncated any actual data (not just reference lines)
+  const maxDataInterval =
+    existingIntervals.length > 0
+      ? existingIntervals[existingIntervals.length - 1].upperValue
+      : 0;
+  const dataTruncated = maxDataInterval > maxInterval;
+
+  // Calculate how many blocks are beyond the chart
+  const blocksOffChart = existingIntervals
+    .filter((interval) => interval.upperValue > maxInterval)
+    .reduce((sum, interval) => sum + interval.count, 0);
+
+  return {
+    data,
+    dataTruncated,
+    blocksOffChart,
+    totalBlocks: totalPairs,
+  };
 }
 
 // Component for interval controls
@@ -608,7 +625,7 @@ const BlockRewardIntervals = React.memo(function BlockRewardIntervals({
     return Number(currentRound) - lastBlockRound;
   }, [currentRound, currentRoundError, filteredBlocks]);
 
-  const chartData = useMemo(() => {
+  const chartResult = useMemo(() => {
     return processChartData(
       intervalCounts,
       filteredBlocks,
@@ -625,6 +642,11 @@ const BlockRewardIntervals = React.memo(function BlockRewardIntervals({
     expectedAverageRounds,
     roundsSinceLastReward,
   ]);
+
+  const chartData = chartResult.data;
+  const dataTruncated = chartResult.dataTruncated;
+  const blocksOffChart = chartResult.blocksOffChart;
+  const totalBlocks = chartResult.totalBlocks;
 
   // Determine chart scale and whether reference lines are visible
   const maxChartInterval = useMemo(() => {
@@ -925,7 +947,6 @@ const BlockRewardIntervals = React.memo(function BlockRewardIntervals({
       <p className="mt-1 text-center text-sm text-gray-500 dark:text-gray-400">
         This shows how your block reward timing compares to mathematical
         expectations using {blocksInterval.toLocaleString()}-round intervals.
-        <br />
       </p>
       <div className="mx-auto mt-3 flex max-w-xl flex-col gap-1 px-5 text-left text-sm text-gray-500 dark:text-gray-400">
         <p>
@@ -995,6 +1016,13 @@ const BlockRewardIntervals = React.memo(function BlockRewardIntervals({
           </span>
           , it means you are lucky!
         </p>
+        {dataTruncated && (
+          <p className="mt-3 text-xs text-gray-400 italic dark:text-gray-500">
+            Note: {blocksOffChart} blocks (
+            {((blocksOffChart / totalBlocks) * 100).toFixed(1)}%) with very long
+            intervals hidden for readability.
+          </p>
+        )}
       </div>
     </div>
   );
