@@ -6,6 +6,7 @@ type AddressSearch = {
   hideBalance: boolean;
   theme: ThemeSetting;
   statsPanelTheme: "light" | "indigo";
+  enableCache: boolean;
 };
 
 export const Route = createFileRoute("/$addresses")({
@@ -13,6 +14,7 @@ export const Route = createFileRoute("/$addresses")({
   validateSearch: (search: Record<string, unknown>): AddressSearch => {
     return {
       hideBalance: search.hideBalance === true,
+      enableCache: search.enableCache === true,
       statsPanelTheme:
         typeof search.statsPanelTheme === "string" &&
         ["light", "indigo"].includes(search.statsPanelTheme)

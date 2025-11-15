@@ -8,6 +8,8 @@ import { ParticipationKeyBadge } from "./participation-key-badge";
 import { StatusBadge } from "./status-badge";
 import { AnxietyCard, AnxietyCardSkeleton } from "./anxiety-card";
 import { StatusBadgesSkeleton } from "./status-badges-skeleton";
+import { CacheBadges } from "./cache-badges";
+import { CacheManagementDialog } from "@/components/address/cache-management-dialog";
 
 export default function AccountStatus({
   address,
@@ -41,6 +43,11 @@ export default function AccountStatus({
   return (
     <div className="my-2">
       <div className="item flex flex-col gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <CacheManagementDialog>
+            <CacheBadges />
+          </CacheManagementDialog>
+        </div>
         <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center">
           <BalanceCard account={account} />
           <div className="flex flex-col gap-2">

@@ -1,4 +1,4 @@
-import { Block } from "algosdk/client/indexer";
+import { MinimalBlock } from "@/lib/block-types";
 import { AlgoAmount } from "@algorandfoundation/algokit-utils/types/amount";
 import { CSV_COLUMNS, CsvColumnId } from "@/lib/csv-columns.ts";
 import { toast } from "sonner";
@@ -183,7 +183,9 @@ export async function getAlgorandBinanceUsdcPriceForTimestamp(
 /**
  * Pre-loads price data for all days between first and last block timestamps
  */
-async function preloadBinancePriceData(blocks: Block[]): Promise<boolean> {
+async function preloadBinancePriceData(
+  blocks: MinimalBlock[],
+): Promise<boolean> {
   if (!blocks || blocks.length === 0) return true;
 
   // Find min and max timestamps
@@ -249,7 +251,9 @@ async function preloadBinancePriceData(blocks: Block[]): Promise<boolean> {
   return !hasRateLimitError;
 }
 
-async function preloadVestigePriceData(blocks: Block[]): Promise<boolean> {
+async function preloadVestigePriceData(
+  blocks: MinimalBlock[],
+): Promise<boolean> {
   if (!blocks || blocks.length === 0) return true;
 
   // Find min and max timestamps
@@ -307,7 +311,7 @@ async function preloadVestigePriceData(blocks: Block[]): Promise<boolean> {
 
 // Column resolver type definition
 type ColumnResolver = (
-  block: Block,
+  block: MinimalBlock,
   binancePrice?: BinanceAlgorandUsdcPrice | null,
   vestigePrice?: VestigeAlgorandUsdcPrice | null,
 ) => string;
@@ -346,7 +350,7 @@ function generateCsvHeader(selectedColumns: CsvColumnId[]): string {
 
 // Generate a CSV row for a single block
 async function generateCsvRow(
-  block: Block,
+  block: MinimalBlock,
   selectedColumns: CsvColumnId[],
 ): Promise<string> {
   // Get price data for this block's date
@@ -385,7 +389,7 @@ async function generateCsvRow(
 }
 
 export async function exportBlocksToCsv(
-  blocks: Block[],
+  blocks: MinimalBlock[],
   columns: CsvColumnId[],
   includeHeader: boolean,
 ): Promise<void> {

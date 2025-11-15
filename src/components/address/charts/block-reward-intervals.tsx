@@ -1,5 +1,5 @@
 import React from "react";
-import { Block } from "algosdk/client/indexer";
+import { MinimalBlock } from "@/lib/block-types";
 import { useMemo, useState, useEffect } from "react";
 import {
   ComposedChart,
@@ -128,11 +128,16 @@ function useScreenSize() {
 
   return screenWidth;
 }
-function useStartDateFilter(blocks: Block[]) {
+function useStartDateFilter(blocks: MinimalBlock[]) {
   const minDate = useMemo(() => {
     if (blocks && blocks.length > 0) {
-      const timestamps = blocks.map((block) => block.timestamp);
-      const minTimestamp = Math.min(...timestamps);
+      // Find min timestamp without creating intermediate array or spreading
+      let minTimestamp = blocks[0].timestamp;
+      for (let i = 1; i < blocks.length; i++) {
+        if (blocks[i].timestamp < minTimestamp) {
+          minTimestamp = blocks[i].timestamp;
+        }
+      }
       return new Date(minTimestamp * 1000);
     }
     return undefined;
@@ -157,8 +162,13 @@ function useStartDateFilter(blocks: Block[]) {
 
   const resetStartDate = () => {
     if (blocks && blocks.length > 0) {
-      const timestamps = blocks.map((block) => block.timestamp);
-      const minTimestamp = Math.min(...timestamps);
+      // Find min timestamp without creating intermediate array
+      let minTimestamp = blocks[0].timestamp;
+      for (let i = 1; i < blocks.length; i++) {
+        if (blocks[i].timestamp < minTimestamp) {
+          minTimestamp = blocks[i].timestamp;
+        }
+      }
       setStartDate(new Date(minTimestamp * 1000));
     }
   };
@@ -223,7 +233,7 @@ function useStakeCalculations(resolvedAddresses: ResolvedAddress[]) {
 
 // Function to calculate interval counts
 function calculateIntervalCounts(
-  filteredBlocks: Block[],
+  filteredBlocks: MinimalBlock[],
   blocksInterval: number,
 ) {
   const intervals: Record<number, number> = {};
@@ -244,10 +254,9 @@ function calculateIntervalCounts(
   return intervals;
 }
 
-// Function to process chart data
 function processChartData(
   intervalCounts: Record<number, number>,
-  filteredBlocks: Block[],
+  filteredBlocks: MinimalBlock[],
   blocksInterval: number,
   notSelectedProb: number,
   expectedAverageRounds: number,
@@ -272,25 +281,41 @@ function processChartData(
     })
     .sort((a, b) => a.lowerValue - b.lowerValue);
 
-  // Calculate the maximum interval needed to include reference lines
+  // Calculate the maximum interval based on actual data distribution
+  // Use 98th percentile to avoid stretching the chart for rare outliers
   const dataMaxInterval =
     existingIntervals.length === 0
       ? blocksInterval * 5 // Show at least 5 empty intervals when no data
       : existingIntervals[existingIntervals.length - 1].upperValue;
 
-  // Ensure we include intervals that contain the reference lines
+  // Find the 98th percentile of data for better scaling
+  let cumulativePercent = 0;
+  let percentile98Interval = dataMaxInterval;
+  for (const interval of existingIntervals) {
+    cumulativePercent += interval.actualPercent;
+    if (cumulativePercent >= 0.98) {
+      percentile98Interval = interval.upperValue;
+      break;
+    }
+  }
+
+  // Use percentile-based scale, but allow some headroom for reference lines if they're close
   const expectedRoundsUpperBound =
     Math.ceil(expectedAverageRounds / blocksInterval) * blocksInterval;
   const roundsSinceLastRewardUpperBound =
     Math.ceil(roundsSinceLastReward / blocksInterval) * blocksInterval;
 
-  // The chart should extend to include both reference values
-  const maxInterval = Math.max(
-    dataMaxInterval,
+  // Smart scaling: use 98th percentile as base, but extend if reference lines are within 50% of it
+  const baseScale = Math.max(percentile98Interval, blocksInterval * 3);
+  const maxReferenceValue = Math.max(
     expectedRoundsUpperBound,
     roundsSinceLastRewardUpperBound,
-    blocksInterval * 3, // Minimum of 3 intervals to show
   );
+
+  const maxInterval =
+    maxReferenceValue <= baseScale * 1.5
+      ? Math.max(baseScale, maxReferenceValue)
+      : baseScale;
 
   // Generate all intervals in the range starting from 0
   const allIntervals: Array<{
@@ -330,7 +355,7 @@ function processChartData(
   // Calculate cumulative values
   let cumulativeActual = 0;
 
-  return allIntervals.map((item) => {
+  const data = allIntervals.map((item) => {
     cumulativeActual += item.actualPercent;
     const expectedCumulative = 1 - Math.pow(notSelectedProb, item.upperValue);
 
@@ -340,6 +365,25 @@ function processChartData(
       expectedCumulative: expectedCumulative,
     };
   });
+
+  // Check if we truncated any actual data (not just reference lines)
+  const maxDataInterval =
+    existingIntervals.length > 0
+      ? existingIntervals[existingIntervals.length - 1].upperValue
+      : 0;
+  const dataTruncated = maxDataInterval > maxInterval;
+
+  // Calculate how many blocks are beyond the chart
+  const blocksOffChart = existingIntervals
+    .filter((interval) => interval.upperValue > maxInterval)
+    .reduce((sum, interval) => sum + interval.count, 0);
+
+  return {
+    data,
+    dataTruncated,
+    blocksOffChart,
+    totalBlocks: totalPairs,
+  };
 }
 
 // Component for interval controls
@@ -518,7 +562,7 @@ const BlockRewardIntervals = React.memo(function BlockRewardIntervals({
   blocks,
   resolvedAddresses,
 }: {
-  blocks: Block[];
+  blocks: MinimalBlock[];
   resolvedAddresses: ResolvedAddress[];
 }) {
   const { theme } = useTheme();
@@ -581,7 +625,7 @@ const BlockRewardIntervals = React.memo(function BlockRewardIntervals({
     return Number(currentRound) - lastBlockRound;
   }, [currentRound, currentRoundError, filteredBlocks]);
 
-  const chartData = useMemo(() => {
+  const chartResult = useMemo(() => {
     return processChartData(
       intervalCounts,
       filteredBlocks,
@@ -598,6 +642,22 @@ const BlockRewardIntervals = React.memo(function BlockRewardIntervals({
     expectedAverageRounds,
     roundsSinceLastReward,
   ]);
+
+  const chartData = chartResult.data;
+  const dataTruncated = chartResult.dataTruncated;
+  const blocksOffChart = chartResult.blocksOffChart;
+  const totalBlocks = chartResult.totalBlocks;
+
+  // Determine chart scale and whether reference lines are visible
+  const maxChartInterval = useMemo(() => {
+    return chartData.length > 0
+      ? chartData[chartData.length - 1].upperValue
+      : blocksInterval;
+  }, [chartData, blocksInterval]);
+
+  const expectedRoundsVisible = expectedAverageRounds <= maxChartInterval;
+  const roundsSinceLastRewardVisible =
+    roundsSinceLastReward <= maxChartInterval;
 
   if (
     isStakeInfoPending ||
@@ -781,7 +841,7 @@ const BlockRewardIntervals = React.memo(function BlockRewardIntervals({
               axisLine={false}
               tickLine={false}
             />
-            {roundsSinceLastReward > 0 && (
+            {roundsSinceLastReward > 0 && roundsSinceLastRewardVisible && (
               <ReferenceLine
                 yAxisId="left"
                 x={
@@ -795,7 +855,7 @@ const BlockRewardIntervals = React.memo(function BlockRewardIntervals({
                 strokeWidth={2}
                 strokeDasharray="8 4"
                 label={{
-                  value: `Rounds since last reward`,
+                  value: `Rounds since last`,
                   position: "top",
                   style: {
                     textAnchor: "middle",
@@ -806,29 +866,31 @@ const BlockRewardIntervals = React.memo(function BlockRewardIntervals({
                 }}
               />
             )}
-            <ReferenceLine
-              yAxisId="left"
-              x={
-                chartData.find(
-                  (d) =>
-                    expectedAverageRounds >= d.lowerValue &&
-                    expectedAverageRounds <= d.upperValue,
-                )?.interval
-              }
-              stroke={CHART_COLORS.expectedRounds}
-              strokeWidth={2}
-              strokeDasharray="8 4"
-              label={{
-                value: `Expected rounds`,
-                position: "insideTop",
-                style: {
-                  textAnchor: "middle",
-                  fontSize: "11px",
-                  fill: CHART_COLORS.expectedRounds,
-                  fontWeight: "bold",
-                },
-              }}
-            />
+            {expectedRoundsVisible && (
+              <ReferenceLine
+                yAxisId="left"
+                x={
+                  chartData.find(
+                    (d) =>
+                      expectedAverageRounds >= d.lowerValue &&
+                      expectedAverageRounds <= d.upperValue,
+                  )?.interval
+                }
+                stroke={CHART_COLORS.expectedRounds}
+                strokeWidth={2}
+                strokeDasharray="8 4"
+                label={{
+                  value: `Expected rounds`,
+                  position: "insideTop",
+                  style: {
+                    textAnchor: "middle",
+                    fontSize: "11px",
+                    fill: CHART_COLORS.expectedRounds,
+                    fontWeight: "bold",
+                  },
+                }}
+              />
+            )}
             <Tooltip
               content={(props) => (
                 <ChartTooltip
@@ -885,7 +947,6 @@ const BlockRewardIntervals = React.memo(function BlockRewardIntervals({
       <p className="mt-1 text-center text-sm text-gray-500 dark:text-gray-400">
         This shows how your block reward timing compares to mathematical
         expectations using {blocksInterval.toLocaleString()}-round intervals.
-        <br />
       </p>
       <div className="mx-auto mt-3 flex max-w-xl flex-col gap-1 px-5 text-left text-sm text-gray-500 dark:text-gray-400">
         <p>
@@ -895,6 +956,9 @@ const BlockRewardIntervals = React.memo(function BlockRewardIntervals({
           >
             {expectedAverageRounds.toLocaleString()}
           </span>
+          {!expectedRoundsVisible && (
+            <span className="ml-1 text-xs italic">(off chart scale)</span>
+          )}
         </p>
         <p>
           Rounds since last reward:{" "}
@@ -906,7 +970,16 @@ const BlockRewardIntervals = React.memo(function BlockRewardIntervals({
           >
             {roundsSinceLastReward.toLocaleString()}
           </span>
+          {roundsSinceLastReward > 0 && !roundsSinceLastRewardVisible && (
+            <span className="ml-1 text-xs italic">(off chart scale)</span>
+          )}
         </p>
+        {(!expectedRoundsVisible || !roundsSinceLastRewardVisible) && (
+          <p className="text-xs text-amber-600 italic dark:text-amber-400">
+            Chart scaled to show 98% of your data. Some reference lines are
+            beyond the visible range.
+          </p>
+        )}
         <p>
           When the{" "}
           <span
@@ -943,6 +1016,13 @@ const BlockRewardIntervals = React.memo(function BlockRewardIntervals({
           </span>
           , it means you are lucky!
         </p>
+        {dataTruncated && (
+          <p className="mt-3 text-xs text-gray-400 italic dark:text-gray-500">
+            Note: {blocksOffChart} blocks (
+            {((blocksOffChart / totalBlocks) * 100).toFixed(1)}%) with very long
+            intervals hidden for readability.
+          </p>
+        )}
       </div>
     </div>
   );

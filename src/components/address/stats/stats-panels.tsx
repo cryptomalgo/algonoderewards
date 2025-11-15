@@ -1,4 +1,4 @@
-import { Block } from "algosdk/client/indexer";
+import { MinimalBlock } from "@/lib/block-types";
 import { useBlocksStats } from "@/hooks/useBlocksStats";
 import { ResolvedAddress } from "@/components/heatmap/types";
 import { BlocksPerDayPanel } from "./panels/blocks-per-day-panel";
@@ -11,7 +11,7 @@ const StatsPanels = function StatsPanels({
   loading,
   resolvedAddresses,
 }: {
-  filteredBlocks: Block[];
+  filteredBlocks: MinimalBlock[];
   loading: boolean;
   resolvedAddresses: ResolvedAddress[];
 }) {

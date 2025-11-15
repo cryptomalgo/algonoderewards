@@ -13,7 +13,16 @@ function PrivacyPolicy() {
             Privacy Policy
           </h1>
           <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-            Last Updated: October 17, 2025
+            Last Updated: November 14, 2025 (
+            <a
+              href="https://github.com/cryptomalgo/algonoderewards/commits/main/src/routes/privacy-policy.tsx"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 hover:underline dark:text-blue-400"
+            >
+              View History
+            </a>
+            )
           </p>
         </div>
 
@@ -49,6 +58,86 @@ function PrivacyPolicy() {
                 "Last Updated" date above. Your continued use of the site after
                 any changes constitutes your acceptance of the updated policy.
               </p>
+            </div>
+          </section>
+
+          {/* Local Data Storage (IndexedDB) */}
+          <section>
+            <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-white">
+              Local Data Storage (IndexedDB)
+            </h2>
+            <div className="prose prose-gray dark:prose-invert max-w-none">
+              <p className="text-gray-600 dark:text-gray-300">
+                This website offers an <strong>opt-in</strong> caching feature
+                that uses IndexedDB, a browser storage technology. By default,
+                this caching is <strong>disabled</strong> and must be manually
+                enabled by you.
+              </p>
+
+              <h3 className="mt-4 text-lg font-semibold text-gray-900 dark:text-white">
+                What is IndexedDB?
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300">
+                IndexedDB is a low-level API for client-side storage of
+                structured data in your web browser. It allows the website to
+                store data locally on your device, which can improve performance
+                and reduce API requests.
+              </p>
+
+              <h3 className="mt-4 text-lg font-semibold text-gray-900 dark:text-white">
+                What Data is Cached?
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300">
+                When you enable caching, the following public blockchain data is
+                stored locally in your browser:
+              </p>
+              <ul className="mt-2 list-inside list-disc space-y-2 text-gray-600 dark:text-gray-300">
+                <li>Block numbers (rounds)</li>
+                <li>Block timestamps</li>
+                <li>Block proposer addresses (Algorand wallet addresses)</li>
+                <li>Block proposer payouts (reward amounts)</li>
+              </ul>
+              <p className="mt-2 text-gray-600 dark:text-gray-300">
+                This data is retrieved from the public Algorand blockchain via
+                the Nodely API. No personal information or private data is
+                cached.
+              </p>
+
+              <h3 className="mt-4 text-lg font-semibold text-gray-900 dark:text-white">
+                How to Enable/Disable Caching
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300">
+                Caching is <strong>disabled by default</strong>. To enable it:
+              </p>
+              <ul className="mt-2 list-inside list-disc space-y-2 text-gray-600 dark:text-gray-300">
+                <li>
+                  Open the cache management dialog via the settings button
+                </li>
+                <li>Toggle the "Enable caching" option</li>
+                <li>
+                  You can view cached addresses, their sizes, and clear the
+                  cache at any time
+                </li>
+              </ul>
+
+              <h3 className="mt-4 text-lg font-semibold text-gray-900 dark:text-white">
+                Data Control
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300">
+                You have full control over this cached data:
+              </p>
+              <ul className="mt-2 list-inside list-disc space-y-2 text-gray-600 dark:text-gray-300">
+                <li>
+                  The data is stored only on your device and never sent to any
+                  server
+                </li>
+                <li>You can disable caching at any time</li>
+                <li>You can delete cached data for specific addresses</li>
+                <li>You can clear all cached data with one click</li>
+                <li>
+                  You can also clear browser data through your browser settings
+                </li>
+              </ul>
             </div>
           </section>
 
@@ -279,6 +368,22 @@ function PrivacyPolicy() {
                 .
               </p>
             </div>
+          </section>
+          <section>
+            <h3 className="mt-4 text-lg font-semibold text-gray-900 dark:text-white">
+              Changelog
+            </h3>
+            <ul className="mt-2 list-inside list-disc space-y-2 text-gray-600 dark:text-gray-300">
+              <li>
+                <strong>November 14, 2025:</strong> Added section on local data
+                storage (IndexedDB) caching mechanism, clarifying that caching
+                is disabled by default and requires opt-in
+              </li>
+              <li>
+                <strong>October 17, 2025:</strong> Initial privacy policy
+                published
+              </li>
+            </ul>
           </section>
         </div>
       </div>

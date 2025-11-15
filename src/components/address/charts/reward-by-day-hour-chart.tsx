@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { MinimalBlock } from "@/lib/block-types";
 import {
   ScatterChart,
   Scatter,
@@ -9,7 +10,6 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
-import { Block } from "algosdk/client/indexer";
 import { useTheme } from "@/components/theme-provider";
 
 const formatHourRange = (hour: number) => {
@@ -25,7 +25,7 @@ const formatHourRange = (hour: number) => {
 };
 
 interface RewardByDayHourChartProps {
-  blocks: Block[];
+  blocks: MinimalBlock[];
 }
 
 type DayHourData = {
