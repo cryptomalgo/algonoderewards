@@ -16,7 +16,7 @@ import Settings from "./settings.tsx";
 import { useTheme } from "@/components/theme-provider";
 import { MinimalBlock } from "@/lib/block-types";
 import { RefreshButton } from "./refresh-button";
-import { useNFDReverseMultiple } from "@/queries/useNFD";
+import { useNFDReverseMultiple } from "@/hooks/queries/useNFD";
 
 const AddressBreadcrumb = ({
   resolvedAddresses,

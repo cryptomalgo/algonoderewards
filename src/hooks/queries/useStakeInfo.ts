@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-//https://afmetrics.api.nodely.io/v1/api-docs/#get-/v1/realtime/participation/online
+// https://afmetrics.api.nodely.io/v1/api-docs/#get-/v1/realtime/participation/online
 
 type RewardsStats = {
   apy_pct: number; // Annual Percentage Yield (annualized rate with compounding)
@@ -18,6 +18,7 @@ type RewardsStats = {
   stake_micro_algo: string; // Total stake in microAlgo
 };
 
+// Private API call - not exported
 const fetchStakeInfo = async (): Promise<RewardsStats> => {
   const response = await fetch(
     "https://afmetrics.api.nodely.io/v1/realtime/participation/online",

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { RefreshCwIcon } from "lucide-react";
-import { useRefreshBlocks } from "@/hooks/useBlocksQuery";
+import { useRefreshBlocks } from "@/hooks/queries/useBlocksQuery";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 

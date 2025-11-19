@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/mobile-tooltip";
 import { displayAlgoAddress } from "@/lib/utils";
 import { formatBytes } from "@/lib/format-bytes";
-import { useNFDReverseMultiple } from "@/queries/useNFD";
+import { useNFDReverseMultiple } from "@/hooks/queries/useNFD";
 import { Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";

@@ -1,4 +1,4 @@
-import { useAccount } from "@/hooks/useAccounts";
+import { useAccount } from "@/hooks/queries/useAccounts";
 import { ResolvedAddress } from "../../../heatmap/types";
 import { BalanceCard, BalanceCardSkeleton } from "./balance-card";
 import { BalanceThresholdBadge } from "./balance-badge";

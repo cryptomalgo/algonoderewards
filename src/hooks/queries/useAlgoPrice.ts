@@ -1,4 +1,5 @@
-// src/hooks/useAlgoPrice.ts
+// Note: This is a custom hook using useEffect, not React Query
+// Kept as-is since it has its own caching mechanism
 import { useEffect, useState } from "react";
 
 type BinancePrice = {

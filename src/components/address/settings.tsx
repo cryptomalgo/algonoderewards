@@ -15,7 +15,7 @@ import CsvExportDialog from "@/components/address/csv-export-dialog.tsx";
 import { CacheManagementDialog } from "@/components/address/cache-management-dialog";
 import { DownloadIcon, DatabaseIcon } from "lucide-react";
 import { toast } from "sonner";
-import { useAlgoPrice } from "@/hooks/useAlgoPrice";
+import { useAlgoPrice } from "@/hooks/queries/useAlgoPrice";
 import AlgorandLogo from "@/components/algorand-logo.tsx";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 

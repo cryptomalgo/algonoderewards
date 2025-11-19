@@ -6,7 +6,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/mobile-tooltip";
-import { useBlock } from "@/hooks/useBlock";
+import { useBlock } from "@/hooks/queries/useBlock";
 import { Account } from "algosdk/client/indexer";
 import { format, formatDistanceToNow } from "date-fns";
 import { HeartPulseIcon } from "lucide-react";

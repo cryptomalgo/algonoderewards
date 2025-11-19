@@ -14,17 +14,17 @@ import {
   ReferenceLine,
 } from "recharts";
 import { useTheme } from "@/components/theme-provider";
-import { useStakeInfo } from "@/hooks/useStakeInfo";
+import { useStakeInfo } from "@/hooks/queries/useStakeInfo";
 import { AlgoAmount } from "@algorandfoundation/algokit-utils/types/amount";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ResolvedAddress } from "@/components/heatmap/types";
-import { useAccounts } from "@/hooks/useAccounts";
+import { useAccounts } from "@/hooks/queries/useAccounts";
 import { StartDatePicker } from "@/components/ui/start-date-picker";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useCurrentRound } from "@/hooks/useCurrentRound";
-import { useAverageBlockTime } from "@/hooks/useAverageBlockTime";
+import { useCurrentRound } from "@/hooks/queries/useCurrentRound";
+import { useAverageBlockTime } from "@/hooks/queries/useAverageBlockTime";
 import { Duration, formatDuration, intervalToDuration } from "date-fns";
 import {
   NameType,

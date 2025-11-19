@@ -1,6 +1,69 @@
 import { useQuery } from "@tanstack/react-query";
-import { resolveNFD } from "./resolveNFD";
-import { reverseResolveNFD } from "./reverseResolveNFD";
+
+interface NFDRecord {
+  depositAccount: string;
+  name: string;
+  owner: string;
+}
+
+// Private API calls - not exported
+
+/**
+ * Resolves an NFD name to its Algorand address
+ * @param nfd - The NFD name (e.g., "silvio.algo")
+ * @returns The Algorand address associated with the NFD
+ */
+export async function resolveNFD(nfd: string): Promise<string> {
+  try {
+    const response = await fetch(
+      `https://api.nf.domains/nfd/${nfd.toLowerCase()}`,
+    );
+
+    if (!response.ok) {
+      throw new Error(`NFD not found: ${nfd}`);
+    }
+
+    const data: NFDRecord = await response.json();
+    return data.depositAccount;
+  } catch (error) {
+    console.error("Error resolving NFD:", error);
+    return "";
+  }
+}
+
+/**
+ * Reverse lookup: resolves an Algorand address to its primary NFD name
+ * @param address - The Algorand address to lookup
+ * @returns The primary NFD name (without .algo suffix) or empty string if none found
+ */
+async function reverseResolveNFD(address: string): Promise<string> {
+  try {
+    const response = await fetch(
+      `https://api.nf.domains/nfd/lookup?address=${address}&view=tiny&allowUnverified=true`,
+    );
+
+    if (!response.ok) {
+      throw new Error(`No NFD found for address: ${address}`);
+    }
+
+    const data: Record<string, NFDRecord> = await response.json();
+
+    // The API returns an object with the address as key
+    const nfdRecord = data[address];
+
+    if (!nfdRecord?.name) {
+      return "";
+    }
+
+    // Remove .algo suffix if present
+    return nfdRecord.name.replace(/\.algo$/, "");
+  } catch (error) {
+    console.error("Error reverse resolving NFD:", error);
+    return "";
+  }
+}
+
+// Public hooks
 
 /**
  * Hook to resolve an NFD name to its Algorand address

@@ -1,11 +1,11 @@
 import { useMemo, useState, useDeferredValue, Suspense, lazy } from "react";
 import { useSearch } from "@tanstack/react-router";
-import { useBlocksQuery } from "@/hooks/useBlocksQuery";
+import { useBlocksQuery } from "@/hooks/queries/useBlocksQuery";
 import { useAlgorandAddresses } from "@/hooks/useAlgorandAddress";
 import { Error } from "@/components/error";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { FetchProgressScreen } from "@/components/fetch-progress-screen";
-import { useCurrentRound } from "@/hooks/useCurrentRound";
+import { useCurrentRound } from "@/hooks/queries/useCurrentRound";
 import AddressBreadcrumb from "./address-breadcrumb";
 import AddressFilters from "./address-filters";
 import AddAddress from "./add-address";

@@ -1,6 +1,7 @@
 import { indexerClient } from "@/lib/indexer-client";
 import { useQuery } from "@tanstack/react-query";
 
+// Private API call - not exported
 const getCurrentRound = () => {
   return indexerClient
     .searchForBlockHeaders()
@@ -8,6 +9,7 @@ const getCurrentRound = () => {
     .do()
     .then((res) => res.currentRound);
 };
+
 export const useCurrentRound = () => {
   return useQuery({
     queryKey: ["currentRound"],

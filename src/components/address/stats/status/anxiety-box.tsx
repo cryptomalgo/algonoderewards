@@ -1,7 +1,7 @@
 import React from "react";
 import { DotBadge } from "@/components/dot-badge";
-import { useAverageBlockTime } from "@/hooks/useAverageBlockTime";
-import { useStakeInfo } from "@/hooks/useStakeInfo";
+import { useAverageBlockTime } from "@/hooks/queries/useAverageBlockTime";
+import { useStakeInfo } from "@/hooks/queries/useStakeInfo";
 import { formatMinutes } from "@/lib/utils";
 import { AlgoAmount } from "@algorandfoundation/algokit-utils/types/amount";
 import { Account } from "algosdk/client/indexer";

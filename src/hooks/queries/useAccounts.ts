@@ -2,6 +2,7 @@ import { ResolvedAddress } from "@/components/heatmap/types";
 import { indexerClient } from "@/lib/indexer-client";
 import { useQueries, useQuery } from "@tanstack/react-query";
 
+// Private API call - not exported
 const getAccount = (address: string) => {
   return indexerClient
     .lookupAccountByID(address)

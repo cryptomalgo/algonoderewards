@@ -6,7 +6,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/mobile-tooltip";
-import { useAverageBlockTime } from "@/hooks/useAverageBlockTime";
+import { useAverageBlockTime } from "@/hooks/queries/useAverageBlockTime";
 import { Account } from "algosdk/client/indexer";
 import { format, formatDistanceToNow } from "date-fns";
 import { KeyRoundIcon } from "lucide-react";

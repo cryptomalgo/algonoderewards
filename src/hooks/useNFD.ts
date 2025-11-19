@@ -1,7 +1,7 @@
 // Re-exports for backwards compatibility
-// Moved to queries folder for better organization
+// Moved to hooks/queries folder for better organization
 export {
   useNFDResolve,
   useNFDReverse,
   useNFDReverseMultiple,
-} from "@/queries/useNFD";
+} from "@/hooks/queries/useNFD";

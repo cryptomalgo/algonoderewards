@@ -2,7 +2,7 @@ import { AlgoAmount } from "@algorandfoundation/algokit-utils/types/amount";
 import AlgorandLogo from "@/components/algorand-logo.tsx";
 import { animate, motion, useMotionValue } from "motion/react";
 import { useEffect, useState } from "react";
-import { useAlgoPrice } from "@/hooks/useAlgoPrice";
+import { useAlgoPrice } from "@/hooks/queries/useAlgoPrice";
 
 export default function AlgoAmountDisplay({
   microAlgoAmount,
