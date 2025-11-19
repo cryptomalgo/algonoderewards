@@ -48,7 +48,7 @@ export function FetchProgress({
                   <span className="font-medium text-indigo-600 dark:text-indigo-400">
                     {fetchedCount.toLocaleString()}
                   </span>{" "}
-                  {fetchedCount === 1 ? "block" : "blocks"} fetched
+                  proposed {fetchedCount === 1 ? "block" : "blocks"} fetched
                   {cachedCount > 0 && (
                     <>
                       {" • "}
