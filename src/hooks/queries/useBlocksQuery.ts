@@ -24,6 +24,9 @@ export function useBlocksQuery(
     startRound: 0,
     currentRound: 0,
     remainingRounds: 0,
+    fetchedCount: 0,
+    cachedCount: 0,
+    startTime: 0,
   });
 
   const query = useQuery({
@@ -35,25 +38,34 @@ export function useBlocksQuery(
         .join(","),
     ],
     queryFn: async () => {
-      setProgressState((prev) => ({ ...prev, showProgress: true }));
+      const startTime = Date.now();
+      setProgressState((prev) => ({ ...prev, showProgress: true, startTime }));
 
       try {
         const blocks = await fetchBlocksWithCache(addresses, {
           enableCache: options?.enableCache,
           currentRound: options?.currentRound,
           onProgress: (syncedUntil, start, current, remaining) => {
-            setProgressState({
+            setProgressState((prev) => ({
+              ...prev,
               showProgress: true,
               syncedUntilRound: syncedUntil,
               startRound: start,
               currentRound: current,
               remainingRounds: remaining,
-            });
+            }));
             options?.onProgress?.(syncedUntil, start, current, remaining);
+          },
+          onStats: (fetched, cached) => {
+            setProgressState((prev) => ({
+              ...prev,
+              fetchedCount: fetched,
+              cachedCount: cached,
+            }));
           },
         });
 
-        setProgressState((prev) => ({ ...prev, showProgress: false }));
+        // Don't set showProgress to false here - let the useEffect handle it
         return blocks;
       } catch (error) {
         console.error("Failed to fetch blocks:", error);
@@ -71,16 +83,25 @@ export function useBlocksQuery(
     gcTime: 1000 * 60 * 30, // 30 minutes
   });
 
-  // Close progress modal when query finishes loading/fetching
+  // Close progress banner when query finishes loading/fetching
   useEffect(() => {
-    if (!query.isLoading && !query.isFetching) {
-      // Use a small timeout to ensure any final progress updates are shown
+    if (!query.isLoading && !query.isFetching && progressState.startTime > 0) {
+      const elapsed = Date.now() - progressState.startTime;
+      const minimumDisplayTime = 1500; // Show for at least 1.5 seconds
+      const completionDisplayTime = 2000; // Show completion for 2 seconds
+
+      // If fetch was very fast, add delay to reach minimum display time
+      const delayBeforeCompletion = Math.max(0, minimumDisplayTime - elapsed);
+
+      // Total time = delay to reach minimum + completion display time
+      const totalDelay = delayBeforeCompletion + completionDisplayTime;
+
       const timer = setTimeout(() => {
         setProgressState((prev) => ({ ...prev, showProgress: false }));
-      }, 300);
+      }, totalDelay);
       return () => clearTimeout(timer);
     }
-  }, [query.isLoading, query.isFetching]);
+  }, [query.isLoading, query.isFetching, progressState.startTime]);
 
   // Show progress when query is actively loading or when internal state says to show it
   const shouldShowProgress =

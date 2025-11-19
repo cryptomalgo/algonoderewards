@@ -152,6 +152,7 @@ export async function fetchBlocksWithCache(
       currentRound: number,
       remainingRounds: number,
     ) => void;
+    onStats?: (fetched: number, cached: number) => void;
   },
 ): Promise<MinimalBlock[]> {
   if (addresses.length === 0) {
@@ -169,6 +170,9 @@ export async function fetchBlocksWithCache(
       REWARDS_START_ROUND,
       { currentRound, onProgress },
     );
+
+    options?.onStats?.(newBlocks.length, 0);
+
     const mergedBlocksByAddress = new Map<string, MinimalBlock[]>();
 
     for (let i = 0; i < addresses.length; i++) {
@@ -192,7 +196,9 @@ export async function fetchBlocksWithCache(
       const { address, blocks: cachedBlocks } = cacheResults[i];
       mergedBlocksByAddress.set(address, cachedBlocks || []);
     }
-    return combineAndConvertBlocks(mergedBlocksByAddress);
+    const result = combineAndConvertBlocks(mergedBlocksByAddress);
+    options?.onStats?.(0, result.length);
+    return result;
   }
 
   const newBlocks = await fetchNewBlocksFromAPI(addresses, minStartRound, {
@@ -214,5 +220,11 @@ export async function fetchBlocksWithCache(
 
   await updateCaches(mergedBlocksByAddress);
 
-  return combineAndConvertBlocks(mergedBlocksByAddress);
+  const finalBlocks = combineAndConvertBlocks(mergedBlocksByAddress);
+  options?.onStats?.(
+    newBlocks.length,
+    Math.max(0, finalBlocks.length - newBlocks.length),
+  );
+
+  return finalBlocks;
 }

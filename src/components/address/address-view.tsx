@@ -4,7 +4,7 @@ import { useBlocksQuery } from "@/hooks/queries/useBlocksQuery";
 import { useAlgorandAddresses } from "@/hooks/useAlgorandAddress";
 import { Error } from "@/components/error";
 import { ErrorBoundary } from "@/components/error-boundary";
-import { FetchProgressScreen } from "@/components/fetch-progress-screen";
+import { FetchProgress } from "@/components/fetch-progress";
 import { useCurrentRound } from "@/hooks/queries/useCurrentRound";
 import AddressBreadcrumb from "./address-breadcrumb";
 import AddressFilters from "./address-filters";
@@ -168,7 +168,6 @@ export default function AddressView({ addresses }: { addresses: string }) {
     loading,
     hasError,
     progress,
-    closeProgress,
   } = useBlocksQuery(resolvedAddresses, {
     enableCache: search.enableCache,
     currentRound: currentRound ? Number(currentRound) : undefined,
@@ -195,6 +194,16 @@ export default function AddressView({ addresses }: { addresses: string }) {
     <div className="min-h-full">
       <meta name="apple-mobile-web-app-capable" content="yes" />
       <meta name="mobile-web-app-capable" content="yes" />
+      <FetchProgress
+        isVisible={progress.showProgress}
+        syncedUntilRound={progress.syncedUntilRound}
+        startRound={progress.startRound}
+        currentRound={progress.currentRound}
+        remainingRounds={progress.remainingRounds}
+        fetchedCount={progress.fetchedCount}
+        cachedCount={progress.cachedCount}
+        isCacheEnabled={search.enableCache}
+      />
       <main className="mt-4">
         <div className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-2 border-b border-gray-200 pb-5">
@@ -280,16 +289,6 @@ export default function AddressView({ addresses }: { addresses: string }) {
           </div>
         </div>
       </main>
-
-      <FetchProgressScreen
-        isVisible={progress.showProgress}
-        syncedUntilRound={progress.syncedUntilRound}
-        startRound={progress.startRound}
-        currentRound={progress.currentRound}
-        remainingRounds={progress.remainingRounds}
-        isCacheDisabled={!search.enableCache}
-        onClose={closeProgress}
-      />
     </div>
   );
 }
