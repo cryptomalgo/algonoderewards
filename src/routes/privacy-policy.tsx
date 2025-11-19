@@ -13,7 +13,7 @@ function PrivacyPolicy() {
             Privacy Policy
           </h1>
           <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-            Last Updated: November 14, 2025 (
+            Last Updated: November 19, 2025 (
             <a
               href="https://github.com/cryptomalgo/algonoderewards/commits/main/src/routes/privacy-policy.tsx"
               target="_blank"
@@ -375,7 +375,7 @@ function PrivacyPolicy() {
             </h3>
             <ul className="mt-2 list-inside list-disc space-y-2 text-gray-600 dark:text-gray-300">
               <li>
-                <strong>November 14, 2025:</strong> Added section on local data
+                <strong>November 19, 2025:</strong> Added section on local data
                 storage (IndexedDB) caching mechanism, clarifying that caching
                 is disabled by default and requires opt-in
               </li>
