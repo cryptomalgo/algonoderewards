@@ -1,6 +1,7 @@
 import { indexerClient } from "@/lib/indexer-client";
 import { useQuery } from "@tanstack/react-query";
 
+// Private API call - not exported
 const getBlock = (round: number) => {
   return indexerClient.lookupBlock(round).do();
 };

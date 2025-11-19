@@ -2,6 +2,8 @@ import { indexerClient } from "@/lib/indexer-client";
 import { useQuery } from "@tanstack/react-query";
 
 const DEFAULT_BLOCK_TIME = 2.8; // Default block time in seconds
+
+// Private API call - not exported
 const getAverageBlockTime = () => {
   const minutesAgo = 5;
   const dateAgo = new Date(new Date().getTime() - minutesAgo * 60 * 1000);
@@ -39,9 +41,11 @@ const getAverageBlockTime = () => {
       return Math.round(averageTimeDiff * 100) / 100;
     });
 };
+
 export const useAverageBlockTime = () => {
   return useQuery({
     queryKey: ["averageBlockTime"],
     queryFn: getAverageBlockTime,
+    refetchOnWindowFocus: false,
   });
 };

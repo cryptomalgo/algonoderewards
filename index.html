@@ -28,42 +28,95 @@
       content="https://algonoderewards.com/preview.png"
     />
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <style>
+      /* Loading spinner styles */
+      #app-loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background-color: rgb(249 250 251);
+      }
+      #app-loading .spinner {
+        width: 48px;
+        height: 48px;
+        border: 4px solid rgb(229 231 235);
+        border-top-color: rgb(99 102 241);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      /* Hide SEO content visually but keep for crawlers */
+      .seo-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+      }
+      /* Dark mode support */
+      @media (prefers-color-scheme: dark) {
+        #app-loading {
+          background-color: rgb(17 24 39);
+        }
+        #app-loading .spinner {
+          border-color: rgb(55 65 81);
+          border-top-color: rgb(129 140 248);
+        }
+      }
+    </style>
   </head>
   <body class="flex min-h-screen flex-col" id="root">
-    <header
-      class="mx-auto w-full max-w-7xl px-2 sm:px-4 lg:divide-y lg:divide-gray-200 lg:px-8"
-    >
-      <div class="relative mr-auto flex h-16 justify-between">
-        <div class="relative z-10 flex px-2 lg:px-0">
-          <div class="flex items-center">
-            <a href="/" class="flex items-center gap-2">
-              <img
-                alt="Algo Node Rewards"
-                height="32"
-                src="/logo.png"
-                class="h-8 w-auto"
-              />
-              <span class="text-lg">Algo Node Rewards</span>
-            </a>
+    <!-- Loading spinner shown immediately -->
+    <div id="app-loading">
+      <div class="spinner"></div>
+    </div>
+
+    <!-- SEO content - hidden from users but visible to crawlers -->
+    <div class="seo-only">
+      <header
+        class="mx-auto w-full max-w-7xl px-2 sm:px-4 lg:divide-y lg:divide-gray-200 lg:px-8"
+      >
+        <div class="relative mr-auto flex h-16 justify-between">
+          <div class="relative z-10 flex px-2 lg:px-0">
+            <div class="flex items-center">
+              <a href="/" class="flex items-center gap-2">
+                <img
+                  alt="Algo Node Rewards"
+                  height="32"
+                  src="/logo.png"
+                  class="h-8 w-auto"
+                />
+                <span class="text-lg">Algo Node Rewards</span>
+              </a>
+            </div>
           </div>
         </div>
-      </div>
-    </header>
-    <main class="flex-grow">
-      <div class="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
-        <div class="relative p-6 text-center">
-          <h1
-            class="text-5xl font-semibold tracking-tight text-balance text-gray-900 sm:text-7xl"
-          >
-            Cool stats for your Algorand staking rewards
-          </h1>
-          <p>
-            Get your total node rewards and identify peak performance periods
-            with our detailed rewards heatmap
-          </p>
+      </header>
+      <main class="grow">
+        <div class="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
+          <div class="relative p-6 text-center">
+            <h1
+              class="text-5xl font-semibold tracking-tight text-balance text-gray-900 sm:text-7xl"
+            >
+              Cool stats for your Algorand staking rewards
+            </h1>
+            <p>
+              Get your total node rewards and identify peak performance periods
+              with our detailed rewards heatmap
+            </p>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

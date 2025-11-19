@@ -1,5 +1,5 @@
 import { ResolvedAddress } from "@/components/heatmap/types";
-import { useAccounts } from "@/hooks/useAccounts";
+import { useAccounts } from "@/hooks/queries/useAccounts";
 import { BlockStats } from "@/hooks/useBlocksStats";
 import { useSearch } from "@tanstack/react-router";
 import StatBox from "../stat-box";

@@ -3,7 +3,7 @@ import { CheckIcon } from "lucide-react";
 import { displayAlgoAddress } from "@/lib/utils";
 import CopyButton from "@/components/copy-to-clipboard";
 import { ResolvedAddress } from "@/components/heatmap/types";
-import { useAccount } from "@/hooks/useAccounts";
+import { useAccount } from "@/hooks/queries/useAccounts";
 import AccountStatus from "./stats/status/status";
 
 export default function AddressFilters({
