@@ -43,9 +43,11 @@ function PreviousRewardTooltip({
 export function RewardsPerDayPanel({
   stats,
   loading,
+  hideBalance,
 }: {
   stats: BlockStats;
   loading: boolean;
+  hideBalance?: boolean;
 }) {
   return (
     <Panel>
@@ -59,6 +61,7 @@ export function RewardsPerDayPanel({
               <TooltipTrigger>
                 <AlgoAmountDisplay
                   microAlgoAmount={stats.allTime.avgRewardsPerDay}
+                  hidden={hideBalance}
                 />
               </TooltipTrigger>
               <TooltipContent>
@@ -68,6 +71,7 @@ export function RewardsPerDayPanel({
                       showAnimation={false}
                       showUsdValue={false}
                       microAlgoAmount={stats.allTime.totalRewards}
+                      hidden={hideBalance}
                     />
                     {` rewarded in ${stats.allTime.totalDays} days (from ${stats.allTime.startDate.toLocaleDateString()} to ${stats.allTime.endDate.toLocaleDateString()})`}
                   </>
@@ -87,6 +91,7 @@ export function RewardsPerDayPanel({
                   microAlgoAmount={
                     stats.allTime.avgRewardsPerDay * AVERAGE_DAY_IN_MONTH
                   }
+                  hidden={hideBalance}
                 />
               </TooltipTrigger>
               <TooltipContent>
@@ -96,6 +101,7 @@ export function RewardsPerDayPanel({
                       showAnimation={false}
                       showUsdValue={false}
                       microAlgoAmount={stats.allTime.avgRewardsPerDay}
+                      hidden={hideBalance}
                     />
                     {` by day x ${AVERAGE_DAY_IN_MONTH} days in a month (365/12)`}
                   </>
@@ -114,6 +120,7 @@ export function RewardsPerDayPanel({
                 <TooltipTrigger>
                   <AlgoAmountDisplay
                     microAlgoAmount={stats.last30Days.avgRewardsPerDay}
+                    hidden={hideBalance}
                   />
                 </TooltipTrigger>
                 <TooltipContent>
@@ -121,6 +128,7 @@ export function RewardsPerDayPanel({
                     showAnimation={false}
                     showUsdValue={false}
                     microAlgoAmount={stats.last30Days.totalRewards}
+                    hidden={hideBalance}
                   />{" "}
                   {`rewarded from ${stats.last30Days.startDate.toLocaleDateString()} to ${stats.last30Days.endDate.toLocaleDateString()}`}
                 </TooltipContent>
@@ -151,6 +159,7 @@ export function RewardsPerDayPanel({
                 <TooltipTrigger>
                   <AlgoAmountDisplay
                     microAlgoAmount={stats.last7Days.avgRewardsPerDay}
+                    hidden={hideBalance}
                   />
                 </TooltipTrigger>
                 <TooltipContent>
@@ -158,6 +167,7 @@ export function RewardsPerDayPanel({
                     showUsdValue={false}
                     showAnimation={false}
                     microAlgoAmount={stats.last7Days.totalRewards}
+                    hidden={hideBalance}
                   />{" "}
                   {`rewarded from ${stats.last7Days.startDate.toLocaleDateString()} to ${stats.last7Days.endDate.toLocaleDateString()}`}
                 </TooltipContent>

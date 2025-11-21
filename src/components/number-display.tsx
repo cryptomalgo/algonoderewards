@@ -7,6 +7,7 @@ interface NumberDisplayProps {
   duration?: number;
   formatOptions?: Intl.NumberFormatOptions;
   animate?: boolean;
+  hidden?: boolean;
 }
 
 export default function NumberDisplay({
@@ -15,6 +16,7 @@ export default function NumberDisplay({
   duration = 0.5,
   formatOptions,
   animate: shouldAnimate = true,
+  hidden = false,
 }: NumberDisplayProps) {
   const motionValue = useMotionValue(0);
   const [displayValue, setDisplayValue] = useState(value);
@@ -50,7 +52,7 @@ export default function NumberDisplay({
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3 }}
     >
-      {formattedValue}
+      {hidden ? "*****" : formattedValue}
     </motion.span>
   );
 }
