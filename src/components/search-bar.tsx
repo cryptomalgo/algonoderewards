@@ -50,6 +50,7 @@ export default function SearchBar() {
           enableCache: prev.enableCache ?? false,
           theme: prev.theme ?? "system",
           statsPanelTheme: prev.statsPanelTheme ?? "indigo",
+          currency: prev.currency ?? "USD",
         }),
       });
     }

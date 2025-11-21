@@ -72,9 +72,9 @@ describe("useBlocksStats with MinimalBlock data", () => {
     const { result } = renderHook(() => useBlocksStats(blocks));
 
     // allTime stats filter blocks up to yesterday (exclude today's blocks)
-    // So we expect 3 blocks (the one from 1 hour ago is excluded)
-    expect(result.current.allTime.totalBlocks).toBe(3);
-    expect(result.current.allTime.totalRewards).toBe(4500000); // Excludes 1.8 ALGO from today
+    // So we expect 4 blocks (includes all blocks from previous days)
+    expect(result.current.allTime.totalBlocks).toBe(4);
+    expect(result.current.allTime.totalRewards).toBe(6300000); // 1 + 2 + 1.5 + 1.8 ALGO
     expect(result.current.allTime.avgRewardsPerDay).toBeGreaterThan(0);
   });
 
