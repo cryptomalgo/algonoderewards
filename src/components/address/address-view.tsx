@@ -133,6 +133,7 @@ export default function AddressView({ addresses }: { addresses: string }) {
         enableCache: prev.enableCache ?? false,
         theme: prev.theme ?? "system",
         statsPanelTheme: prev.statsPanelTheme ?? "indigo",
+        currency: prev.currency ?? "USD",
       }),
     });
   };

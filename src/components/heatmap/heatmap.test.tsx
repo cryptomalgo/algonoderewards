@@ -1,8 +1,22 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render } from "@testing-library/react";
 import Heatmap from "./heatmap";
 import { MinimalBlock } from "@/lib/block-types";
 import { ThemeProvider } from "@/components/theme-provider";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+// Mock the router
+vi.mock("@tanstack/react-router", () => ({
+  useSearch: () => ({ currency: "USD" }),
+}));
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    },
+  },
+});
 
 describe("Heatmap with MinimalBlock data", () => {
   const createTestBlocks = (): MinimalBlock[] => {
@@ -32,9 +46,11 @@ describe("Heatmap with MinimalBlock data", () => {
   it("should render without crashing with MinimalBlock data", () => {
     const blocks = createTestBlocks();
     const { container } = render(
-      <ThemeProvider>
-        <Heatmap blocks={blocks} />
-      </ThemeProvider>,
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <Heatmap blocks={blocks} />
+        </ThemeProvider>
+      </QueryClientProvider>,
     );
 
     expect(container).toBeTruthy();
@@ -42,9 +58,11 @@ describe("Heatmap with MinimalBlock data", () => {
 
   it("should handle empty blocks array", () => {
     const { container } = render(
-      <ThemeProvider>
-        <Heatmap blocks={[]} />
-      </ThemeProvider>,
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <Heatmap blocks={[]} />
+        </ThemeProvider>
+      </QueryClientProvider>,
     );
 
     expect(container).toBeTruthy();
@@ -68,9 +86,11 @@ describe("Heatmap with MinimalBlock data", () => {
 
     // Should not throw with proposer as address string
     const { container } = render(
-      <ThemeProvider>
-        <Heatmap blocks={blocks} />
-      </ThemeProvider>,
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <Heatmap blocks={blocks} />
+        </ThemeProvider>
+      </QueryClientProvider>,
     );
     expect(container).toBeTruthy();
   });

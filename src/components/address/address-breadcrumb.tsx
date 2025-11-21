@@ -49,7 +49,10 @@ const AddressBreadcrumb = ({
   };
 
   return (
-    <nav aria-label="Breadcrumb" className="flex justify-between">
+    <nav
+      aria-label="Breadcrumb"
+      className="flex flex-wrap justify-between gap-2"
+    >
       <ol role="list" className="flex items-center space-x-4">
         <li>
           <div>
@@ -147,7 +150,7 @@ const AddressBreadcrumb = ({
           </div>
         </li>
       </ol>
-      <div className="flex gap-2">
+      <div className="flex items-center gap-2">
         <RefreshButton />
         <Settings blocks={blocks} />
       </div>

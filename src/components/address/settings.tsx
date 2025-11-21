@@ -6,6 +6,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useTheme } from "@/components/theme-provider";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { motion } from "framer-motion";
@@ -15,16 +22,15 @@ import CsvExportDialog from "@/components/address/csv-export-dialog.tsx";
 import { CacheManagementDialog } from "@/components/address/cache-management-dialog";
 import { DownloadIcon, DatabaseIcon } from "lucide-react";
 import { toast } from "sonner";
-import { useAlgoPrice } from "@/hooks/queries/useAlgoPrice";
-import AlgorandLogo from "@/components/algorand-logo.tsx";
 import { useNavigate, useSearch } from "@tanstack/react-router";
+import { CURRENCIES, type Currency } from "@/lib/currencies";
 
 export default function Settings({ blocks }: { blocks: MinimalBlock[] }) {
   const { themeSetting, setThemeSetting } = useTheme();
-  const { price: algoPrice, loading: priceLoading } = useAlgoPrice();
   const navigate = useNavigate({ from: "/$addresses" });
   const search = useSearch({ from: "/$addresses" });
   const statsPanelTheme = search.statsPanelTheme;
+  const currency = search.currency || "USD";
 
   const changeStatsPanelTheme = (newTheme: "light" | "indigo") => {
     navigate({
@@ -33,6 +39,16 @@ export default function Settings({ blocks }: { blocks: MinimalBlock[] }) {
         statsPanelTheme: newTheme,
       }),
       replace: true, // Replace the URL to avoid adding to history stack
+    });
+  };
+
+  const changeCurrency = (newCurrency: Currency) => {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        currency: newCurrency,
+      }),
+      replace: true,
     });
   };
 
@@ -227,19 +243,25 @@ export default function Settings({ blocks }: { blocks: MinimalBlock[] }) {
           </ToggleGroup>
         </div>
 
-        {!priceLoading && algoPrice && (
-          <>
-            <DropdownMenuSeparator className="dark:bg-gray-700" />
-            <div className="flex items-center gap-1 px-4 py-2 text-sm text-gray-600 dark:text-gray-300">
-              <div className="flex items-center">
-                <span className="mr-1">1</span>
-                <AlgorandLogo className="h-3.5 w-3.5" />
-                <span className="ml-1">=</span>
-              </div>
-              <span className="font-medium">${algoPrice}</span>
-            </div>
-          </>
-        )}
+        <DropdownMenuSeparator className="dark:bg-gray-700" />
+
+        <DropdownMenuLabel className="dark:text-gray-100">
+          Currency
+        </DropdownMenuLabel>
+        <div className="px-2 py-1.5">
+          <Select value={currency} onValueChange={changeCurrency}>
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {CURRENCIES.map((curr) => (
+                <SelectItem key={curr.value} value={curr.value}>
+                  {curr.symbol} {curr.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );

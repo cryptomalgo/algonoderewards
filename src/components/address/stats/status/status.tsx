@@ -10,6 +10,7 @@ import { AnxietyCard, AnxietyCardSkeleton } from "./anxiety-card";
 import { StatusBadgesSkeleton } from "./status-badges-skeleton";
 import { CacheBadges } from "./cache-badges";
 import { CacheManagementDialog } from "@/components/address/cache-management-dialog";
+import { AlgoPriceTicker } from "@/components/algo-price-ticker";
 
 export default function AccountStatus({
   address,
@@ -62,7 +63,10 @@ export default function AccountStatus({
             </div>
           </div>
         </div>
-        <AnxietyCard account={account} />
+        <div className="flex flex-col-reverse flex-wrap items-start gap-2 sm:flex-row">
+          <AnxietyCard account={account} />
+          <AlgoPriceTicker />
+        </div>
       </div>
     </div>
   );

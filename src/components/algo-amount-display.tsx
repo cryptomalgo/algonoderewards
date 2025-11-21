@@ -3,6 +3,7 @@ import AlgorandLogo from "@/components/algorand-logo.tsx";
 import { animate, motion, useMotionValue } from "motion/react";
 import { useEffect, useState } from "react";
 import { useAlgoPrice } from "@/hooks/queries/useAlgoPrice";
+import { useSearch } from "@tanstack/react-router";
 
 export default function AlgoAmountDisplay({
   microAlgoAmount,
@@ -17,6 +18,9 @@ export default function AlgoAmountDisplay({
   showUsdValue?: boolean;
   hidden?: boolean;
 }) {
+  const search = useSearch({ from: "/$addresses" });
+  const currency = search.currency || "USD";
+
   // Ensure microAlgoAmount is a BigInt
   const algoAmount = new AlgoAmount({
     microAlgos:
@@ -28,7 +32,7 @@ export default function AlgoAmountDisplay({
   const value = useMotionValue(0);
   const [displayValue, setDisplayValue] = useState("0.000");
 
-  const { price: algoPrice } = useAlgoPrice();
+  const { data: algoPrice } = useAlgoPrice(currency);
 
   useEffect(() => {
     const algoValue = Number(algoAmount.algos);
@@ -58,20 +62,26 @@ export default function AlgoAmountDisplay({
     }).format(num);
   }
 
-  // Format USD value
-  function formatUsdValue(algoValue: number, price: number): string {
-    const usdValue = algoValue * price;
+  // Format currency value
+  function formatCurrencyValue(
+    algoValue: number,
+    price: number,
+    currencyCode: string,
+  ): string {
+    const currencyValue = algoValue * price;
     return new Intl.NumberFormat("en-US", {
       style: "currency",
-      currency: "USD",
+      currency: currencyCode,
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
-    }).format(usdValue);
+    }).format(currencyValue);
   }
 
   const algoValue = Number(algoAmount.algos);
-  const usdValue =
-    algoPrice && showUsdValue ? formatUsdValue(algoValue, algoPrice) : null;
+  const currencyValue =
+    algoPrice && showUsdValue
+      ? formatCurrencyValue(algoValue, algoPrice, currency)
+      : null;
 
   return (
     <span className={`inline-flex flex-col ${className}`}>
@@ -86,14 +96,14 @@ export default function AlgoAmountDisplay({
         </motion.span>
         <AlgorandLogo className="ml-0.5" />
       </span>
-      {showUsdValue && usdValue && (
+      {showUsdValue && currencyValue && (
         <motion.span
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.6 }}
           transition={{ duration: 0.5, delay: 0.2 }}
           className="w-fit text-xs"
         >
-          {hidden ? "*****" : usdValue}
+          {hidden ? "*****" : currencyValue}
         </motion.span>
       )}
     </span>
