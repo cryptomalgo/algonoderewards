@@ -262,7 +262,10 @@ export default function AddressView({ addresses }: { addresses: string }) {
             {/* Priority 3: Heavy charts with lazy loading and Suspense */}
             <ErrorBoundary>
               <Suspense fallback={<ChartFallback />}>
-                <CumulativeRewardsChart blocks={deferredBlocks} />
+                <CumulativeRewardsChart
+                  blocks={deferredBlocks}
+                  hideBalance={search.hideBalance}
+                />
               </Suspense>
             </ErrorBoundary>
 

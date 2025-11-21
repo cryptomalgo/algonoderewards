@@ -24,6 +24,7 @@ interface CachedAddressInfo {
 export function CacheBadges({ onClick }: CacheBadgesProps) {
   const search = useSearch({ from: "/$addresses" });
   const isCacheEnabled = search.enableCache ?? false;
+  const isBalanceHidden = search.hideBalance;
 
   const { data: totalSize = 0 } = useQuery({
     queryKey: ["cache-size"],
@@ -69,7 +70,7 @@ export function CacheBadges({ onClick }: CacheBadgesProps) {
             <span onClick={onClick} className={onClick ? "cursor-pointer" : ""}>
               <span className="text-md inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 font-medium text-gray-900 ring-1 ring-gray-200 ring-inset dark:text-white dark:ring-gray-800">
                 <Database className="size-3" />
-                {formatBytes(totalSize)}
+                {isBalanceHidden ? "*****" : formatBytes(totalSize)}
               </span>
             </span>
           </TooltipTrigger>

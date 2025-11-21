@@ -8,9 +8,11 @@ import { Panel } from "../panel";
 export function TotalsPanel({
   stats,
   loading,
+  hideBalance,
 }: {
   stats: BlockStats;
   loading: boolean;
+  hideBalance?: boolean;
 }) {
   return (
     <Panel>
@@ -19,13 +21,23 @@ export function TotalsPanel({
           title="Total rewards"
           loading={loading}
           skeletonLines={2}
-          content={<AlgoAmountDisplay microAlgoAmount={stats.totalRewards} />}
+          content={
+            <AlgoAmountDisplay
+              microAlgoAmount={stats.totalRewards}
+              hidden={hideBalance}
+            />
+          }
         />
         <StatBox
           title="Total blocks"
           loading={loading}
           skeletonLines={1}
-          content={<NumberDisplay value={stats.totalNbOfBlocksWithRewards} />}
+          content={
+            <NumberDisplay
+              value={stats.totalNbOfBlocksWithRewards}
+              hidden={hideBalance}
+            />
+          }
         />
         <StatBox
           title="Max blocks in a day"
@@ -33,7 +45,12 @@ export function TotalsPanel({
           skeletonLines={1}
           content={
             <NumberTooltip
-              value={<NumberDisplay value={stats.maxBlocksInDay} />}
+              value={
+                <NumberDisplay
+                  value={stats.maxBlocksInDay}
+                  hidden={hideBalance}
+                />
+              }
               dateString={stats.maxBlocksInDayDateString}
             />
           }
@@ -45,7 +62,10 @@ export function TotalsPanel({
           content={
             <AmountTooltip
               amount={
-                <AlgoAmountDisplay microAlgoAmount={stats.maxRewardsInDay} />
+                <AlgoAmountDisplay
+                  microAlgoAmount={stats.maxRewardsInDay}
+                  hidden={hideBalance}
+                />
               }
               dateString={stats.maxRewardsInDayDateString}
             />
@@ -57,7 +77,12 @@ export function TotalsPanel({
           skeletonLines={2}
           content={
             <AmountTooltip
-              amount={<AlgoAmountDisplay microAlgoAmount={stats.minReward} />}
+              amount={
+                <AlgoAmountDisplay
+                  microAlgoAmount={stats.minReward}
+                  hidden={hideBalance}
+                />
+              }
               dateString={stats.minRewardDate}
             />
           }
@@ -68,7 +93,12 @@ export function TotalsPanel({
           skeletonLines={2}
           content={
             <AmountTooltip
-              amount={<AlgoAmountDisplay microAlgoAmount={stats.maxReward} />}
+              amount={
+                <AlgoAmountDisplay
+                  microAlgoAmount={stats.maxReward}
+                  hidden={hideBalance}
+                />
+              }
               dateString={stats.maxRewardDate}
             />
           }

@@ -32,9 +32,11 @@ function PreviousBlocksTooltip({
 export function BlocksPerDayPanel({
   stats,
   loading,
+  hideBalance,
 }: {
   stats: BlockStats;
   loading: boolean;
+  hideBalance?: boolean;
 }) {
   return (
     <Panel>
@@ -46,7 +48,10 @@ export function BlocksPerDayPanel({
           content={
             <Tooltip>
               <TooltipTrigger>
-                <NumberDisplay value={stats.allTime.avgBlocksPerDay} />
+                <NumberDisplay
+                  value={stats.allTime.avgBlocksPerDay}
+                  hidden={hideBalance}
+                />
               </TooltipTrigger>
               <TooltipContent>
                 {stats.allTime.startDate !== null &&
@@ -65,6 +70,7 @@ export function BlocksPerDayPanel({
               <TooltipTrigger>
                 <NumberDisplay
                   value={stats.allTime.avgBlocksPerDay * AVERAGE_DAY_IN_MONTH}
+                  hidden={hideBalance}
                 />
               </TooltipTrigger>
               <TooltipContent>
@@ -84,7 +90,10 @@ export function BlocksPerDayPanel({
             <div className="flex items-center">
               <Tooltip>
                 <TooltipTrigger>
-                  <NumberDisplay value={stats.last30Days.avgBlocksPerDay} />
+                  <NumberDisplay
+                    value={stats.last30Days.avgBlocksPerDay}
+                    hidden={hideBalance}
+                  />
                 </TooltipTrigger>
                 <TooltipContent>
                   {`${stats.last30Days.totalBlocks} blocks proposed from ${stats.last30Days.startDate.toLocaleString()} to ${stats.last30Days.endDate.toLocaleString()}`}
@@ -113,7 +122,10 @@ export function BlocksPerDayPanel({
             <div className="flex items-center">
               <Tooltip>
                 <TooltipTrigger>
-                  <NumberDisplay value={stats.last7Days.avgBlocksPerDay} />
+                  <NumberDisplay
+                    value={stats.last7Days.avgBlocksPerDay}
+                    hidden={hideBalance}
+                  />
                 </TooltipTrigger>
                 <TooltipContent>
                   {`${stats.last7Days.totalBlocks} blocks proposed from ${stats.last7Days.startDate.toLocaleDateString()} to ${stats.last7Days.endDate.toLocaleDateString()}`}

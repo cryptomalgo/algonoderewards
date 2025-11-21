@@ -27,8 +27,10 @@ type ChartData = {
 
 const CumulativeRewardsChart = React.memo(function CumulativeRewardsChart({
   blocks,
+  hideBalance,
 }: {
   blocks: MinimalBlock[];
+  hideBalance?: boolean;
 }) {
   const { theme } = useTheme();
   const isSmall = useIsSmallScreen(640);
@@ -237,6 +239,7 @@ const CumulativeRewardsChart = React.memo(function CumulativeRewardsChart({
                       key="cumulative"
                       microAlgoAmount={dataPoint.cumulativeRewards}
                       showAnimation={false}
+                      hidden={hideBalance}
                     />,
                     "Total Rewards",
                   ];
@@ -247,6 +250,7 @@ const CumulativeRewardsChart = React.memo(function CumulativeRewardsChart({
                     key="daily"
                     microAlgoAmount={dataPoint.dailyRewards}
                     showAnimation={false}
+                    hidden={hideBalance}
                   />,
                   "Daily Rewards",
                 ];
