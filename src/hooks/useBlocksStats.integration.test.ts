@@ -77,12 +77,12 @@ describe("useBlocksStats with MinimalBlock data", () => {
     const totalBlocks = result.current.allTime.totalBlocks;
     expect(totalBlocks).toBeGreaterThanOrEqual(3);
     expect(totalBlocks).toBeLessThanOrEqual(4);
-    
+
     // Total rewards should be 4.5 ALGO (without today) or 6.3 ALGO (with today's block if it was before midnight)
     const totalRewards = result.current.allTime.totalRewards;
     expect(totalRewards).toBeGreaterThanOrEqual(4500000);
     expect(totalRewards).toBeLessThanOrEqual(6300000);
-    
+
     expect(result.current.allTime.avgRewardsPerDay).toBeGreaterThan(0);
   });
 
