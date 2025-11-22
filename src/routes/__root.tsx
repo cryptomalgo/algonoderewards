@@ -31,8 +31,10 @@ export const Route = createRootRoute({
                 }
               >
                 <img
-                  alt="Algo Node Rewards"
+                  alt="Algo Node Rewards logo"
                   src="/logo.png"
+                  width="32"
+                  height="32"
                   className="h-8 w-auto"
                 />
                 <h1 className={"text-lg"}>Algo Node Rewards</h1>
