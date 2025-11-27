@@ -5,7 +5,13 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function displayAlgoAddress(address: string, lettersToDisplay = 5) {
+export function displayAlgoAddress(
+  address: string | undefined,
+  lettersToDisplay = 5,
+) {
+  if (!address || address.length < lettersToDisplay * 2) {
+    return address || "";
+  }
   return `${address.slice(0, lettersToDisplay)}...${address.slice(
     -lettersToDisplay,
   )}`;
