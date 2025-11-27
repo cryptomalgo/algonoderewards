@@ -116,7 +116,11 @@ export default function AddressView({ addresses }: { addresses: string }) {
     () => addresses.split(",").filter(Boolean),
     [addresses],
   );
-  const { resolvedAddresses } = useAlgorandAddresses(addressesArray);
+  const {
+    resolvedAddresses,
+    loading: addressLoading,
+    hasError: addressError,
+  } = useAlgorandAddresses(addressesArray);
 
   // Function to update addresses in both state and URL
   const handleAddAddresses = (newAddresses: string[]) => {
@@ -215,6 +219,8 @@ export default function AddressView({ addresses }: { addresses: string }) {
               showFilters={showFilters}
               setShowFilters={setShowFilters}
               blocks={filteredBlocks}
+              loading={addressLoading}
+              hasError={addressError}
             />
             <AddAddress
               showAddAddress={showAddAddress}
@@ -227,14 +233,14 @@ export default function AddressView({ addresses }: { addresses: string }) {
               selectedAddresses={selectedAddresses}
               setSelectedAddresses={setSelectedAddresses}
             />
-            {resolvedAddresses.length === 1 && (
+            {resolvedAddresses.length === 1 && resolvedAddresses[0] && (
               <div>
                 <div className={"flex flex-wrap items-center gap-2"}>
                   <h2 className="block text-xl/7 text-gray-700 sm:hidden sm:truncate sm:text-lg sm:tracking-tight">
-                    {displayAlgoAddress(resolvedAddresses[0].address)}
+                    {displayAlgoAddress(resolvedAddresses[0]?.address)}
                   </h2>
                   <h2 className="hidden text-xl/7 text-gray-700 sm:block sm:truncate sm:text-lg sm:tracking-tight">
-                    {resolvedAddresses[0].address}
+                    {resolvedAddresses[0]?.address}
                   </h2>
                   <CopyButton address={resolvedAddresses[0].address} />
                 </div>

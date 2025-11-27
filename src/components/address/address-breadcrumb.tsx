@@ -1,4 +1,5 @@
 import {
+  AlertCircleIcon,
   ChevronRightIcon,
   FilterIcon,
   HomeIcon,
@@ -25,6 +26,8 @@ const AddressBreadcrumb = ({
   showAddAddress,
   setShowAddAddress,
   blocks,
+  loading,
+  hasError,
 }: {
   resolvedAddresses: ResolvedAddress[];
   showFilters: boolean;
@@ -32,6 +35,8 @@ const AddressBreadcrumb = ({
   showAddAddress: boolean;
   setShowAddAddress: (show: boolean) => void;
   blocks: MinimalBlock[];
+  loading: boolean;
+  hasError: boolean;
 }) => {
   const { theme } = useTheme();
 
@@ -55,7 +60,7 @@ const AddressBreadcrumb = ({
     >
       <ol role="list" className="flex items-center space-x-4">
         <li>
-          <div>
+          <div className="relative">
             <a
               href={theme ? `/?theme=${theme}` : "/"}
               className="text-gray-400 hover:text-gray-300 dark:text-gray-500 dark:hover:text-gray-400"
@@ -63,6 +68,20 @@ const AddressBreadcrumb = ({
               <HomeIcon aria-hidden="true" className="size-5 shrink-0" />
               <span className="sr-only">Home</span>
             </a>
+            {/* Error indicator badge next to home icon */}
+            {hasError && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <AlertCircleIcon
+                    className="absolute -top-1 -right-1 size-3 text-red-600 dark:text-red-400"
+                    aria-label="Error loading address"
+                  />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Error loading address</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
           </div>
         </li>
         <li>
@@ -76,12 +95,19 @@ const AddressBreadcrumb = ({
               aria-current={"page"}
               className="ml-4 hidden text-sm font-medium text-gray-500 hover:text-gray-700 md:block dark:text-gray-400 dark:hover:text-gray-300"
             >
-              {resolvedAddresses.length === 0 && (
+              {loading && resolvedAddresses.length === 0 && (
                 <Skeleton className="h-4 w-32" />
               )}
-              {resolvedAddresses.length === 1 &&
+              {!loading && hasError && resolvedAddresses.length === 0 && (
+                <span className="text-red-600 dark:text-red-400">
+                  Error loading address
+                </span>
+              )}
+              {!loading &&
+                resolvedAddresses.length === 1 &&
                 getDisplayName(resolvedAddresses[0].address)}
-              {resolvedAddresses.length > 1 &&
+              {!loading &&
+                resolvedAddresses.length > 1 &&
                 `Multiple addresses (${resolvedAddresses.length})`}
             </a>
             <a
@@ -89,12 +115,16 @@ const AddressBreadcrumb = ({
               aria-current={"page"}
               className="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700 md:hidden dark:text-gray-400 dark:hover:text-gray-300"
             >
-              {resolvedAddresses.length === 0 && (
+              {loading && resolvedAddresses.length === 0 && (
                 <Skeleton className="h-4 w-24" />
               )}
-              {resolvedAddresses.length === 1 &&
+              {!loading && hasError && resolvedAddresses.length === 0 && (
+                <span className="text-red-600 dark:text-red-400">Error</span>
+              )}
+              {!loading &&
+                resolvedAddresses.length === 1 &&
                 getDisplayName(resolvedAddresses[0].address, true)}
-              {resolvedAddresses.length > 1 && "Multiple addresses"}
+              {!loading && resolvedAddresses.length > 1 && "Multiple addresses"}
             </a>
 
             <div className={"ml-3 flex items-center gap-2"}>
