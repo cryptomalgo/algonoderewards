@@ -13,6 +13,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { Skeleton } from "@/components/ui/skeleton";
 import { displayAlgoAddress } from "@/lib/utils.ts";
 import CopyButton from "@/components/copy-to-clipboard";
+import { NFDExpirationBanner } from "./nfd-expiration-banner";
 
 // Lazy load ALL heavy components for better performance
 const Heatmap = lazy(() => import("@/components/heatmap/heatmap"));
@@ -209,6 +210,17 @@ export default function AddressView({ addresses }: { addresses: string }) {
         cachedCount={progress.cachedCount}
         isCacheEnabled={search.enableCache}
       />
+      {resolvedAddresses.map(
+        (addr) =>
+          addr.nfd && (
+            <NFDExpirationBanner
+              key={addr.address}
+              nfdName={addr.nfd}
+              timeExpires={addr.timeExpires}
+              expired={addr.expired}
+            />
+          ),
+      )}
       <main className="mt-4">
         <div className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-2 border-b border-gray-200 pb-5">

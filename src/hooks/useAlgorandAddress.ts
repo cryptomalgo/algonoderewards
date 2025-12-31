@@ -15,19 +15,27 @@ export const useAlgorandAddresses = (addresses: string[]) => {
       try {
         // Use Promise.all to wait for all the async operations to complete
         const resolved = await Promise.all(
-          addresses.map(async (address) => {
+          addresses.map(async (address): Promise<ResolvedAddress | null> => {
             if (address.toLowerCase().endsWith(".algo")) {
-              const resolvedAddr = await resolveNFD(address);
+              const result = await resolveNFD(address);
               // If NFD resolution fails (expired, not found, etc.), skip it
-              if (!resolvedAddr || resolvedAddr.length !== 58) {
+              if (!result || !result.address || result.address.length !== 58) {
                 toast.error(
                   `NFD "${address}" could not be resolved. It may be expired or not found.`,
                 );
                 return null;
               }
-              return { address: resolvedAddr, nfd: address };
+              return {
+                address: result.address,
+                nfd: address,
+                timeExpires: result.timeExpires,
+                expired: result.expired,
+              };
             }
-            return { address, nfd: null };
+            return {
+              address,
+              nfd: null,
+            };
           }),
         );
 

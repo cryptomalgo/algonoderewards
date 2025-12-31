@@ -4,4 +4,7 @@ export {
   useNFDResolve,
   useNFDReverse,
   useNFDReverseMultiple,
+  getExpirationStatus,
+  type NFDExpirationStatus,
+  type NFDExpirationInfo,
 } from "@/hooks/queries/useNFD";

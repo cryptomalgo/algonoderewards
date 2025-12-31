@@ -12,4 +12,6 @@ export interface DisplayMonth {
 export type ResolvedAddress = {
   nfd: string | null;
   address: string;
+  timeExpires?: string | null;
+  expired?: boolean;
 };
