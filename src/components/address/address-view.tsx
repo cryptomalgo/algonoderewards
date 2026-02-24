@@ -22,6 +22,9 @@ const AccountStatus = lazy(() => import("./stats/status/status"));
 const CumulativeRewardsChart = lazy(
   () => import("@/components/address/charts/cumulative-rewards-chart"),
 );
+const PriceImpactSection = lazy(
+  () => import("@/components/address/price-impact-section"),
+);
 const CumulativeBlocksChart = lazy(
   () => import("@/components/address/charts/cumulative-blocks-chart"),
 );
@@ -110,6 +113,7 @@ const ChartFallback = () => (
 export default function AddressView({ addresses }: { addresses: string }) {
   const navigate = useNavigate();
   const search = useSearch({ from: "/$addresses" });
+  const isBalanceHidden = search.hideBalance;
   const [showFilters, setShowFilters] = useState(false);
   const [showAddAddress, setShowAddAddress] = useState(false);
 
@@ -218,6 +222,7 @@ export default function AddressView({ addresses }: { addresses: string }) {
               nfdName={addr.nfd}
               timeExpires={addr.timeExpires}
               expired={addr.expired}
+              hideSensitive={isBalanceHidden}
             />
           ),
       )}
@@ -248,13 +253,21 @@ export default function AddressView({ addresses }: { addresses: string }) {
             {resolvedAddresses.length === 1 && resolvedAddresses[0] && (
               <div>
                 <div className={"flex flex-wrap items-center gap-2"}>
-                  <h2 className="block text-xl/7 text-gray-700 sm:hidden sm:truncate sm:text-lg sm:tracking-tight">
-                    {displayAlgoAddress(resolvedAddresses[0]?.address)}
-                  </h2>
-                  <h2 className="hidden text-xl/7 text-gray-700 sm:block sm:truncate sm:text-lg sm:tracking-tight">
-                    {resolvedAddresses[0]?.address}
-                  </h2>
-                  <CopyButton address={resolvedAddresses[0].address} />
+                  {isBalanceHidden ? (
+                    <h2 className="text-xl/7 text-gray-700 sm:truncate sm:text-lg sm:tracking-tight">
+                      *****
+                    </h2>
+                  ) : (
+                    <>
+                      <h2 className="block text-xl/7 text-gray-700 sm:hidden sm:truncate sm:text-lg sm:tracking-tight">
+                        {displayAlgoAddress(resolvedAddresses[0]?.address)}
+                      </h2>
+                      <h2 className="hidden text-xl/7 text-gray-700 sm:block sm:truncate sm:text-lg sm:tracking-tight">
+                        {resolvedAddresses[0]?.address}
+                      </h2>
+                      <CopyButton address={resolvedAddresses[0].address} />
+                    </>
+                  )}
                 </div>
                 <AccountStatus address={resolvedAddresses[0]} />
               </div>
@@ -282,6 +295,15 @@ export default function AddressView({ addresses }: { addresses: string }) {
             <ErrorBoundary>
               <Suspense fallback={<ChartFallback />}>
                 <CumulativeRewardsChart
+                  blocks={deferredBlocks}
+                  hideBalance={search.hideBalance}
+                />
+              </Suspense>
+            </ErrorBoundary>
+
+            <ErrorBoundary>
+              <Suspense fallback={<ChartFallback />}>
+                <PriceImpactSection
                   blocks={deferredBlocks}
                   hideBalance={search.hideBalance}
                 />

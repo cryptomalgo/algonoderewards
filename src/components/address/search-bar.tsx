@@ -3,6 +3,8 @@ import AlgorandLogo from "@/components/algorand-logo.tsx";
 import { displayAlgoAddress } from "@/lib/utils.ts";
 import { XIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useSearch } from "@tanstack/react-router";
+import { SENSITIVE_MASK } from "@/constants";
 
 export default function SearchBar({
   addresses,
@@ -11,6 +13,8 @@ export default function SearchBar({
   addresses: string[];
   setAddresses: (addresses: string[]) => void;
 }) {
+  const search = useSearch({ from: "/$addresses" });
+  const isBalanceHidden = search.hideBalance;
   const [inputValue, setInputValue] = useState<string>("");
   const [isInputValid, setIsInputValid] = useState<boolean>(true);
 
@@ -75,7 +79,11 @@ export default function SearchBar({
               className="flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-blue-700/10 ring-inset dark:bg-indigo-900/30 dark:text-indigo-300 dark:ring-indigo-500/30"
             >
               <span className="mr-1 max-w-[200px] truncate">
-                {address.length === 58 ? displayAlgoAddress(address) : address}
+                {isBalanceHidden
+                  ? SENSITIVE_MASK
+                  : address.length === 58
+                    ? displayAlgoAddress(address)
+                    : address}
               </span>
               {addresses.length > 1 && (
                 <button

@@ -5,6 +5,7 @@ import {
   type NFDExpirationStatus,
 } from "@/hooks/queries/useNFD";
 import { cn } from "@/lib/utils";
+import { SENSITIVE_MASK } from "@/constants";
 
 interface NFDExpirationBannerProps {
   nfdName: string;
@@ -12,6 +13,7 @@ interface NFDExpirationBannerProps {
   expired: boolean | undefined;
   warningDays?: number;
   criticalDays?: number;
+  hideSensitive?: boolean;
 }
 
 const statusConfig: Record<
@@ -58,6 +60,7 @@ export function NFDExpirationBanner({
   expired,
   warningDays,
   criticalDays,
+  hideSensitive = false,
 }: NFDExpirationBannerProps) {
   const [isDismissed, setIsDismissed] = useState(false);
 
@@ -73,7 +76,8 @@ export function NFDExpirationBanner({
   }
 
   const config = statusConfig[status];
-  const message = config.getMessage(daysUntilExpiration, nfdName);
+  const displayName = hideSensitive ? SENSITIVE_MASK : nfdName;
+  const message = config.getMessage(daysUntilExpiration, displayName);
 
   const renewUrl = `https://app.nf.domains/name/${encodeURIComponent(nfdName)}`;
 

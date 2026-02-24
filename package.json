@@ -30,7 +30,8 @@
     "prettier:check": "prettier --check .",
     "test:watch": "vitest",
     "test": "vitest --run",
-    "ci": "npm run lint && npm run prettier:fix && npm run type:check && npm run build && vitest --run"
+    "ci": "npm run lint && npm run prettier:fix && npm run type:check && npm run build && vitest --run",
+    "fetch-prices": "node scripts/fetch-algo-price-history.js"
   },
   "dependencies": {
     "@algorandfoundation/algokit-utils": "^9.1.2",

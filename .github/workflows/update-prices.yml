@@ -1,0 +1,44 @@
+name: Update Price History
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  push:
+    branches: [main, feat/fiat-price-overlay]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  update-prices:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Fetch new prices
+        run: npm run fetch-prices
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "github-actions[bot]"
+          git status
+          if ! git diff --quiet src/data/algo-price-history.json; then
+            echo "Changes detected, committing..."
+            git add src/data/algo-price-history.json
+            git commit -m "chore: update algo price history [skip ci]"
+            git push origin HEAD:${{ github.ref_name }}
+          else
+            echo "No new price data found."
+          fi

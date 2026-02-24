@@ -5,6 +5,7 @@ import CopyButton from "@/components/copy-to-clipboard";
 import { ResolvedAddress } from "@/components/heatmap/types";
 import { useAccount } from "@/hooks/queries/useAccounts";
 import AccountStatus from "./stats/status/status";
+import { useSearch } from "@tanstack/react-router";
 
 export default function AddressFilters({
   showFilters,
@@ -109,6 +110,8 @@ function AddressCheckbox({
   onChange: (checked: boolean) => void;
 }) {
   const { data: account } = useAccount(address);
+  const search = useSearch({ from: "/$addresses" });
+  const isBalanceHidden = search.hideBalance;
 
   return (
     <div className="flex gap-2">
@@ -133,14 +136,21 @@ function AddressCheckbox({
           htmlFor={`address-${address.address}`}
           className="flex items-center gap-2 font-medium text-nowrap text-gray-900 dark:text-gray-100"
         >
-          {address.nfd ? address.nfd : displayAlgoAddress(address.address)}
-          <CopyButton
-            address={address.nfd ? address.nfd : address.address}
-            small
-          />
+          {isBalanceHidden
+            ? "*****"
+            : address.nfd
+              ? address.nfd
+              : displayAlgoAddress(address.address)}
+          {!isBalanceHidden && (
+            <CopyButton
+              address={address.nfd ? address.nfd : address.address}
+              small
+            />
+          )}
         </label>
         <p className="hidden items-center gap-2 text-gray-500 sm:flex dark:text-gray-400">
-          {address.address} <CopyButton address={address.address} small />
+          {isBalanceHidden ? "*****" : address.address}
+          {!isBalanceHidden && <CopyButton address={address.address} small />}
         </p>
         {account && <AccountStatus address={address} />}
       </div>

@@ -18,6 +18,7 @@ import { useTheme } from "@/components/theme-provider";
 import { MinimalBlock } from "@/lib/block-types";
 import { RefreshButton } from "./refresh-button";
 import { useNFDReverseMultiple } from "@/hooks/queries/useNFD";
+import { useSearch } from "@tanstack/react-router";
 
 const AddressBreadcrumb = ({
   resolvedAddresses,
@@ -39,6 +40,8 @@ const AddressBreadcrumb = ({
   hasError: boolean;
 }) => {
   const { theme } = useTheme();
+  const search = useSearch({ from: "/$addresses" });
+  const isBalanceHidden = search.hideBalance;
 
   // Fetch NFD names for all addresses
   const addresses = resolvedAddresses.map((addr) => addr.address);
@@ -105,7 +108,9 @@ const AddressBreadcrumb = ({
               )}
               {!loading &&
                 resolvedAddresses.length === 1 &&
-                getDisplayName(resolvedAddresses[0].address)}
+                (isBalanceHidden
+                  ? "*****"
+                  : getDisplayName(resolvedAddresses[0].address))}
               {!loading &&
                 resolvedAddresses.length > 1 &&
                 `Multiple addresses (${resolvedAddresses.length})`}
@@ -123,7 +128,9 @@ const AddressBreadcrumb = ({
               )}
               {!loading &&
                 resolvedAddresses.length === 1 &&
-                getDisplayName(resolvedAddresses[0].address, true)}
+                (isBalanceHidden
+                  ? "*****"
+                  : getDisplayName(resolvedAddresses[0].address, true))}
               {!loading && resolvedAddresses.length > 1 && "Multiple addresses"}
             </a>
 

@@ -14,6 +14,8 @@ import { Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { clearCacheForAddress, clearAllCache } from "@/lib/block-storage";
+import { useSearch } from "@tanstack/react-router";
+import { SENSITIVE_MASK } from "@/constants";
 
 interface CachedAddressInfo {
   address: string;
@@ -34,19 +36,25 @@ function formatDate(timestamp: number): string {
 }
 
 export function CacheList({ loading, caches, onCacheCleared }: CacheListProps) {
+  const search = useSearch({ from: "/$addresses" });
+  const isBalanceHidden = search.hideBalance;
   const [clearing, setClearing] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
   // Use the new hook to fetch NFD names for all cached addresses
   const addresses = caches.map((cache) => cache.address);
   const { data: nfdMap = {}, isLoading: loadingNFDs } =
-    useNFDReverseMultiple(addresses);
+    useNFDReverseMultiple(addresses, !isBalanceHidden);
 
   const handleClearAddress = async (address: string) => {
     try {
       setClearing(address);
       await clearCacheForAddress(address);
-      toast.success("Cleared cache for " + displayAlgoAddress(address));
+      toast.success(
+        isBalanceHidden
+          ? "Cleared cache for hidden address"
+          : "Cleared cache for " + displayAlgoAddress(address),
+      );
       await queryClient.invalidateQueries({ queryKey: ["cache-size"] });
       await queryClient.invalidateQueries({ queryKey: ["cache-addresses"] });
       onCacheCleared();
@@ -115,7 +123,9 @@ export function CacheList({ loading, caches, onCacheCleared }: CacheListProps) {
             >
               <div className="min-w-0 flex-1 space-y-1">
                 <div className="truncate font-mono text-xs font-medium sm:text-sm dark:text-gray-100">
-                  {loadingNFDs ? (
+                  {isBalanceHidden ? (
+                    <span>{SENSITIVE_MASK}</span>
+                  ) : loadingNFDs ? (
                     <Skeleton className="h-3 w-24 sm:h-4 sm:w-32" />
                   ) : nfdMap[cache.address] ? (
                     <Tooltip>
@@ -132,7 +142,7 @@ export function CacheList({ loading, caches, onCacheCleared }: CacheListProps) {
                       </TooltipTrigger>
                       <TooltipContent>
                         <p className="max-w-[200px] font-mono text-xs break-all">
-                          {cache.address}
+                          {isBalanceHidden ? SENSITIVE_MASK : cache.address}
                         </p>
                       </TooltipContent>
                     </Tooltip>
@@ -145,7 +155,7 @@ export function CacheList({ loading, caches, onCacheCleared }: CacheListProps) {
                       </TooltipTrigger>
                       <TooltipContent>
                         <p className="max-w-[200px] font-mono text-xs break-all">
-                          {cache.address}
+                          {isBalanceHidden ? SENSITIVE_MASK : cache.address}
                         </p>
                       </TooltipContent>
                     </Tooltip>
