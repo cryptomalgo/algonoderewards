@@ -30,7 +30,8 @@
     "prettier:check": "prettier --check .",
     "test:watch": "vitest",
     "test": "vitest --run",
-    "ci": "npm run lint && npm run prettier:fix && npm run type:check && npm run build && vitest --run"
+    "ci": "npm run lint && npm run prettier:fix && npm run type:check && npm run build && vitest --run",
+    "fetch-prices": "node scripts/fetch-algo-price-history.js"
   },
   "dependencies": {
     "@algorandfoundation/algokit-utils": "^9.1.2",
@@ -97,7 +98,8 @@
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.47.0",
     "vite": "^7.2.2",
-    "vitest": "^4.0.10"
+    "vitest": "^4.0.10",
+    "wrangler": "^3.109.2"
   },
   "engines": {
     "node": ">=22.0.0",

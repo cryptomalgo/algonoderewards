@@ -22,6 +22,9 @@ const AccountStatus = lazy(() => import("./stats/status/status"));
 const CumulativeRewardsChart = lazy(
   () => import("@/components/address/charts/cumulative-rewards-chart"),
 );
+const PriceImpactSection = lazy(
+  () => import("@/components/address/price-impact-section"),
+);
 const CumulativeBlocksChart = lazy(
   () => import("@/components/address/charts/cumulative-blocks-chart"),
 );
@@ -282,6 +285,15 @@ export default function AddressView({ addresses }: { addresses: string }) {
             <ErrorBoundary>
               <Suspense fallback={<ChartFallback />}>
                 <CumulativeRewardsChart
+                  blocks={deferredBlocks}
+                  hideBalance={search.hideBalance}
+                />
+              </Suspense>
+            </ErrorBoundary>
+
+            <ErrorBoundary>
+              <Suspense fallback={<ChartFallback />}>
+                <PriceImpactSection
                   blocks={deferredBlocks}
                   hideBalance={search.hideBalance}
                 />
