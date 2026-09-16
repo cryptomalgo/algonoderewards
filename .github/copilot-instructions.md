@@ -121,7 +121,10 @@ src/
 │   ├── ui/              # shadcn/ui components (Button, Dialog, etc.)
 │   ├── address/         # Address-specific components
 │   │   ├── charts/      # Reward/block charts and visualizations
-│   │   └── stats/       # Statistics panels and boxes
+│   │   ├── stats/       # Statistics panels and boxes
+│   │   ├── nfd-expiration-banner.tsx                # NFD renewal banner
+│   │   └── participation-key-expiration-banner.tsx  # Participation key renewal banner
+│   ├── expiration-banner.tsx  # Shared full-width alert banner used by both expiration banners
 │   ├── heatmap/         # Heatmap components
 │   └── [other components]
 │
@@ -175,6 +178,7 @@ src/
 - CSV export with customizable columns
 - Address breadcrumb navigation
 - Search and filter capabilities
+- Expiration banners for NFD domains and participation keys (warning, critical and expired states)
 
 ## Coding Guidelines
 
@@ -260,6 +264,12 @@ npm run ci           # Full CI check (lint, format, type, build, test)
 - Block rewards are in microAlgos (divide by 1,000,000 for ALGO)
 - Timestamps are in Unix seconds
 - Date groupings use `date-fns` with proper timezone handling
+
+### Participation Key Expiration
+
+- A registered key is valid until `account.participation.voteLastValid`, so remaining time is estimated from `account.round` and the average block time
+- Status thresholds and estimation live in `src/lib/participation-key.ts` (defaults: 7 day warning, 2 day critical)
+- The banner covers every tracked address but renders a single message for the most urgent one
 
 ### Performance
 

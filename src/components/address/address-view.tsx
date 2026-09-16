@@ -14,6 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { displayAlgoAddress } from "@/lib/utils.ts";
 import CopyButton from "@/components/copy-to-clipboard";
 import { NFDExpirationBanner } from "./nfd-expiration-banner";
+import { ParticipationKeyExpirationBanner } from "./participation-key-expiration-banner";
 
 // Lazy load ALL heavy components for better performance
 const Heatmap = lazy(() => import("@/components/heatmap/heatmap"));
@@ -210,6 +211,7 @@ export default function AddressView({ addresses }: { addresses: string }) {
         cachedCount={progress.cachedCount}
         isCacheEnabled={search.enableCache}
       />
+      <ParticipationKeyExpirationBanner resolvedAddresses={resolvedAddresses} />
       {resolvedAddresses.map(
         (addr) =>
           addr.nfd && (
